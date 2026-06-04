@@ -1,6 +1,6 @@
 # Agentic Pharmacometrics
 
-A working subgroup of the [ISoP AI/ML SIG](https://www.isop.org/special-interest-groups/aiml-sig), bringing pharmacometricians together around AI agents and agentic workflows. More at [our site](https://aiml-sig.github.io/Agentic-workflows/).
+A working subgroup of the [ISoP AI/ML SIG](https://www.isop.org/special-interest-groups/aiml-sig), bringing pharmacometricians together around AI agents and agentic workflows. More at [our site](https://aiml-sig.github.io/Agentic-workflows/), or join the conversation in [Discussions](../../discussions).
 
 ## Mission
 
