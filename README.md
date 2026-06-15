@@ -13,6 +13,13 @@ To bring together a community of pharmacometricians to discover, evaluate, and p
 - **Build a shared evaluation framework.** Develop shared benchmarks, datasets, and tasks that separate real workflow value from impressive demos.
 - **Make workflows trustworthy and regulatory-ready.** Establish the QC, traceability, and human-in-the-loop practices needed to trust agent output, and translate them into GxP guardrails.
 
+
+## Join us
+
+- [Subscribe by email](mailto:agentic-workflows+subscribe@googlegroups.com)
+  (works behind corporate firewalls)
+- Prefer a form? [Sign up here](https://forms.gle/BX4Ff7fTdhB3jucw9)
+
 ## License
 
 Released under the [MIT License](LICENSE).
