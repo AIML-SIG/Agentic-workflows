@@ -1,47 +1,25 @@
-# Agentic pharmacometrics: workflow + benchmark
+# Agentic Pharmacometrics
 
-Two tools that fit together. A workflow drives an agent through a
-pharmacometric analysis; a benchmark scores what it produces against a synthetic
-study with known ground truth.
+A working subgroup of the [ISoP AI/ML SIG](https://www.isop.org/special-interest-groups/aiml-sig), bringing pharmacometricians together around AI agents and agentic workflows. Join the conversation in [Discussions](../../discussions).
 
-| Folder | What it is |
-|--------|------------|
-| [`modus/`](modus/) | The **workflow**. Wraps an agent harness (Claude Code, Codex, …) and drives fresh agent instances through a task library until the work verifiably passes. |
-| [`pharmbench/`](pharmbench/) | The **benchmark**. Ships synthetic scenarios (a visible question packet + a sealed answer key + traps) and a scorer. Tool-agnostic: it scores *any* workflow that reads a `data/` packet and writes a `submission.yaml`. |
+## Mission
 
-They meet at exactly one artifact — `submission.yaml` — and one rule: **design is
-visible, results are held out**.
+To bring together a community of pharmacometricians to discover, evaluate, and produce agentic workflows, codifying their collective expertise into shared, verifiable standards of practice that grow with the field.
 
-## 60-second feel for each
+## Objectives
 
-**Score a submission** (benchmark only, no agent needed):
+- **Build community and shared learning.** Bring together pharmacometricians interested in agentic AI — unify terminology, lower the barrier to entry, and learn in the open.
+- **Discover, evaluate, and harmonize community tools.** Curate the community's best agentic tools (e.g. Modus, PMxAgent) into one open, readable stack the group can reuse and grow.
+- **Build a shared evaluation framework.** Develop shared benchmarks, datasets, and tasks that separate real workflow value from impressive demos.
+- **Make workflows trustworthy and regulatory-ready.** Establish the QC, traceability, and human-in-the-loop practices needed to trust agent output, and translate them into GxP guardrails.
 
-```sh
-cd pharmbench
-Rscript score.R --truth scenarios/mab-poppk-v0/evals/truth.yaml \
-  scenarios/mab-poppk-v0/evals/submission.example.yaml
-```
 
-Prints a scorecard for a deliberately imperfect submission (overall ≈ 0.71) so
-you see the traps biting.
+## Join us
 
-**Run the full loop** (workflow + benchmark): see
-[`pharmbench/README.md`](pharmbench/README.md) → *Quickstart: the full benchmark
-loop* (proctor → run → score). To adapt the workflow to your own domain, see
-[`modus/README.md`](modus/README.md) → *Writing your own task library*.
-
-## Prerequisites
-
-The combined set across both tools:
-
-- **An agent harness** on `PATH` — the Claude Code CLI (`claude`) by default, or
-  any CLI via `AGENT_CMD` (e.g. `codex exec`). Needed only to *run* the workflow,
-  not to score.
-- **R** (tested 4.3.3) with `mrgsolve` (data generation; needs a C toolchain such
-  as gcc) and `yaml` (scoring): `install.packages(c("mrgsolve", "yaml"))`.
-- **Python 3** with `pyyaml`, only for the optional results visualizer:
-  `pip install pyyaml`.
+- [Subscribe by email](mailto:agentic-workflows+subscribe@googlegroups.com)
+  (works behind corporate firewalls)
+- Prefer a form? [Sign up here](https://forms.gle/BX4Ff7fTdhB3jucw9)
 
 ## License
 
-MIT (both folders). See each folder's `LICENSE`.
+Released under the [MIT License](LICENSE).
