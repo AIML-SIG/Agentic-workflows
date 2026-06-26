@@ -1,6 +1,8 @@
 # Modus
 
-An organizational layer for running LLM agents on complex, multi-step scientific work.
+An organizational layer for running LLM agents on complex, multi-step scientific work. 
+
+[Blog post here](https://www.aripritchardbell.com/blog/2026-05-12-modus)
 
 Modus does not replace your agent harness — Claude Code, Codex, whatever you
 already run. It wraps one. It captures the domain expertise that makes an
