@@ -1,0 +1,34 @@
+# submission.example.yaml — a deliberately imperfect, filled submission used to
+# exercise the scorer. Its flaws are intentional, to show the traps biting:
+#   - falls for the ALB decoy (reports an albumin effect on CL)
+#   - misses the true WT effect on Vc entirely
+#   - misses one of the three data-entry outliers
+#   - central volume a little off
+# Not a model answer; the held-out truth.yaml is the answer key.
+
+provenance:
+  tool: example
+  tool_sha: "0000000"
+  model: claude-opus-4-8
+  run_utc: 2026-06-16T00:00:00Z
+  analysis_steps: [data-qc, base-model-fit, covariate-screen]  # workflow's own labels, illustrative
+
+answers:
+  structural_ncmt: 2
+
+  disposition_params:
+    CL: 0.21
+    Vc: 2.6
+    Q:  0.58
+    Vp: 3.1
+
+  error_model:
+    prop: 0.16
+
+  cov_effects:
+    CL:
+      WT:  0.74
+      ALB: -0.30      # decoy — albumin has no true PK effect
+    # misses the true WT effect on Vc
+
+  outlier_records: ["62", "692"]   # misses 1322

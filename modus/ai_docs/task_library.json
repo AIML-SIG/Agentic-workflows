@@ -1,0 +1,143 @@
+[
+  {
+    "task_id": "scope",
+    "category": "scope",
+    "description": "Read the analysis plan and prune this working task library to the subset of tasks the study actually supports. This is the first task; it shapes the rest of the run.",
+    "produces": "scope_summary.md",
+    "verify": "scope_summary.md lists every task kept and every task cut, each cut with a one-line rationale tied to the analysis objectives; {{PROJECT_DIR}}/workspace/tasks.json no longer contains the cut task entries; no new tasks were added",
+    "rules": [
+      "Read the analysis plan and protocol in {{PROJECT_DIR}}/data/ to determine the analysis objectives and the data available",
+      "Read {{PROJECT_DIR}}/workspace/tasks.json (this working copy) to see every candidate task",
+      "Keep a task only if the study's design, data, and objectives support it; remove tasks whose required inputs or objectives are absent",
+      "Prune by deleting the unsupported task entries from {{PROJECT_DIR}}/workspace/tasks.json in place; keep the JSON valid",
+      "You may only remove tasks. If the study appears to need a task that does not exist in the library, do not invent it -- write ESCALATE.txt describing the gap",
+      "Do not remove the submission task; the run must always be able to report"
+    ],
+    "depends_on": [],
+    "passes": false
+  },
+  {
+    "task_id": "study_context",
+    "category": "intake",
+    "description": "Read the supporting documents and write a study-context summary downstream tasks rely on",
+    "produces": "study_context.md",
+    "verify": "study_context.md exists; every supporting document in data/ is summarized; captures the study design, dosing, sampling, analyte, drug, candidate covariates, and dataset conventions in enough detail to execute the downstream tasks",
+    "rules": [
+      "Read all supporting documents in {{PROJECT_DIR}}/data/ (protocol, analysis plan, dataset specification)",
+      "Capture what downstream tasks need to execute: study design and population, dosing and route, sampling schedule, analyte and assay limits, the drug and its disposition, the pre-specified candidate covariates, and the dataset's column and coding conventions",
+      "Organize the summary by what downstream tasks consume, not by source document",
+      "If a downstream task needs information absent from the documents, name what is missing and which task needs it",
+      "Summarize design intent only; do not infer or assert analysis conclusions here"
+    ],
+    "depends_on": ["scope"],
+    "passes": false
+  },
+  {
+    "task_id": "data_qc",
+    "category": "data",
+    "description": "Quality-control the analysis dataset and decide how below-limit data are handled",
+    "produces": "data_qc_dataset.csv, data_qc_summary.md",
+    "verify": "data_qc_summary.md states the below-limit handling method and its rationale; every record flagged or excluded carries a justification; flagged records are reported by their stable row identifier; data_qc_dataset.csv is the analysis-ready dataset",
+    "rules": [
+      "Read study_context.md and load the dataset named in the dataset specification from {{PROJECT_DIR}}/data/",
+      "Follow the dataset's own coding conventions; do not treat a coded flag as a measured value",
+      "Choose and document a defensible method for handling below-limit records",
+      "Screen the data for records inconsistent with the rest of a subject's profile and the population, and justify any flag or exclusion against the data",
+      "Report flagged or excluded records by the dataset's stable row-identifier column so they are traceable"
+    ],
+    "depends_on": ["study_context"],
+    "passes": false
+  },
+  {
+    "task_id": "structural_model",
+    "category": "modeling",
+    "description": "Determine the structural disposition model and estimate its primary parameters",
+    "produces": "structural_model_fit.rds, structural_model_params.csv",
+    "verify": "the structural model is justified by comparison rather than assumed; the primary disposition parameters are estimated with their precision; model adequacy is demonstrated against the observed data with goodness-of-fit evidence, not asserted from parameter precision alone",
+    "rules": [
+      "Read study_context.md and use the QC'd dataset from the data_qc task",
+      "Determine the structural model from the data by comparing candidate structures rather than assuming one",
+      "Estimate the primary disposition parameters; do not fix them to assumed values",
+      "Carry the data_qc below-limit handling decision into the fit",
+      "Bound every fit: cap estimation iterations and wrap each fit in a timeout so a non-converging or unidentifiable candidate fails fast instead of stalling the run",
+      "Confront the selected fit with the observed data via goodness-of-fit diagnostics (e.g. observations vs predictions, conditional residuals vs time and vs prediction). Confirm the estimated residual error and random-effect magnitudes are consistent with the scatter the data actually show; tight parameter precision does not establish that the model describes the data, and an estimate inconsistent with the diagnostics indicates an inadequate or unconverged fit to investigate, not a result to report",
+      "Compute parameter uncertainty only for the model you select, not for every exploratory candidate",
+      "Report the selected estimates with their precision and the basis for the structural choice"
+    ],
+    "depends_on": ["data_qc"],
+    "passes": false
+  },
+  {
+    "task_id": "covariate_analysis",
+    "category": "modeling",
+    "description": "Assess whether the candidate covariates explain inter-individual variability in the disposition parameter of interest",
+    "produces": "covariate_analysis_results.csv, covariate_analysis_summary.md",
+    "verify": "each pre-specified candidate is tested with a reported effect size and statistical basis; every candidate carries a supported/rejected decision with a one-line reason; a retained covariate is defensible beyond a univariate association, and its estimated effect magnitude is checked for plausibility, not reported on significance alone",
+    "rules": [
+      "Read study_context.md for the drug and the pre-specified candidate covariate set; use the structural model fit",
+      "Test each pre-specified candidate against a stated statistical criterion, and estimate any relationship you retain rather than fixing it",
+      "Retain a candidate only if it adds explanatory power beyond what already-supported covariates account for, and the effect is scientifically defensible for this drug",
+      "Judge a retained effect by its magnitude, not only its significance: a statistically supported effect whose estimated size is implausible against the drug's mechanism or established physiological expectation is a signal of an inadequate or unconverged underlying fit, to be reconciled before it is reported as final",
+      "Bound every fit (capped iterations + timeout); screen candidates cheaply before committing to full estimation, and compute uncertainty only for models you carry forward",
+      "Report every candidate's decision and reason; report as supported only the covariates the analysis defends"
+    ],
+    "depends_on": ["structural_model", "study_context"],
+    "passes": false
+  },
+  {
+    "task_id": "review",
+    "category": "review",
+    "description": "Independently verify the reportable results before they are submitted",
+    "produces": "review_signoff.md",
+    "verify": "review_signoff.md re-derives at least one reportable quantity independently of the summary that produced it, and confirms the reported model is adequate against the observed data rather than only internally precise; lists what was checked and what was not; records sign-off or raises an escalation",
+    "rules": [
+      "Re-derive at least one reportable quantity from the underlying outputs rather than trusting a summary",
+      "Check the reported fit against the data, not only against itself: confirm the residual error, random-effect magnitudes, and any reported covariate effect are consistent with the goodness-of-fit diagnostics. Precise estimates from a model that does not describe the data are not a result",
+      "If a result cannot be reconciled, write ESCALATE.txt instead of signing off",
+      "The sign-off must state what was checked and what was not"
+    ],
+    "depends_on": ["data_qc", "structural_model", "covariate_analysis"],
+    "passes": false
+  },
+  {
+    "task_id": "submission",
+    "category": "report",
+    "description": "Assemble the machine-readable submission the benchmark reads, in the shape of the provided template",
+    "produces": "submission.yaml",
+    "verify": "workspace/submission/submission.yaml follows the template in data/; every key is present or explicitly null; no answer is guessed for a task that did not run; the provenance block is complete",
+    "rules": [
+      "Read data/submission.template.yaml for the exact shape and the meaning of each key",
+      "Fill the answers from the upstream task summaries; report only what the analysis supports and leave unaddressed items null rather than guessing",
+      "Fill provenance: tool 'modus'; tool_sha = the modus repo git rev at run time; model = the model id behind the run; run_utc = an ISO-8601 UTC timestamp; analysis_steps = the task_ids that actually ran this run",
+      "Write the result to {{PROJECT_DIR}}/workspace/submission/submission.yaml"
+    ],
+    "depends_on": ["review"],
+    "passes": false
+  },
+  {
+    "task_id": "pkpd_model",
+    "category": "modeling",
+    "description": "Characterize the pharmacokinetic-pharmacodynamic relationship for a pharmacodynamic endpoint",
+    "produces": "pkpd_model_fit.rds, pkpd_model_params.csv",
+    "verify": "a PK/PD model is fit to a pharmacodynamic endpoint with plausible parameters",
+    "rules": [
+      "Requires a measured pharmacodynamic or biomarker endpoint linked to exposure",
+      "Fix individual PK parameters from the final PK model and estimate the PD parameters"
+    ],
+    "depends_on": ["study_context"],
+    "passes": false
+  },
+  {
+    "task_id": "dose_recommendation",
+    "category": "simulation",
+    "description": "Recommend a dose by simulating target attainment against a defined efficacy or safety target",
+    "produces": "dose_recommendation_summary.md, dose_recommendation_simulations.rds",
+    "verify": "probability of target attainment is reported by dose and a recommended dose is justified against the target",
+    "rules": [
+      "Requires a defined PK/PD or exposure-response target to simulate against",
+      "Simulate a virtual population matching the study covariate distributions and evaluate candidate doses"
+    ],
+    "depends_on": ["structural_model"],
+    "passes": false
+  }
+]

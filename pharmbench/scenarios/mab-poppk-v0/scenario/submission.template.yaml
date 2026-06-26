@@ -1,0 +1,40 @@
+# submission.yaml — the machine-readable answer extraction for PMB-MAB-01.
+# Fill `answers` from your analysis; report only what the analysis supports.
+# Leave an item out (or null) if your analysis did not address it — do not guess.
+# See sap.md §4 for the meaning and format of each key.
+
+provenance:
+  tool: modus                  # workflow that produced this submission
+  tool_sha: ""                 # modus repo git rev at run time
+  model: ""                    # model id behind the run
+  run_utc: ""                  # ISO-8601 UTC timestamp
+  analysis_steps: []           # the analysis steps this run performed, in the
+                               # workflow's own naming; echoed for provenance, never scored
+
+answers:
+  structural_ncmt:             # integer: number of disposition compartments
+
+  # Typical (population) values of YOUR final model's disposition parameters, as
+  # name: value pairs in the model's own parameterization, using standard
+  # parameter names so they match. Report exactly the parameters your chosen
+  # structure has — no more, no fewer. Units per sap.md.
+  disposition_params:
+    # CL: <L/day>
+    # (volume and any distribution parameters under their usual names)
+
+  # Residual-error terms of your final model, as name: value pairs — use standard
+  # term names so they match, and report exactly the terms you estimated.
+  error_model:
+    # prop: <proportional fraction>
+    # (include any other term your model has under its usual name)
+
+  # Covariate effects your final model supports, grouped by the disposition
+  # parameter they act on, then by covariate column name, with the estimated
+  # effect size in your model's form (e.g. a power exponent). Report exactly the
+  # relationships your analysis defends; {} if none.
+  # (Example shape only, NOT this study's answer: {CL: {<COV>: <effect>}})
+  cov_effects:
+    # <PARAM>:
+    #   <COV>: ...
+
+  outlier_records:             # list of ROWID strings (row numbers), e.g. ["418"]; [] if none

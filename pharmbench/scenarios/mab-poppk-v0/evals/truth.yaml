@@ -1,0 +1,68 @@
+meta:
+  dataset: pmb-mab-poppk-v0
+  datagen_seed: 1234
+
+items:
+  - id: structural_ncmt
+    pmx_area: structural
+    scorer: categorical
+    expected: 2
+    weight: 1
+
+  # Typical (population) disposition parameters of the final model, matched by
+  # name. The workflow reports whatever parameters its chosen structure has, so a
+  # wrong structure (e.g. 1-cmt: no Q/Vp) self-penalizes via the missing names.
+  - id: disposition_params
+    pmx_area: estimation
+    scorer: map
+    expected:
+      CL: 0.20    # L/day at 70 kg
+      Vc: 3.0     # L
+      Q:  0.6     # L/day
+      Vp: 3.0     # L
+    tol: 0.20     # relative, per matched parameter
+    aliases:
+      CL: [cl, clearance]
+      Vc: [vc, v1, v2c, vcentral, vc1, central]
+      Q:  [q, cld, q2, intercompartmental_cl]
+      Vp: [vp, v2, vperiph, peripheral]
+    weight: 1
+
+  # Residual error terms by name. Truth is proportional-only (15%); a submission
+  # that adds a spurious additive term gets a 0 for that extra name.
+  - id: error_model
+    pmx_area: estimation
+    scorer: map
+    expected:
+      prop: 0.15
+    tol: 0.25
+    aliases:
+      prop: [proportional, prop_sd, prop.sd, cv, sigma_prop]
+      add:  [additive, add_sd, add.sd, sigma_add]
+    weight: 1
+
+  # Covariate effects grouped by the disposition parameter they act on, matched
+  # by param then covariate name. WT acts on both CL (0.75) and Vc (1.0). ALB and
+  # CRCL are decoys: reporting an effect for either, on any parameter, is a
+  # spurious key (scores 0) and is flagged as a trap.
+  - id: cov_effects
+    pmx_area: covariate-analysis
+    scorer: map_nested
+    expected:
+      CL: { WT: 0.75 }   # power exponent
+      Vc: { WT: 1.00 }   # power exponent
+    decoys: [ALB, CRCL]
+    tol: 0.20
+    aliases:
+      CL: [cl, clearance]
+      Vc: [vc, v1, vcentral, central]
+      WT: [wt, weight, bw, body_weight]
+      ALB: [alb, albumin]
+      CRCL: [crcl, clcr, creatinine_clearance]
+    weight: 1
+
+  - id: outlier_records
+    pmx_area: data-quality
+    scorer: set
+    expected: ["62", "692", "1322"]   # subjects 5/50/95, day 7 (DV x10 decimal slip)
+    weight: 1

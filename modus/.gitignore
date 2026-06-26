@@ -1,0 +1,24 @@
+# Credentials and secrets
+.env
+.env.*
+
+# Workspace outputs (generated per-run)
+workspace/
+*_workspace/
+*_workspace_*/
+
+# Logs
+*.log
+
+# R artifacts
+.Rhistory
+.Rdata
+.RData
+.Rproj.user/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Agent harness config
+.claude/
