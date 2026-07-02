@@ -1,0 +1,33 @@
+---
+title: "Term Name"
+date: 2026-07-02
+date-modified: 2026-07-02
+---
+
+::: {style="font-size: 0.8em; color: #888;"}
+Contributors: Jane Doe, Ali Khan, Maria Smith (replace)
+:::
+
+> One-sentence plain-language summary of the term.
+
+## Definition
+
+A short definition for a pharmacometrics audience. If another glossary term is needed (such as [Harness](harness.qmd)), link to it. Beyond the definition itself, already briefly explain why the concept matters. An analogy or a simplified breakdown (bullets) can help. 
+
+## In pharmacometrics
+
+Briefly explain why this concept is relevant to pharmacometric workflows, such as model development, dataset preparation, NONMEM/R/Python code, quality control, benchmarking, reproducibility, traceability, or human review.
+
+Concrete examples follow as subsections, each with a descriptive heading prefixed with "Example:".
+
+### Example: Descriptive heading 1
+
+A concrete example of the term in a pharmacometrics context, ideally with code snippets or diagrams where they clarify the mechanics.
+
+## Related terms
+
+[Harness](harness.qmd) · [MCP](mcp.qmd)
+
+## Further reading
+
+- Optional: links to docs, papers, blog posts. Curated, not exhaustive.
