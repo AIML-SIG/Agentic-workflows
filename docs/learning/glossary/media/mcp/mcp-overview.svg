@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748B"/>
+    </marker>
+  </defs>
+  <style>
+    .flow { stroke: #94A3B8; stroke-width: 1.6; fill: none; }
+    .lbl { font-size: 11.5px; fill: #0F172A; text-anchor: middle; font-weight: 600; }
+    .iconL { stroke: #1E40AF; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .iconR { stroke: #166534; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+
+  <rect x="0" y="0" width="900" height="420" fill="#ffffff"/>
+
+  <!-- ============ LEFT: AI APPLICATIONS ============ -->
+  <!-- chat interfaces -->
+  <rect x="116" y="78" width="48" height="48" rx="12" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+  <rect x="127" y="91" width="26" height="18" rx="5" class="iconL"/>
+  <path d="M132 109 l-3 7 l9 -7" class="iconL"/>
+  <circle cx="134" cy="100" r="1.4" fill="#1E40AF" stroke="none"/>
+  <circle cx="140" cy="100" r="1.4" fill="#1E40AF" stroke="none"/>
+  <circle cx="146" cy="100" r="1.4" fill="#1E40AF" stroke="none"/>
+  <text x="140" y="144" class="lbl">Chat interfaces</text>
+
+  <!-- IDEs & code editors -->
+  <rect x="116" y="178" width="48" height="48" rx="12" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+  <path d="M134 194 L126 202 L134 210" class="iconL"/>
+  <path d="M146 194 L154 202 L146 210" class="iconL"/>
+  <line x1="142.5" y1="193" x2="137.5" y2="211" class="iconL"/>
+  <text x="140" y="244" class="lbl">IDEs &amp; code editors</text>
+
+  <!-- agents -->
+  <rect x="116" y="278" width="48" height="48" rx="12" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+  <rect x="128" y="298" width="24" height="16" rx="5" class="iconL"/>
+  <circle cx="135" cy="306" r="1.8" fill="#1E40AF" stroke="none"/>
+  <circle cx="145" cy="306" r="1.8" fill="#1E40AF" stroke="none"/>
+  <line x1="140" y1="298" x2="140" y2="292" class="iconL"/>
+  <circle cx="140" cy="289.5" r="2.2" class="iconL"/>
+  <text x="140" y="344" class="lbl">Agents &amp; automations</text>
+
+  <text x="140" y="402" font-size="11" font-weight="600" fill="#1E40AF" text-anchor="middle" letter-spacing="0.5">AI APPLICATIONS</text>
+
+  <!-- ============ CENTER: MCP ============ -->
+  <rect x="360" y="150" width="180" height="120" rx="14" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.6"/>
+  <text x="450" y="205" font-size="21" font-weight="700" fill="#1E3A8A" text-anchor="middle">MCP</text>
+  <text x="450" y="227" font-size="11" fill="#334155" text-anchor="middle">one standardized protocol</text>
+  <text x="450" y="294" font-size="10" font-style="italic" fill="#94A3B8" text-anchor="middle">any AI application &#8596; any tool or data server</text>
+
+  <!-- ============ CONNECTIONS ============ -->
+  <path d="M172 102 C 255 102, 275 175, 356 175" class="flow" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+  <path d="M172 202 C 255 202, 275 210, 356 210" class="flow" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+  <path d="M172 302 C 255 302, 275 245, 356 245" class="flow" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+
+  <path d="M728 102 C 645 102, 625 175, 544 175" class="flow" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+  <path d="M728 202 C 645 202, 625 210, 544 210" class="flow" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+  <path d="M728 302 C 645 302, 625 245, 544 245" class="flow" marker-start="url(#ah2)" marker-end="url(#ah2)"/>
+
+  <!-- ============ RIGHT: TOOLS & DATA ============ -->
+  <!-- databases & files -->
+  <rect x="736" y="78" width="48" height="48" rx="12" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+  <ellipse cx="760" cy="93" rx="12" ry="4.5" class="iconR"/>
+  <path d="M748 93 L748 111 A 12 4.5 0 0 0 772 111 L772 93" class="iconR"/>
+  <path d="M748 102 A 12 4.5 0 0 0 772 102" class="iconR"/>
+  <text x="760" y="144" class="lbl">Databases &amp; files</text>
+
+  <!-- developer tools (git branch) -->
+  <rect x="736" y="178" width="48" height="48" rx="12" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+  <circle cx="753" cy="192" r="3.2" class="iconR"/>
+  <circle cx="753" cy="212" r="3.2" class="iconR"/>
+  <circle cx="768" cy="192" r="3.2" class="iconR"/>
+  <line x1="753" y1="195.2" x2="753" y2="208.8" class="iconR"/>
+  <path d="M768 195.2 C 768 203, 753 200, 753 206" class="iconR"/>
+  <text x="760" y="244" class="lbl">Developer tools</text>
+
+  <!-- web services & APIs (globe) -->
+  <rect x="736" y="278" width="48" height="48" rx="12" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+  <circle cx="760" cy="302" r="11" class="iconR"/>
+  <ellipse cx="760" cy="302" rx="5" ry="11" class="iconR"/>
+  <line x1="749" y1="302" x2="771" y2="302" class="iconR"/>
+  <text x="760" y="344" class="lbl">Web services &amp; APIs</text>
+
+  <text x="760" y="402" font-size="11" font-weight="600" fill="#166534" text-anchor="middle" letter-spacing="0.5">TOOLS &amp; DATA SOURCES</text>
+</svg>
