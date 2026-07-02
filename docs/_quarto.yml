@@ -1,0 +1,35 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Agentic Workflows in PMx"
+  page-navigation: true
+
+  navbar:
+    background: light
+    left:
+      - text: "Glossary"
+        href: learning/glossary/agent.qmd
+
+  sidebar:
+    - id: glossary
+      title: "Glossary"
+      style: floating
+      collapse-level: 2
+      search: true
+      contents:
+        - text: "Agent"
+          href: learning/glossary/agent.qmd
+        - text: "Harness"
+          href: learning/glossary/harness.qmd
+        - text: "MCP (Model Context Protocol)"
+          href: learning/glossary/mcp.qmd
+        - text: "Tools"
+          href: learning/glossary/tools.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-title: "On this page"
