@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 505" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <style>
+    .mono { font-family: "SF Mono", Consolas, Menlo, monospace; }
+    .arrow { stroke: #475569; stroke-width: 1.6; fill: none; }
+    .badge { fill: #ffffff; stroke: #475569; stroke-width: 1.3; }
+    .badgeNum { font-size: 10px; font-weight: 700; fill: #334155; text-anchor: middle; }
+  </style>
+
+  <!-- background -->
+  <rect x="0" y="0" width="960" height="505" fill="#ffffff"/>
+
+  <!-- title -->
+  <text x="30" y="36" font-size="16" font-weight="600" fill="#0F172A">Tool use via the Model Context Protocol (MCP)</text>
+  <text x="30" y="56" font-size="11.5" fill="#64748B">NONMEM example — circled numbers give the order of interactions</text>
+
+  <!-- ===================== USER ===================== -->
+  <rect x="25" y="200" width="110" height="90" rx="10" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
+  <circle cx="80" cy="229" r="9" fill="none" stroke="#475569" stroke-width="1.6"/>
+  <path d="M62 264 C62 250 70 244 80 244 C90 244 98 250 98 264" fill="none" stroke="#475569" stroke-width="1.6"/>
+  <text x="80" y="281" font-size="12.5" font-weight="600" fill="#0F172A" text-anchor="middle">User</text>
+
+  <!-- ===================== LLM APPLICATION (HOST) ===================== -->
+  <rect x="215" y="110" width="230" height="305" rx="12" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+  <text x="330" y="133" font-size="13" font-weight="600" fill="#1E40AF" text-anchor="middle">LLM application (host)</text>
+
+  <!-- LLM box -->
+  <rect x="235" y="150" width="190" height="70" rx="8" fill="#ffffff" stroke="#60A5FA" stroke-width="1.4"/>
+  <text x="330" y="181" font-size="14" font-weight="600" fill="#0F172A" text-anchor="middle">LLM</text>
+  <text x="330" y="200" font-size="10.5" fill="#64748B" text-anchor="middle">(any model / provider)</text>
+
+  <!-- internal exchange LLM <-> client -->
+  <line x1="268" y1="226" x2="268" y2="252" class="arrow" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  <text x="282" y="235" font-size="10" fill="#475569">&#8593; tool definitions &amp; results</text>
+  <text x="282" y="249" font-size="10" fill="#475569">&#8595; tool calls</text>
+
+  <!-- MCP client / harness box -->
+  <rect x="235" y="258" width="190" height="135" rx="8" fill="#ffffff" stroke="#60A5FA" stroke-width="1.4"/>
+  <text x="330" y="282" font-size="12.5" font-weight="600" fill="#0F172A" text-anchor="middle">MCP client / harness</text>
+  <text x="330" y="303" font-size="10" fill="#64748B" text-anchor="middle">speaks MCP with the server,</text>
+  <text x="330" y="317" font-size="10" fill="#64748B" text-anchor="middle">exposes its tools to the LLM</text>
+  <text x="330" y="337" font-size="10" font-style="italic" fill="#94A3B8" text-anchor="middle">(model-agnostic)</text>
+
+  <!-- ===================== USER <-> APPLICATION ARROWS ===================== -->
+  <text x="175" y="220" font-size="10.5" fill="#475569" text-anchor="middle">request</text>
+  <line x1="135" y1="232" x2="215" y2="232" class="arrow" marker-end="url(#ah)"/>
+  <circle cx="175" cy="232" r="8" class="badge"/>
+  <text x="175" y="235.5" class="badgeNum">1</text>
+
+  <line x1="215" y1="272" x2="135" y2="272" class="arrow" marker-end="url(#ah)"/>
+  <circle cx="175" cy="272" r="8" class="badge"/>
+  <text x="175" y="275.5" class="badgeNum">7</text>
+  <text x="175" y="292" font-size="10.5" fill="#475569" text-anchor="middle">answer</text>
+
+  <!-- ===================== CLIENT <-> SERVER ARROWS ===================== -->
+  <text x="535" y="181" font-size="10" font-style="italic" fill="#94A3B8" text-anchor="middle">JSON-RPC</text>
+  <text x="535" y="194" font-size="10" font-style="italic" fill="#94A3B8" text-anchor="middle">over stdio / HTTP</text>
+
+  <!-- 2: tools/list -->
+  <text x="535" y="258" font-size="11" fill="#0F172A" text-anchor="middle" class="mono">tools/list</text>
+  <line x1="445" y1="270" x2="625" y2="270" class="arrow" marker-end="url(#ah)"/>
+  <circle cx="535" cy="270" r="8" class="badge"/>
+  <text x="535" y="273.5" class="badgeNum">2</text>
+
+  <!-- 3: tool definitions -->
+  <text x="535" y="293" font-size="11" fill="#0F172A" text-anchor="middle">tool definitions</text>
+  <line x1="625" y1="305" x2="445" y2="305" class="arrow" marker-end="url(#ah)"/>
+  <circle cx="535" cy="305" r="8" class="badge"/>
+  <text x="535" y="308.5" class="badgeNum">3</text>
+  <text x="535" y="322" font-size="9.5" fill="#64748B" text-anchor="middle">name &#183; description &#183; input schema</text>
+
+  <!-- 4: tools/call -->
+  <text x="535" y="334" font-size="10.5" fill="#0F172A" text-anchor="middle" class="mono">tools/call (submit_run)</text>
+  <line x1="445" y1="346" x2="625" y2="346" class="arrow" marker-end="url(#ah)"/>
+  <circle cx="535" cy="346" r="8" class="badge"/>
+  <text x="535" y="349.5" class="badgeNum">4</text>
+  <text x="535" y="363" font-size="9.5" fill="#64748B" text-anchor="middle" class="mono">{ control_stream, dataset }</text>
+
+  <!-- 6: result -->
+  <text x="535" y="377" font-size="11" fill="#0F172A" text-anchor="middle">structured result</text>
+  <line x1="625" y1="389" x2="445" y2="389" class="arrow" marker-end="url(#ah)"/>
+  <circle cx="535" cy="389" r="8" class="badge"/>
+  <text x="535" y="392.5" class="badgeNum">6</text>
+  <text x="535" y="406" font-size="9.5" fill="#64748B" text-anchor="middle" class="mono">OFV = 1234.56</text>
+
+  <!-- ===================== MCP SERVER ===================== -->
+  <rect x="625" y="110" width="305" height="360" rx="12" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+  <text x="777" y="133" font-size="13" font-weight="600" fill="#166534" text-anchor="middle">MCP server</text>
+
+  <!-- tool interface -->
+  <rect x="643" y="150" width="269" height="212" rx="8" fill="#ffffff" stroke="#4ADE80" stroke-width="1.4"/>
+  <text x="660" y="174" font-size="12.5" font-weight="600" fill="#0F172A">Tool interface</text>
+
+  <text x="660" y="201" font-size="11.5" fill="#0F172A" class="mono">submit_run</text>
+  <text x="660" y="215" font-size="10" fill="#64748B">launch a NONMEM estimation</text>
+
+  <text x="660" y="241" font-size="11.5" fill="#0F172A" class="mono">get_run_status</text>
+  <text x="660" y="255" font-size="10" fill="#64748B">pending &#183; running &#183; completed</text>
+
+  <text x="660" y="281" font-size="11.5" fill="#0F172A" class="mono">get_results</text>
+  <text x="660" y="295" font-size="10" fill="#64748B">objective function value of a run</text>
+
+  <text x="660" y="331" font-size="9.5" font-style="italic" fill="#94A3B8">each advertised with a description and input schema</text>
+
+  <!-- 5: internal execution -->
+  <line x1="735" y1="362" x2="735" y2="400" class="arrow" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  <circle cx="735" cy="381" r="8" class="badge"/>
+  <text x="735" y="384.5" class="badgeNum">5</text>
+  <text x="752" y="385" font-size="10" fill="#475569">execute &amp; collect results</text>
+
+  <!-- execution environment -->
+  <rect x="643" y="400" width="269" height="55" rx="8" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.4"/>
+  <text x="777" y="423" font-size="12" font-weight="600" fill="#0F172A" text-anchor="middle">NONMEM execution environment</text>
+  <text x="777" y="440" font-size="9.5" fill="#64748B" text-anchor="middle">runs estimations on sanctioned datasets</text>
+
+  <!-- caption -->
+  <text x="480" y="494" font-size="10.5" fill="#64748B" text-anchor="middle">Steps 2&#8211;3 (discovery &amp; description) happen in a single exchange when the client connects &#8212; steps 4&#8211;6 repeat for every tool call.</text>
+</svg>
