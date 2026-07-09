@@ -117,7 +117,7 @@ All overridable by environment variable:
 
 | Variable         | Default                                   | Purpose                                        |
 |------------------|-------------------------------------------|------------------------------------------------|
-| `AGENT_CMD`      | `claude -p --verbose --output-format stream-json --dangerously-skip-permissions` | Harness command prefix; the prompt is appended as the final argument. The skip-permissions flag is required for headless runs (no human to answer prompts) — see the safety note. |
+| `AGENT_CMD`      | `claude -p --verbose --output-format stream-json --dangerously-skip-permissions` | Harness command prefix; the prompt is appended as the final argument. The skip-permissions flag is required for headless runs (no human to answer prompts) — see the safety note. Swappable (see *Swap harnesses* below). |
 | `TASK_LIBRARY`   | `./ai_docs/task_library.json`             | Full task library, copied into a fresh workspace as `tasks.json`. |
 | `EXAMPLES_DIR`   | `./examples`                              | Domain example library the agent loads by task category. |
 | `MAX_ITERATIONS` | `50`                                      | Hard cap on agent spawns.                      |
@@ -129,7 +129,21 @@ Swap harnesses without touching the loop:
 ```bash
 # Drive Codex instead of Claude Code
 AGENT_CMD='codex exec' ./run.sh my_project
+
+# Drive Pi (https://pi.dev) via OpenRouter -- a built-in Pi provider, no
+# custom provider config needed beyond an API key.
+export OPENROUTER_API_KEY=sk-or-...
+AGENT_CMD='pi -p --provider openrouter --model <paid-model>' ./run.sh my_project
 ```
+
+No skip-permissions flag needed for Pi: it runs tools unrestricted by default
+and `-p` mode has no confirmation prompt to skip. Same blast radius as
+Claude's skip-permissions mode, though, so run it in a sandbox you trust.
+
+Use a paid model. Free-tier OpenRouter models proved unreliable in testing —
+context-limit errors, garbled tool-call arguments on long paths, and
+persistent rate limits — fine for confirming the harness is wired up, not for
+an actual run.
 
 ## Writing your own task library
 
