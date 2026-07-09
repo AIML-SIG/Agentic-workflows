@@ -1,0 +1,45 @@
+{
+  "name": "Agentic Workflows (R + Python + Node)",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "containerEnv": {
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8"
+  },
+  "remoteEnv": {
+    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}",
+    "OPENROUTER_API_KEY": "${localEnv:OPENROUTER_API_KEY}"
+  },
+  "features": {
+    "ghcr.io/rocker-org/devcontainer-features/r-apt:0": {
+      "vscodeRSupport": "full",
+      "installBspm": true,
+      "installRadian": false,
+      "installDevTools": false,
+      "installRMarkdown": false,
+      "installVscDebugger": false,
+      "useTesting": false
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "REditorSupport.r",
+        "ms-python.python"
+      ],
+      "settings": {
+        "r.plot.useHttpgd": true,
+        "[r]": {
+          "editor.wordSeparators": "`~!@#%$^&*()-=+[{]}\\|;:'\",<>/?"
+        },
+        "r.lsp.diagnostics": false
+      }
+    }
+  }
+}

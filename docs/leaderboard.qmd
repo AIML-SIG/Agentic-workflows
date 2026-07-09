@@ -1,0 +1,25 @@
+---
+title: "PMbench Leaderboard"
+sidebar: false
+---
+
+Aggregated results from `tools/pharmbench`. Each row is one (scenario, pharmbench revision, tool, tool revision, harness, model) configuration; repeated attempts of the identical configuration are grouped together, with mean/SD showing the spread across attempts rather than a single run standing in for the whole configuration. A changed scorer/truth revision, task-library revision, or model gets its own row rather than being silently averaged with older results.
+
+Generated from `0` recorded run(s) across `0` configuration(s). Regenerate with `python3 tools/pharmbench/generate_leaderboard.py` after adding new results to `tools/pharmbench/results/`.
+
+| Scenario | Tool | Harness | Model | N | Overall (mean±sd) | Min–Max |
+|---|---|---|---|---|---|---|
+
+## Configuration detail
+
+`tool_sha` / `pharmbench_sha` are the git revisions of the workflow and of pharmbench itself at run time (short form). Both live in the same monorepo today, so they coincide unless a workflow becomes a separate repo in the future.
+
+| Scenario | Tool | tool_sha | pharmbench_sha | Harness | Model | N |
+|---|---|---|---|---|---|---|
+
+## Individual runs
+
+Raw records live in [`tools/pharmbench/results/`](https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pharmbench/results) -- one folder per run (`scorecard.yaml` + `submission.yaml` written by `score.R --record`, plus a `slide.html` rendered by this script). No raw agent log is archived (see `score.R`), so a slide's score breakdown and trap ledger are complete but it has no wall-clock/cost timeline.
+
+| Timestamp | Scenario | Tool | Harness | Model | Overall | Run |
+|---|---|---|---|---|---|---|

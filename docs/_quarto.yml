@@ -11,6 +11,8 @@ website:
     left:
       - text: "Glossary"
         href: learning/glossary/agent.qmd
+      - text: "Leaderboard"
+        href: leaderboard.qmd
 
   sidebar:
     - id: glossary

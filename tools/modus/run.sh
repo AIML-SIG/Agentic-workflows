@@ -37,8 +37,11 @@ TASK_LIBRARY="${TASK_LIBRARY:-${AI_DOCS_DIR}/task_library.json}"
 # The agent harness, as a command prefix. The prompt text is appended as the
 # final argument at call time (passed directly as argv, never re-parsed by a
 # shell -- so prompts may safely contain quotes, backticks, etc.).
-# Default targets Claude Code; swap for codex, etc. without touching the loop.
+# Default targets Claude Code; swap for codex, pi, etc. without touching the loop.
 #   Codex example: AGENT_CMD='codex exec'
+#   Pi (via OpenRouter) example: AGENT_CMD='pi -p --provider openrouter --model <paid-model>'
+#     Requires OPENROUTER_API_KEY. Use a paid model -- see modus/README.md for
+#     why the free tier isn't reliable here.
 #
 # --dangerously-skip-permissions is required, not optional, for this loop: each
 # agent runs headless (claude -p) with no human to answer permission prompts, so
@@ -53,6 +56,23 @@ AGENT_CMD="${AGENT_CMD:-claude -p --verbose --output-format stream-json --danger
 LOG_FILE="${PROJECT_DIR}/run_$(date +%Y%m%d_%H%M%S).log"
 RUNNING=true
 RUN_LABEL="${RUN_LABEL:-modus_run_$(date +%Y%m%d_%H%M%S)}"
+
+# run_meta.yaml: facts this script knows authoritatively (which harness, which
+# modus/repo revision) for score.R --record to pick up, rather than trusting
+# the agent's own provenance block to self-report them correctly. Lands in
+# workspace/, so it travels with everything else through archive_workspace().
+TOOL_SHA="$(git -C "$SCRIPT_DIR" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)"
+HARNESS="$(awk '{print $1}' <<< "$AGENT_CMD")"
+# Pull --model straight off AGENT_CMD when present -- more trustworthy than
+# the agent's own provenance.model self-report.
+MODEL_OVERRIDE="$(grep -oE -- '--model[= ]+[^ ]+' <<< "$AGENT_CMD" | sed -E 's/--model[= ]+//' || true)"
+mkdir -p "${PROJECT_DIR}/workspace"
+cat > "${PROJECT_DIR}/workspace/run_meta.yaml" <<EOF
+harness: "${HARNESS}"
+tool_sha: "${TOOL_SHA}"
+model: "${MODEL_OVERRIDE}"
+agent_cmd: "$(printf '%s' "$AGENT_CMD" | sed 's/"/\\"/g')"
+EOF
 
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
