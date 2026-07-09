@@ -23,7 +23,7 @@ items:
     tol: 0.20     # relative, per matched parameter
     aliases:
       CL: [cl, clearance]
-      Vc: [vc, v1, v2c, vcentral, vc1, central]
+      Vc: [vc, v, v1, v2c, vcentral, vc1, central]
       Q:  [q, cld, q2, intercompartmental_cl]
       Vp: [vp, v2, vperiph, peripheral]
     weight: 1
@@ -55,7 +55,7 @@ items:
     tol: 0.20
     aliases:
       CL: [cl, clearance]
-      Vc: [vc, v1, vcentral, central]
+      Vc: [vc, v, v1, vcentral, central]
       WT: [wt, weight, bw, body_weight]
       ALB: [alb, albumin]
       CRCL: [crcl, clcr, creatinine_clearance]
