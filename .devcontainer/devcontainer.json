@@ -24,6 +24,9 @@
     },
     "ghcr.io/devcontainers/features/node:1": {
       "version": "lts"
+    },
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
     }
   },
   "postCreateCommand": "bash .devcontainer/postCreate.sh",
