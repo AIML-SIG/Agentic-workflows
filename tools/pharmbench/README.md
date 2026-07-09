@@ -11,8 +11,6 @@ when swapped, the model and harness behind it.
 A trap is a real-world pathology plus a recipe for faking it in synthetic data
 plus the correct handling. Contributing a trap requires no patient data.
 
-`plan.md` is the source of truth for the build.
-
 ## v0 scenario
 
 One scenario, `mab-poppk-v0`: a generic IgG1 mAb, two-compartment, linear
@@ -40,7 +38,6 @@ blinding is **physical**: held-out files are never copied into that directory.
 ## Layout
 
 ```
-plan.md                              # source of truth
 README.md
 score.R                              # scenario-agnostic scorer (--truth flag)
 scenarios/
@@ -166,6 +163,36 @@ The path in step 3 reflects how Modus archives a finished run: the live
 submission lands at `<project-dir>/<RUN_LABEL>_workspace/submission/submission.yaml`.
 A different workflow will place its submission elsewhere — point `score.R` at
 wherever it actually wrote.
+
+## Recording a run
+
+A run worth keeping goes through `score.R` with `--record` instead of running
+it bare:
+
+```sh
+Rscript score.R --record --truth scenarios/mab-poppk-v0/evals/truth.yaml \
+  /tmp/pmbench-run/mab-poppk-v0_workspace/submission/submission.yaml
+```
+
+This writes `results/<slug>/{scorecard.yaml,submission.yaml}` — small,
+harness-agnostic files. Deliberately not archived: the raw agent log. Sizes
+run from a few KB to hundreds of MB depending on harness/model, and each
+harness streams a different event shape (`claude`'s `stream-json` vs. `pi`'s
+own format, etc.), so parsing them for drill-down would mean a bespoke
+extractor per harness rather than one general tool.
+
+Then regenerate the leaderboard, which also (re)renders every run's
+drill-down slide (score breakdown + trap ledger, derived from the scorecard,
+submission, and the scenario's `truth.yaml` — no wall-clock/cost timeline,
+since that needs the log this deliberately doesn't keep):
+
+```sh
+python3 generate_leaderboard.py
+```
+
+Commit the new `results/<slug>/` folder together with the regenerated
+`docs/leaderboard.qmd`. `--record` is opt-in specifically so ad hoc scoring
+(the smoke test above) doesn't silently create a leaderboard entry.
 
 ## Scoring
 

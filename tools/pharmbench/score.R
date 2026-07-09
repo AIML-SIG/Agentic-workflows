@@ -24,34 +24,60 @@ suppressPackageStartupMessages(library(yaml))
 argv <- commandArgs(trailingOnly = TRUE)
 truth_path <- NULL
 sub_path   <- NULL
+record     <- FALSE
 i <- 1
 while (i <= length(argv)) {
   if (argv[[i]] == "--truth") {
     truth_path <- argv[[i + 1]]
     i <- i + 2
+  } else if (argv[[i]] == "--record") {
+    record <- TRUE
+    i <- i + 1
   } else {
     sub_path <- argv[[i]]
     i <- i + 1
   }
 }
 if (is.null(sub_path)) {
-  stop("usage: Rscript score.R [--truth path/to/truth.yaml] path/to/submission.yaml")
+  stop("usage: Rscript score.R [--truth path/to/truth.yaml] [--record] path/to/submission.yaml")
 }
+
+this_file <- sub("^--file=", "",
+                 grep("^--file=", commandArgs(FALSE), value = TRUE))
+script_dir <- if (length(this_file)) dirname(normalizePath(this_file)) else "."
 
 # default truth: alongside this script if --truth not given (back-compat)
 if (is.null(truth_path)) {
-  this_file <- sub("^--file=", "",
-                   grep("^--file=", commandArgs(FALSE), value = TRUE))
-  script_dir <- if (length(this_file)) dirname(normalizePath(this_file)) else "."
   truth_path <- file.path(script_dir, "truth.yaml")
 }
 if (!file.exists(truth_path)) {
   stop(sprintf("truth file not found: %s (pass it with --truth)", truth_path))
 }
 
+# pharmbench's own git SHA -- distinguishes scorer/truth revisions under the
+# same scenario_id (e.g. an alias-list or trap fix), independent of the
+# scenario's own "-vN" versioning.
+pharmbench_sha <- tryCatch({
+  s <- suppressWarnings(system2("git", c("-C", shQuote(script_dir), "rev-parse", "--short=12", "HEAD"),
+                                 stdout = TRUE, stderr = FALSE))
+  if (length(s) == 1 && nzchar(s)) s else NA_character_
+}, error = function(e) NA_character_)
+
 truth <- yaml::read_yaml(truth_path)
 sub   <- yaml::read_yaml(sub_path)
 answers <- sub$answers
+
+# run_meta.yaml sidecar: harness/tool_sha/agent_cmd as written by the wrapper
+# script that actually invoked the agent (baseline.sh / modus/run.sh) -- these
+# are facts the orchestrator knows authoritatively, not something to trust the
+# agent's own provenance block to self-report correctly. Conventionally sits
+# one level up from submission.yaml (i.e. next to the submission/ directory);
+# absent for older runs or hand-authored submissions, which is fine.
+run_meta <- NULL
+for (candidate in c(file.path(dirname(dirname(normalizePath(sub_path))), "run_meta.yaml"),
+                     file.path(dirname(normalizePath(sub_path)), "run_meta.yaml"))) {
+  if (file.exists(candidate)) { run_meta <- yaml::read_yaml(candidate); break }
+}
 
 ## ---- per-scorer helpers ------------------------------------------------
 score_numeric <- function(submitted, expected, tol) {
@@ -215,9 +241,25 @@ if (length(unanswered) == 0) {
 }
 
 ## ---- assemble scorecard ------------------------------------------------
+# Merge run_meta over the agent's self-reported provenance: harness and
+# tool_sha are facts the wrapper script knows authoritatively, so they take
+# precedence over (or fill gaps in) what the agent wrote.
+provenance <- sub$provenance
+provenance$pharmbench_sha <- pharmbench_sha
+if (!is.null(run_meta)) {
+  if (!is.null(run_meta$harness))   provenance$harness   <- run_meta$harness
+  if (!is.null(run_meta$tool_sha))  provenance$tool_sha   <- run_meta$tool_sha
+  if (!is.null(run_meta$agent_cmd)) provenance$agent_cmd  <- run_meta$agent_cmd
+  # model, when the wrapper script can pull it straight off AGENT_CMD's
+  # --model flag, is likewise more trustworthy than the agent's own
+  # self-report -- e.g. a GLM-5.2 run once reported "nlmixr2 (FOCEI)" (the
+  # estimation method) as its "model", and an Opus run left it blank.
+  if (!is.null(run_meta$model) && nzchar(run_meta$model)) provenance$model <- run_meta$model
+}
+
 scorecard <- list(
   dataset = truth$meta$dataset,
-  provenance = sub$provenance,
+  provenance = provenance,
   items = lapply(item_scores, function(x)
     list(score = x$score, scorer = x$scorer, answered = x$answered,
          pmx_area = x$pmx_area, weight = x$weight)),
@@ -230,10 +272,12 @@ scorecard <- list(
 ## ---- print -------------------------------------------------------------
 cat("===== PMbench scorecard =====\n")
 cat("dataset:", scorecard$dataset, "\n")
-cat(sprintf("tool: %s @ %s   model: %s   run: %s\n",
-            sub$provenance$tool, sub$provenance$tool_sha,
-            sub$provenance$model, sub$provenance$run_utc))
-sel <- sub$provenance$analysis_steps
+cat(sprintf("tool: %s @ %s   harness: %s   model: %s   run: %s\n",
+            provenance$tool, provenance$tool_sha,
+            if (is.null(provenance$harness)) "unknown" else provenance$harness,
+            provenance$model, provenance$run_utc))
+cat("pharmbench_sha:", if (is.na(pharmbench_sha)) "unknown" else pharmbench_sha, "\n")
+sel <- provenance$analysis_steps
 if (!is.null(sel)) {
   cat("analysis_steps:", paste(unlist(sel), collapse = ", "), "\n")
 }
@@ -257,3 +301,41 @@ for (t in traps_note) cat("  -", t, "\n")
 out_path <- file.path(dirname(normalizePath(sub_path)), "scorecard.yaml")
 yaml::write_yaml(scorecard, out_path)
 cat("\nscorecard written to", out_path, "\n")
+
+## ---- record (opt-in) ----------------------------------------------------
+# Leaderboard entry: a slugged, timestamped run folder under results/, holding
+# the scorecard and a copy of the submission (small, harness-agnostic -- raw
+# agent logs are deliberately NOT archived here: sizes range from a few KB to
+# hundreds of MB, and parsing them for drill-down would mean a bespoke
+# extractor per harness's log format). Off by default -- ad hoc/dev/smoke-test
+# scoring (e.g. the documented submission.example.yaml check) shouldn't
+# silently create an entry; pass --record for a run meant to count.
+if (record) {
+  slug <- function(x) {
+    if (is.null(x) || is.na(x) || !nzchar(x)) return("unknown")
+    x <- tolower(as.character(x))
+    x <- gsub("[^a-z0-9]+", "-", x)
+    gsub("^-+|-+$", "", x)
+  }
+  run_ts <- provenance$run_utc
+  ts_slug <- if (!is.null(run_ts) && nzchar(run_ts)) {
+    gsub("[^0-9TZ]", "", run_ts)
+  } else {
+    format(Sys.time(), "%Y%m%dT%H%M%SZ", tz = "UTC")
+  }
+  run_id <- substr(paste0(as.hexmode(sample(16^6, 1))), 1, 6)
+
+  results_dir <- file.path(script_dir, "results")
+  run_slug <- sprintf("%s__%s__%s__%s__%s__%s",
+                       slug(scorecard$dataset), slug(provenance$tool),
+                       slug(provenance$harness), slug(provenance$model),
+                       ts_slug, run_id)
+  run_dir <- file.path(results_dir, run_slug)
+  dir.create(run_dir, showWarnings = FALSE, recursive = TRUE)
+
+  yaml::write_yaml(scorecard, file.path(run_dir, "scorecard.yaml"))
+  file.copy(sub_path, file.path(run_dir, "submission.yaml"), overwrite = TRUE)
+  cat("recorded to", run_dir, "\n")
+  cat("  regenerate the leaderboard (also renders this run's drill-down slide):\n")
+  cat("  python3 generate_leaderboard.py\n")
+}

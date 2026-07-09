@@ -54,6 +54,23 @@ mkdir -p "$SUBMISSION_DIR"
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"; }
 
+# run_meta.yaml: facts this script knows authoritatively (which harness, which
+# pharmbench revision) for score.R --record to pick up, rather than trusting
+# the agent's own provenance block to self-report them correctly.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TOOL_SHA="$(git -C "$SCRIPT_DIR" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)"
+HARNESS="$(awk '{print $1}' <<< "$AGENT_CMD")"
+# Pull --model straight off AGENT_CMD when present -- more trustworthy than
+# the agent's own provenance.model self-report (seen in practice reporting
+# an estimation method, or left blank, instead of the LLM actually used).
+MODEL_OVERRIDE="$(grep -oE -- '--model[= ]+[^ ]+' <<< "$AGENT_CMD" | sed -E 's/--model[= ]+//' || true)"
+cat > "${WORKSPACE}/run_meta.yaml" <<EOF
+harness: "${HARNESS}"
+tool_sha: "${TOOL_SHA}"
+model: "${MODEL_OVERRIDE}"
+agent_cmd: "$(printf '%s' "$AGENT_CMD" | sed 's/"/\\"/g')"
+EOF
+
 # Barebones prompt: the contract and nothing more -- no pharmacometric guidance,
 # no task decomposition, no examples. Same read-only inputs and same one
 # deliverable every scored workflow gets.
@@ -65,7 +82,11 @@ Carry out that analysis with any tools you like (R, Python, ...), working under
 ${WORKSPACE}/. Then write the filled submission to EXACTLY ${SUBMISSION}, in the
 template's shape and as the SAP defines each key. Report only what your analysis
 supports -- leave an item null rather than guessing -- and set provenance.tool to
-'baseline'. Do not traverse above ${ABS_PROJECT}."
+'baseline'. Do not traverse above ${ABS_PROJECT}.
+
+This is a single, non-interactive session: it ends the moment you stop taking
+actions, and nothing resumes it afterward. If you background any long-running
+work, keep actively waiting on it until it finishes before you stop."
 
 log "PMbench baseline comparator (single agent call, no task library)"
 log "Project directory: $ABS_PROJECT"
