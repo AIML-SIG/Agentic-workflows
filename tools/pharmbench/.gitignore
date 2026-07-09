@@ -5,3 +5,9 @@
 # excluded from this rule below.
 scorecard.yaml
 !results/*/scorecard.yaml
+
+# Raw agent logs/transcripts kept for local drill-down only -- deliberately
+# not archived in git (see score.R and generate_leaderboard.py): sizes run
+# from KBs to hundreds of MBs and every harness streams a different event
+# shape. Persisted on disk next to the run they belong to, never committed.
+results/*/raw_log/
