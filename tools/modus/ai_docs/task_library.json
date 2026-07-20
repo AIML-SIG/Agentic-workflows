@@ -96,7 +96,7 @@
       "If a result cannot be reconciled, write ESCALATE.txt instead of signing off",
       "The sign-off must state what was checked and what was not"
     ],
-    "depends_on": ["data_qc", "structural_model", "covariate_analysis"],
+    "depends_on": ["data_qc", "structural_model", "covariate_analysis", "pkpd_model", "dose_recommendation"],
     "passes": false
   },
   {
@@ -124,7 +124,7 @@
       "Requires a measured pharmacodynamic or biomarker endpoint linked to exposure",
       "Fix individual PK parameters from the final PK model and estimate the PD parameters"
     ],
-    "depends_on": ["study_context"],
+    "depends_on": ["study_context", "structural_model"],
     "passes": false
   },
   {
@@ -137,7 +137,7 @@
       "Requires a defined PK/PD or exposure-response target to simulate against",
       "Simulate a virtual population matching the study covariate distributions and evaluate candidate doses"
     ],
-    "depends_on": ["structural_model"],
+    "depends_on": ["pkpd_model", "covariate_analysis"],
     "passes": false
   }
 ]
