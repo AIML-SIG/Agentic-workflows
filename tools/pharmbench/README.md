@@ -198,7 +198,11 @@ Commit the new `results/<slug>/` folder together with the regenerated
 
 Per item, in [0, 1]:
 
-- **numeric**: `relErr = |submitted − expected| / |expected|`; `score = max(0, 1 − relErr / tol)`
+- **numeric**: `relErr = |submitted − expected| / |expected|`; `score = exp(−relErr / tol)`
+  — 1 at zero error, ~0.37 at exactly 1× tol, decaying smoothly toward 0 beyond.
+  A reported-but-off value never hits a hard floor the way an unanswered item
+  does (see `unanswered` below). When `expected == 0`, `tol` is applied as an
+  absolute tolerance (`relErr = |submitted|`), since relative error is undefined.
 - **categorical**: 1 if equal, else 0
 - **set**: F1 of submitted vs expected. Both empty → 1; empty submission vs
   nonempty expected → 0. Decoys are absent from `expected`, so including one
