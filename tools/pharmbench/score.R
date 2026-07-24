@@ -5,7 +5,10 @@
 # scorecard.yaml next to the submission.
 #
 # Per-item scoring:
-#   numeric     : relErr = |sub - exp| / |exp|; score = max(0, 1 - relErr / tol)
+#   numeric     : relErr = |sub - exp| / |exp|; score = exp(-relErr / tol)
+#                 (1 at zero error, ~0.37 at exactly 1x tol, decays smoothly
+#                 toward 0 beyond -- a reported-but-off value never hits a hard
+#                 floor the way an unanswered item does; see `missing` below)
 #   categorical : 1 if sub == exp else 0
 #   set         : precision/recall of sub vs expected, F1 = 2PR/(P+R).
 #                 both empty -> 1; sub empty vs nonempty expected -> 0.
@@ -67,11 +70,13 @@ truth <- yaml::read_yaml(truth_path)
 sub   <- yaml::read_yaml(sub_path)
 answers <- sub$answers
 
-# run_meta.yaml sidecar: harness/tool_sha/agent_cmd as written by the wrapper
-# script that actually invoked the agent (baseline.sh / modus/run.sh) -- these
-# are facts the orchestrator knows authoritatively, not something to trust the
-# agent's own provenance block to self-report correctly. Conventionally sits
-# one level up from submission.yaml (i.e. next to the submission/ directory);
+# run_meta.yaml sidecar: harness/tool_sha/agent_cmd/cost_usd/duration_s as
+# written by the wrapper script that actually invoked the agent (baseline.sh /
+# modus/run.sh)
+# -- these are facts the orchestrator knows authoritatively, not something to
+# trust the agent's own provenance block to self-report correctly.
+# Conventionally sits one level up from submission.yaml (i.e. next to the
+# submission/ directory);
 # absent for older runs or hand-authored submissions, which is fine.
 run_meta <- NULL
 for (candidate in c(file.path(dirname(dirname(normalizePath(sub_path))), "run_meta.yaml"),
@@ -84,7 +89,7 @@ score_numeric <- function(submitted, expected, tol) {
   if (is.null(submitted)) return(0)
   # guard expected == 0: relative error is undefined, so treat tol as absolute.
   relErr <- if (expected == 0) abs(submitted) else abs(submitted - expected) / abs(expected)
-  max(0, 1 - relErr / tol)
+  exp(-relErr / tol)
 }
 
 score_categorical <- function(submitted, expected) {
@@ -255,6 +260,15 @@ if (!is.null(run_meta)) {
   # self-report -- e.g. a GLM-5.2 run once reported "nlmixr2 (FOCEI)" (the
   # estimation method) as its "model", and an Opus run left it blank.
   if (!is.null(run_meta$model) && nzchar(run_meta$model)) provenance$model <- run_meta$model
+  # cost_usd: computed by the wrapper script from the harness's own log
+  # (claude's total_cost_usd, or OpenRouter's per-generation-id cost for pi)
+  # after the run finishes -- absent for harnesses (e.g. codex) that expose
+  # neither, rather than guessed.
+  if (!is.null(run_meta$cost_usd) && nzchar(run_meta$cost_usd)) provenance$cost_usd <- run_meta$cost_usd
+  # duration_s: wall-clock seconds for the whole run, timed by the wrapper
+  # script itself (start of the single agent call for baseline.sh, start of
+  # the whole iteration loop for modus/run.sh) -- harness-agnostic.
+  if (!is.null(run_meta$duration_s) && nzchar(run_meta$duration_s)) provenance$duration_s <- run_meta$duration_s
 }
 
 scorecard <- list(
