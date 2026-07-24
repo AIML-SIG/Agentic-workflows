@@ -9,9 +9,8 @@ To bring together a community of pharmacometricians to discover, evaluate, and p
 ## Objectives
 
 - **Build community and shared learning.** Bring together pharmacometricians interested in agentic AI — unify terminology, lower the barrier to entry, and learn in the open.
-- **Discover, evaluate, and harmonize community tools.** Curate the community's best agentic tools (e.g. Modus, PMxAgent) into one open, readable stack the group can reuse and grow.
-- **Build a shared evaluation framework.** Develop shared benchmarks, datasets, and tasks that separate real workflow value from impressive demos.
-- **Make workflows trustworthy and regulatory-ready.** Establish the QC, traceability, and human-in-the-loop practices needed to trust agent output, and translate them into GxP guardrails.
+- **Discover and harmonize community tools.** Curate the community's best agentic tools (e.g. Modus, PMxAgent) into one open, readable stack the group can reuse and grow.
+- **Evaluate and build trust.** Develop shared benchmarks, datasets, and tasks that separate real workflow value from impressive demos, and establish the QC, traceability, and human-in-the-loop practices needed to trust agent output — translating them into GxP guardrails.
 
 
 ## Join us
