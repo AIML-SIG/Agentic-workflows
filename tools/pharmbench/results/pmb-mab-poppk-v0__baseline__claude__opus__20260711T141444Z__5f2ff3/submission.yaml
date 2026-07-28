@@ -1,0 +1,45 @@
+# submission.yaml — PMB-MAB-01 population PK analysis.
+# Values are typical (population) estimates of the final model at a 70 kg
+# reference weight, in the model's own CL/V parameterization. Units per sap.md
+# Appendix A: clearances in L/day, volumes in L.
+
+provenance:
+  tool: baseline
+  tool_sha: "fb40b6033115"
+  model: "opus"
+  run_utc: "2026-07-11T14:14:44Z"
+  analysis_steps:
+    - "EDA: dataset QC, dose-proportionality check (dose-normalized profiles superimpose -> linear PK)"
+    - "Data-quality screen: robust within-day z-scores flagged 3 DAY-7 spikes above end-of-infusion Cmax"
+    - "Structural model selection: 1-cmt vs 2-cmt (FOCEI); 2-cmt strongly preferred (dOBJF ~ -1934)"
+    - "BLQ handling: M3 likelihood-based left-censoring at LLOQ 0.1 mg/L; predose BLQ samples dropped"
+    - "Covariate screening: EBE-eta regression + structural forward addition (linCmt analytic solution)"
+    - "Isolated WT (allometric) as the genuine effect on CL and Vc; ALB effect spurious via WT correlation; CRCL not supported"
+    - "Final FOCEI fit with covariance step; GOF via CWRES"
+
+answers:
+  structural_ncmt: 2
+
+  # Two-compartment linear disposition (CL/V parameterization), at 70 kg.
+  disposition_params:
+    CL: 0.196    # L/day  (clearance)
+    Vc: 2.977    # L       (central volume)
+    Q: 0.605     # L/day  (intercompartmental clearance)
+    Vp: 2.974    # L       (peripheral volume)
+
+  # Residual error: proportional only (additive term not supported).
+  error_model:
+    prop: 0.150  # proportional fraction (SD)
+
+  # Supported covariate effects, by disposition parameter. Body weight enters
+  # allometrically (power model, WT/70) on CL and Vc; exponents estimated, not
+  # fixed. ALB and CRCL were not supported once WT was accounted for.
+  cov_effects:
+    CL:
+      WT: 0.791   # power exponent on (WT/70), CI ~0.48-1.10 (includes 0.75)
+    Vc:
+      WT: 1.039   # power exponent on (WT/70), CI ~0.78-1.30 (includes 1.0)
+
+  # Data-quality outliers: DAY-7 records that exceed each subject's own
+  # end-of-infusion Cmax and break the otherwise monotonic decline (ID 5, 50, 95).
+  outlier_records: ["62", "692", "1322"]

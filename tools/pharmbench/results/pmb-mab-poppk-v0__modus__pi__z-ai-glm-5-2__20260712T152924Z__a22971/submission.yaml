@@ -1,0 +1,46 @@
+# submission.yaml — machine-readable answer extraction for PMB-MAB-01.
+# Filled from the modus workflow outputs (review-signed-off values, re-derived
+# from the final covariate-model fit object). Reportable values are at a
+# 70 kg reference weight unless noted.
+
+provenance:
+  tool: modus
+  tool_sha: "abdc99d3e242"
+  model: "z-ai/glm-5.2"
+  run_utc: "2026-07-12T15:29:24Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+    - submission
+
+answers:
+  structural_ncmt: 2
+
+  # Final covariate model (2-cmt + WT on CL + WT on V1), population-typical
+  # values at 70 kg reference weight. Units per sap.md Appendix A.
+  disposition_params:
+    CL: 0.1958      # L/day, at 70 kg
+    V1: 2.9764      # L, at 70 kg
+    Q: 0.6062       # L/day, typical (no covariate on Q)
+    V2: 2.9709      # L, typical (no covariate on V2)
+
+  # Combined additive + proportional residual error.
+  error_model:
+    prop: 0.1499    # proportional fraction
+    add: 0.01212    # additive, mg/L
+
+  # Covariate effects retained in the final model, as power exponents.
+  # WT on CL (0.79, allometric ~0.75) and WT on V1 (1.04, ~1.0) supported.
+  # ALB rejected (confounded with WT, collapses on top of WT); CRCL rejected
+  # (null effect, consistent with mAb not renally cleared).
+  cov_effects:
+    CL:
+      WT: 0.7925
+    V1:
+      WT: 1.0381
+
+  outlier_records: ["62", "692", "1322"]

@@ -1,0 +1,58 @@
+dataset: pmb-mab-poppk-v0
+provenance:
+  tool: modus
+  tool_sha: 00d29843b46e
+  model: claude-sonnet-5
+  run_utc: '2026-07-07T23:17:18Z'
+  analysis_steps:
+  - scope
+  - study_context
+  - data_qc
+  - structural_model
+  - covariate_analysis
+  - review
+  - submission
+  pharmbench_sha: 51d01acbfc97
+  harness: claude
+  agent_cmd: claude -p --model sonnet --verbose --output-format stream-json --dangerously-skip-permissions
+  cost_usd: '11.214479'
+  duration_s: '3252'
+items:
+  structural_ncmt:
+    score: 1.0
+    scorer: categorical
+    answered: true
+    pmx_area: structural
+    weight: 1
+  disposition_params:
+    score: 0.9358
+    scorer: map
+    answered: true
+    pmx_area: estimation
+    weight: 1
+  error_model:
+    score: 0.4703
+    scorer: map
+    answered: true
+    pmx_area: estimation
+    weight: 1
+  cov_effects:
+    score: 0.4732
+    scorer: map_nested
+    answered: true
+    pmx_area: covariate-analysis
+    weight: 1
+  outlier_records:
+    score: 1.0
+    scorer: set
+    answered: true
+    pmx_area: data-quality
+    weight: 1
+by_pmx_area:
+  structural: 1.0
+  estimation: 0.703
+  covariate-analysis: 0.4732
+  data-quality: 1.0
+overall: 0.7759
+unanswered_items: none
+traps_fallen_for: none detected

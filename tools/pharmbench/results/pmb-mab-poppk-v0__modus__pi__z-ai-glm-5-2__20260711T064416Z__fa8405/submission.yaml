@@ -1,0 +1,54 @@
+# submission.yaml — machine-readable answer extraction for PMB-MAB-01.
+# Produced by the modus workflow. Answers are drawn from the upstream task
+# summaries (study_context, data_qc, structural_model, covariate_analysis,
+# review) and report only what the analysis supports. The final model is the
+# 2-compartment IV-infusion population PK model with allometric WT effects on
+# CL and V1 (FOCEI, M3 censored-likelihood for BLQ), reported at 70 kg.
+
+provenance:
+  tool: modus
+  tool_sha: "b893113000d8adbc27652b90aac25dc74921bb7a"
+  model: "z-ai/glm-5.2"
+  run_utc: "2026-07-11T06:44:16Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+    - submission
+
+answers:
+  structural_ncmt: 2
+
+  # Typical (population) values of the final model's disposition parameters,
+  # at a 70 kg reference weight. Final model = 2-compartment (linear mammillary,
+  # IV infusion) + WT power on CL and V1. Units per sap.md Appendix A.
+  disposition_params:
+    CL: 0.197242534493109   # L/day  — typical clearance at 70 kg
+    V1: 2.9698410160381     # L      — typical central volume at 70 kg
+    V2: 2.9748056005097     # L      — typical peripheral volume
+    Q: 0.598593097673834    # L/day  — inter-compartmental clearance
+
+  # Residual-error terms of the final model (proportional only).
+  error_model:
+    prop: 0.150555861114845   # proportional residual error (fraction, CV)
+
+  # Supported covariate effects, grouped by the disposition parameter they act
+  # on, then by covariate column. WT enters as a power (allometric) term:
+  # param = typical * (WT/70)^theta. Both WT effects are retained (ΔOFV +62.65,
+  # 2 df, p≈0); ALB and CRCL were rejected (no estimable effect on top of WT;
+  # CRCL additionally mechanistically implausible for a catabolism/FcRn mAb).
+  cov_effects:
+    CL:
+      WT: 0.74790221202142   # power exponent on CL (~allometric 0.75; CI 0.438-1.058)
+    V1:
+      WT: 0.997092963245617 # power exponent on V1 (~1.0, V prop WT; CI 0.736-1.258)
+
+  # Records identified as data-quality outliers (corrupted single-point DAY-7
+  # observations excluded from the analysis dataset; reported by stable ROWID).
+  outlier_records:
+    - "62"
+    - "692"
+    - "1322"

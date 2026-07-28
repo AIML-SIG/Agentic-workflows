@@ -1,0 +1,44 @@
+# submission.yaml — machine-readable answer extraction for PMB-MAB-01.
+# Populated by the modus workflow from the upstream task outputs. Values are
+# the final-model (WT on CL+V1) population-typical estimates at a 70 kg
+# reference weight, drawn from covariate_analysis_final_model_params.csv and
+# independently confirmed in review/review_signoff.md.
+
+provenance:
+  tool: modus
+  tool_sha: "00d29843b46e9074a49f17e5c2d6cd94f57843ee"
+  model: "z-ai/glm-5.2"
+  run_utc: "2026-07-07T23:59:04Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+    - submission
+
+answers:
+  structural_ncmt: 2
+
+  # Final 2-compartment model, population-typical values at 70 kg reference WT.
+  # Units per sap.md Appendix A: CL/Q in L/day, V1/V2 in L.
+  disposition_params:
+    CL: 0.196      # L/day  (exp(tcl) at WT=70)
+    V1: 2.98       # L      (exp(tv1) at WT=70)
+    Q: 0.604       # L/day
+    V2: 2.97       # L
+
+  error_model:
+    prop: 0.150    # proportional residual error (fraction)
+
+  # Supported covariate effects: WT on CL and WT on V1, both as power
+  # exponents on (WT/70). ALB and CRCL were tested and rejected (see
+  # covariate_analysis_results.csv).
+  cov_effects:
+    CL:
+      WT: 0.795    # power exponent, (WT/70)^0.795 (~0.75 allometric)
+    V1:
+      WT: 1.018    # power exponent, (WT/70)^1.018 (~1 linear)
+
+  outlier_records: ["62", "692", "1322"]

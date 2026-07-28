@@ -10,4 +10,23 @@ scorecard.yaml
 # not archived in git (see score.R and generate_leaderboard.py): sizes run
 # from KBs to hundreds of MBs and every harness streams a different event
 # shape. Persisted on disk next to the run they belong to, never committed.
+#
+# This rule is also a secrets boundary, not just a size one: a harness that
+# echoes its shell environment writes the whole env block into the transcript,
+# API keys included. Verified on a local run. Never `git add -f` a raw_log path.
 results/*/raw_log/
+
+# Python bytecode cache from generate_leaderboard.py / visualize_results.py.
+__pycache__/
+*.pyc
+
+# Stray interactive R/debug logs (e.g. cens_help*.log from nlmixr2 spelunking).
+# Same rule modus/.gitignore already carries; raw run transcripts are handled
+# by the results/*/raw_log/ rule above, not this one.
+*.log
+
+# Generated self-contained run-trace viewer (generate_dynamic_viewer.py) --
+# multi-MB, embeds raw run logs verbatim, fully regenerable; local drill-down
+# only, never committed. The generator script itself is tracked. Because it
+# inlines the raw logs, it inherits their secrets exposure -- see above.
+dynamic_viewer.html

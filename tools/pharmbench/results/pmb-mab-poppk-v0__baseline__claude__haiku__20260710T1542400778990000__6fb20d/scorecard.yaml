@@ -1,0 +1,56 @@
+dataset: pmb-mab-poppk-v0
+provenance:
+  tool: baseline
+  tool_sha: e6d6a68969ef
+  model: haiku
+  run_utc: '2026-07-10T15:42:40.077899+00:00'
+  analysis_steps:
+  - data_qc_and_exploration
+  - individual_subject_pharmacokinetic_fitting
+  - allometric_scaling_assessment
+  - covariate_effect_analysis
+  - outlier_identification
+  pharmbench_sha: 51d01acbfc97
+  harness: claude
+  agent_cmd: claude -p --model haiku --verbose --output-format stream-json --dangerously-skip-permissions
+  cost_usd: '0.283707'
+  duration_s: '250'
+items:
+  structural_ncmt:
+    score: 0.0
+    scorer: categorical
+    answered: true
+    pmx_area: structural
+    weight: 1
+  disposition_params:
+    score: 0.1037
+    scorer: map
+    answered: true
+    pmx_area: estimation
+    weight: 1
+  error_model:
+    score: 0.0297
+    scorer: map
+    answered: true
+    pmx_area: estimation
+    weight: 1
+  cov_effects:
+    score: 0.3181
+    scorer: map_nested
+    answered: true
+    pmx_area: covariate-analysis
+    weight: 1
+  outlier_records:
+    score: 0.8571
+    scorer: set
+    answered: true
+    pmx_area: data-quality
+    weight: 1
+by_pmx_area:
+  structural: 0.0
+  estimation: 0.0667
+  covariate-analysis: 0.3181
+  data-quality: 0.8571
+overall: 0.2617
+unanswered_items: none
+traps_fallen_for: none detected

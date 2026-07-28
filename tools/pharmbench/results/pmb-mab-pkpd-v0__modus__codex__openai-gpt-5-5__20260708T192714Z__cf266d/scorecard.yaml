@@ -1,0 +1,65 @@
+dataset: pmb-mab-pkpd-v0
+provenance:
+  tool: modus
+  tool_sha: 27ecc102a2ee
+  model: openai/gpt-5.5
+  run_utc: '2026-07-08T19:27:14Z'
+  analysis_steps:
+  - scope
+  - study_context
+  - data_qc
+  - structural_model
+  - covariate_analysis
+  - review
+  - pkpd_model
+  - submission
+  pharmbench_sha: 51d01acbfc97
+  harness: codex
+  agent_cmd: codex exec --json --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox
+    -c model_provider=openrouter -m openai/gpt-5.5
+items:
+  structural_elimination:
+    score: 1.0
+    scorer: categorical
+    answered: true
+    pmx_area: structural
+    weight: 1
+  disposition_params:
+    score: 0.6131
+    scorer: map
+    answered: true
+    pmx_area: estimation
+    weight: 1
+  nonlinear_pk_params:
+    score: 0.4658
+    scorer: map
+    answered: true
+    pmx_area: structural
+    weight: 1
+  pd_params:
+    score: 0.7819
+    scorer: map
+    answered: true
+    pmx_area: pk-pd-linkage
+    weight: 1
+  pd_cov_effects:
+    score: 0.5654
+    scorer: map_nested
+    answered: true
+    pmx_area: covariate-analysis
+    weight: 1
+  pd_assay_artifact_day:
+    score: 1.0
+    scorer: categorical
+    answered: true
+    pmx_area: data-quality
+    weight: 1
+by_pmx_area:
+  structural: 0.7329
+  estimation: 0.6131
+  pk-pd-linkage: 0.7819
+  covariate-analysis: 0.5654
+  data-quality: 1.0
+overall: 0.7377
+unanswered_items: none
+traps_fallen_for: none detected

@@ -1,0 +1,55 @@
+# submission.yaml — PMB-MAB-01 population PK analysis
+# See sap.md §4 for the meaning and format of each key.
+
+provenance:
+  tool: baseline
+  tool_sha: ""
+  model: ""
+  run_utc: "2026-07-08T00:15:39Z"
+  analysis_steps:
+    - data_qc_outlier_screening          # per-subject log-linear neighbour check
+    - structural_model_selection          # 1-cmt vs 2-cmt (FOCEI, ΔOFV ≈ 1915)
+    - iiv_and_residual_error_estimation    # IIV on CL & Vc; proportional + additive RE
+    - covariate_screening                  # EBE regression of eta.CL/eta.Vc on WT/ALB/CRCL
+    - covariate_confounder_adjustment      # multivariate WT+ALB+CRCL to remove spurious ALB
+    - final_model_fit                      # 2-cmt + allometric WT on CL & Vc (FOCEI)
+
+answers:
+  # 2-compartment disposition strongly favoured over 1-compartment
+  # (FOCEI ΔOFV ≈ 1915; terminal phase not describable by a single compartment).
+  structural_ncmt: 2
+
+  # Typical values at a 70 kg reference subject, from the final
+  # 2-compartment model with allometric body-weight scaling.
+  # CL, Q in L/day; Vc, Vp in L.
+  disposition_params:
+    CL: 0.195
+    Vc: 3.05
+    Q: 0.581
+    Vp: 2.76
+
+  # Combined proportional + additive residual error (additive term in mg/L).
+  error_model:
+    prop: 0.157
+    add: 0.0134
+
+  # Only body weight is supported. It acts allometrically on the two
+  # disposition parameters carrying IIV (CL and central volume). Effect sizes
+  # are estimated power exponents on (WT/70). ALB and CRCL are NOT supported:
+  # ALB is significant univariately on CL (p=0.02) but drops out once WT is in
+  # the model (p=0.42) — a spurious association via ALB–WT correlation (r=0.40);
+  # CRCL shows no effect (p=0.48), consistent with the mAb not being renally
+  # eliminated.
+  cov_effects:
+    CL:
+      WT: 0.914
+    Vc:
+      WT: 0.780
+
+  # Day-7 concentration spikes that exceed even the end-of-infusion peak of the
+  # same single-IV-dose profile — physiologically impossible with monotone
+  # decline; isolated to one record each in subjects 5, 50 and 95.
+  outlier_records:
+    - "62"
+    - "692"
+    - "1322"

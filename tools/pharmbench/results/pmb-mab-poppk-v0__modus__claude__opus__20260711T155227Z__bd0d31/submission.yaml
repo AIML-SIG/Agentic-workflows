@@ -1,0 +1,52 @@
+# submission.yaml — machine-readable answer extraction for PMB-MAB-01.
+# Answers filled from the upstream task summaries (final covariate model,
+# independently reconciled by the review sign-off). Values that the analysis
+# did not address are left null; nothing is guessed.
+
+provenance:
+  tool: modus
+  tool_sha: "7df0f27386041bd65b98b897c444493df33d4f15"   # modus repo (tools/modus) git rev at run time
+  model: "claude-opus-4-8"
+  run_utc: "2026-07-11T15:52:27Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+    - submission
+
+answers:
+  # Two-compartment disposition, selected by comparison (2-cmt OFV 3504.19 vs
+  # 1-cmt 5421.30; 3-cmt did not converge under the bounded fit -> rejected).
+  structural_ncmt: 2
+
+  # Typical values of the FINAL model (allometric WT on CL & Vc), at a 70 kg
+  # reference weight. Units: clearances L/day, volumes L.
+  disposition_params:
+    CL: 0.196    # L/day
+    Vc: 2.98     # L (central volume)
+    Q: 0.598     # L/day (inter-compartmental clearance)
+    Vp: 2.97     # L (peripheral volume)
+
+  # Residual error of the final model (essentially proportional).
+  error_model:
+    prop: 0.150   # proportional fraction (SD)
+    add: 0.0016   # mg/L additive SD
+
+  # Supported covariate effects, grouped by disposition parameter then covariate
+  # column. Effect size = allometric power exponent, centered at 70 kg WT.
+  # ALB rejected (WT confound) and CRCL rejected (non-renal IgG1) — not reported.
+  cov_effects:
+    CL:
+      WT: 0.809   # power exponent, ref 70 kg
+    Vc:
+      WT: 1.043   # power exponent, ref 70 kg
+
+  # Day-7 concentration spikes ~7-8x above neighbours and above true Cmax,
+  # impossible for single-dose IV decline; reported by ROWID.
+  outlier_records:
+    - "62"
+    - "692"
+    - "1322"

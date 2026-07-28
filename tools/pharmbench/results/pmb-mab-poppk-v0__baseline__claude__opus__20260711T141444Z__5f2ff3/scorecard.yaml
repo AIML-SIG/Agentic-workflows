@@ -1,0 +1,64 @@
+dataset: pmb-mab-poppk-v0
+provenance:
+  tool: baseline
+  tool_sha: fb40b6033115
+  model: opus
+  run_utc: '2026-07-11T14:14:44Z'
+  analysis_steps:
+  - 'EDA: dataset QC, dose-proportionality check (dose-normalized profiles superimpose
+    -> linear PK)'
+  - 'Data-quality screen: robust within-day z-scores flagged 3 DAY-7 spikes above
+    end-of-infusion Cmax'
+  - 'Structural model selection: 1-cmt vs 2-cmt (FOCEI); 2-cmt strongly preferred
+    (dOBJF ~ -1934)'
+  - 'BLQ handling: M3 likelihood-based left-censoring at LLOQ 0.1 mg/L; predose BLQ
+    samples dropped'
+  - 'Covariate screening: EBE-eta regression + structural forward addition (linCmt
+    analytic solution)'
+  - Isolated WT (allometric) as the genuine effect on CL and Vc; ALB effect spurious
+    via WT correlation; CRCL not supported
+  - Final FOCEI fit with covariance step; GOF via CWRES
+  pharmbench_sha: 866e83c10f9c
+  harness: claude
+  agent_cmd: claude -p --model opus --verbose --output-format stream-json --dangerously-skip-permissions
+  cost_usd: '1.755325'
+  duration_s: '2425'
+items:
+  structural_ncmt:
+    score: 1.0
+    scorer: categorical
+    answered: true
+    pmx_area: structural
+    weight: 1
+  disposition_params:
+    score: 0.946
+    scorer: map
+    answered: true
+    pmx_area: estimation
+    weight: 1
+  error_model:
+    score: 1.0
+    scorer: map
+    answered: true
+    pmx_area: estimation
+    weight: 1
+  cov_effects:
+    score: 0.7918
+    scorer: map_nested
+    answered: true
+    pmx_area: covariate-analysis
+    weight: 1
+  outlier_records:
+    score: 1.0
+    scorer: set
+    answered: true
+    pmx_area: data-quality
+    weight: 1
+by_pmx_area:
+  structural: 1.0
+  estimation: 0.973
+  covariate-analysis: 0.7918
+  data-quality: 1.0
+overall: 0.9476
+unanswered_items: none
+traps_fallen_for: none detected

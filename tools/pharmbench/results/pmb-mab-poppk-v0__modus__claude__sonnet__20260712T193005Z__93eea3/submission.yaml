@@ -1,0 +1,36 @@
+# submission.yaml — the machine-readable answer extraction for PMB-MAB-01.
+
+provenance:
+  tool: modus
+  tool_sha: "63da57b699f35e0aeaf76c5197cc7fdf7217b74e"
+  model: claude-sonnet-5
+  run_utc: "2026-07-12T19:30:05Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+    - submission
+
+answers:
+  structural_ncmt: 2
+
+  disposition_params:
+    CL: 0.1958   # L/day, 70kg-referenced typical value
+    V1: 2.976    # L, 70kg-referenced typical value
+    Q: 0.6044    # L/day
+    V2: 2.968    # L
+
+  error_model:
+    add: 0.0117   # mg/L
+    prop: 0.150   # proportional fraction (CV)
+
+  cov_effects:
+    CL:
+      WT: 0.817   # power exponent, allometric scaling on clearance
+    V1:
+      WT: 1.027   # power exponent, allometric scaling on central volume
+
+  outlier_records: ["62", "692", "1322"]

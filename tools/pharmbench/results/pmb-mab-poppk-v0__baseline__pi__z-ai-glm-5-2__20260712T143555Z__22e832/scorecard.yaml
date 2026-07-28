@@ -1,0 +1,61 @@
+dataset: pmb-mab-poppk-v0
+provenance:
+  tool: baseline
+  tool_sha: abdc99d3e242
+  model: z-ai/glm-5.2
+  run_utc: '2026-07-12T14:35:55Z'
+  analysis_steps:
+  - data_ingest
+  - data_quality_screen
+  - outlier_identification
+  - blq_handling_drop
+  - structural_model_selection_1cmt_vs_2cmt
+  - base_2cmt_allometric_WT_fit
+  - covariate_testing_ALB_CRCL_on_CL_and_V1
+  - full_model_all_WT_exponents
+  - final_model_selection
+  - submission_write
+  pharmbench_sha: abdc99d3e242
+  harness: pi
+  agent_cmd: pi -p --mode json --provider openrouter --model z-ai/glm-5.2
+  cost_usd: '0.15420065'
+  duration_s: '1507'
+items:
+  structural_ncmt:
+    score: 1.0
+    scorer: categorical
+    answered: yes
+    pmx_area: structural
+    weight: 1
+  disposition_params:
+    score: 0.85
+    scorer: map
+    answered: yes
+    pmx_area: estimation
+    weight: 1
+  error_model:
+    score: 0.9737
+    scorer: map
+    answered: yes
+    pmx_area: estimation
+    weight: 1
+  cov_effects:
+    score: 0.2975
+    scorer: map_nested
+    answered: yes
+    pmx_area: covariate-analysis
+    weight: 1
+  outlier_records:
+    score: 1.0
+    scorer: set
+    answered: yes
+    pmx_area: data-quality
+    weight: 1
+by_pmx_area:
+  structural: 1.0
+  estimation: 0.9118
+  covariate-analysis: 0.2975
+  data-quality: 1.0
+overall: 0.8242
+unanswered_items: none
+traps_fallen_for: none detected

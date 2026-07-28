@@ -1,0 +1,54 @@
+# submission.yaml — the machine-readable answer extraction for PMB-MAB-01.
+
+provenance:
+  tool: baseline
+  tool_sha: ""
+  model: claude-sonnet-5
+  run_utc: "2026-07-07T20:25:43Z"
+  analysis_steps:
+    - data_qc_neighbor_consistency_screen
+    - blq_handling_m3_likelihood_censoring
+    - structural_model_selection_1cmt_vs_2cmt_focei
+    - base_model_iiv_cl_v_residual_error_selection
+    - covariate_screening_eta_cov_correlation
+    - covariate_screening_wt_alb_crcl_power_models_focei
+    - final_model_refit_70kg_reference
+
+answers:
+  structural_ncmt: 2
+
+  # Typical (population) values at 70 kg reference weight, 2-compartment IV
+  # infusion model (central + peripheral), estimated via nlmixr2 FOCEI with
+  # M3 BLQ censoring. L/day for clearances, L for volumes.
+  disposition_params:
+    CL: 0.196
+    V: 2.97
+    Q: 0.605
+    VP: 2.97
+
+  # Combined proportional + additive residual error model.
+  error_model:
+    prop: 0.149
+    add: 0.00295
+
+  # WT is a genuine covariate on both CL and V (allometric power model,
+  # exponents estimated, not fixed): dOFV = 73.4 (2 df) vs no-covariate base
+  # model. ALB and CRCL were tested as candidates but not supported: ALB's
+  # univariate association with eta(CL) (r=0.20) vanished after controlling
+  # for WT (partial r=0.05) -- a spurious association driven by the WT-ALB
+  # correlation (r=0.40), not a genuine effect (dalb.cl = 0.23 +/- 0.31,
+  # 95% CI crosses 0). CRCL showed no association with CL or V on either
+  # univariate or partial-correlation screening or in the fitted model
+  # (dcrcl.cl = -0.06 +/- 0.11, dcrcl.v = -0.03 +/- 0.07, both CIs cross 0),
+  # consistent with the protocol's description of non-renal elimination.
+  cov_effects:
+    CL:
+      WT: 0.806
+    V:
+      WT: 1.036
+
+  # Records inconsistent with their own subject profile: DAY-7 concentration
+  # 6-8x higher than both the neighboring DAY-3 and DAY-14 values in the same
+  # subject, with the rest of each profile smoothly monotonic. Excluded from
+  # the modeling dataset.
+  outlier_records: ["62", "692", "1322"]

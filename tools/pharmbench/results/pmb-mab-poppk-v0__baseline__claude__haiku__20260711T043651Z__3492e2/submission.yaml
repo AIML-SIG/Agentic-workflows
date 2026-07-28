@@ -1,0 +1,27 @@
+provenance:
+  tool: baseline
+  tool_sha: ''
+  model: claude-haiku-4-5-20251001
+  run_utc: '2026-07-11T04:36:51Z'
+  analysis_steps:
+  - Individual-subject parameter estimation via log-linear regression of terminal
+    phase
+  - Allometric scaling model fit (log-log regression)
+  - Combined proportional + additive error model
+  - 'Outlier detection via standardized residuals (threshold: |std_resid| > 3)'
+  - Covariate correlation screening
+answers:
+  structural_ncmt: 1
+  disposition_params:
+    CL: 0.2016
+    V: 6.562
+  error_model:
+    prop: 0.2759
+    add: 1373.269
+  cov_effects: {}
+  outlier_records:
+  - '62'
+  - '692'
+  - '927'
+  - '1322'
+  - '1333'

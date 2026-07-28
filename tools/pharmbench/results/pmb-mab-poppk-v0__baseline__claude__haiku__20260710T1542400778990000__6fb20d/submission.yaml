@@ -1,0 +1,32 @@
+# submission.yaml — the machine-readable answer extraction for PMB-MAB-01.
+# Analysis completed with baseline workflow
+
+provenance:
+  tool: baseline
+  tool_sha: ""
+  model: ""
+  run_utc: "2026-07-10T15:42:40.077899+00:00"
+  analysis_steps:
+    - data_qc_and_exploration
+    - individual_subject_pharmacokinetic_fitting
+    - allometric_scaling_assessment
+    - covariate_effect_analysis
+    - outlier_identification
+
+answers:
+  structural_ncmt: 1
+  disposition_params:
+    CL: 0.1516
+    V: 4.2893
+  error_model:
+    prop: 0.2819
+  cov_effects:
+    CL:
+      WT: 0.9776315626725242
+    V:
+      WT: 0.8250534387656454
+  outlier_records:
+    - "62"
+    - "692"
+    - "1096"
+    - "1322"

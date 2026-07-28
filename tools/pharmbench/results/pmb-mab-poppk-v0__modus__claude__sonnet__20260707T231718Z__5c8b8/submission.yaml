@@ -1,0 +1,43 @@
+# submission.yaml — the machine-readable answer extraction for PMB-MAB-01.
+
+provenance:
+  tool: modus
+  tool_sha: "00d29843b46e9074a49f17e5c2d6cd94f57843ee"
+  model: claude-sonnet-5
+  run_utc: "2026-07-07T23:17:18Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+    - submission
+
+answers:
+  structural_ncmt: 2
+
+  # Typical (population) values at WT=70 kg reference, from the final
+  # (WT-on-V1) covariate model, nlmixr2 FOCEI fit.
+  disposition_params:
+    CL: 0.2065      # L/day
+    V1: 2.988        # L, at WT=70 kg reference
+    Q: 0.6075       # L/day
+    V2: 2.984        # L
+
+  # Residual-error terms of the final model (combined additive + proportional).
+  error_model:
+    add: 0.00288    # mg/L
+    prop: 0.1477    # proportional fraction (14.77% CV)
+
+  # Covariate effects the analysis defends: WT on V1 only (power model,
+  # freely estimated exponent, centered at 70 kg). WT-on-CL, WT-on-Q, WT-on-V2,
+  # ALB (all parameters), and CRCL (all parameters) were tested and rejected.
+  cov_effects:
+    V1:
+      WT: 0.989     # power exponent; V1 = 2.988 * (WT/70)^0.989
+
+  outlier_records:
+    - "62"
+    - "692"
+    - "1322"
