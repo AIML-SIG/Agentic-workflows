@@ -3,23 +3,246 @@ title: "PMbench Leaderboard"
 sidebar: false
 ---
 
-Aggregated results from `tools/pharmbench`. Each row is one (scenario, pharmbench revision, tool, tool revision, harness, model) configuration; repeated attempts of the identical configuration are grouped together, with mean/SD showing the spread across attempts rather than a single run standing in for the whole configuration. A changed scorer/truth revision, task-library revision, or model gets its own row rather than being silently averaged with older results.
+Aggregated results from `tools/pharmbench`. Each row is one (scenario, tool, harness, model) configuration; repeated attempts of the identical configuration are grouped together, with mean/SD showing the spread across attempts rather than a single run standing in for the whole configuration. Tool/pharmbench git revision is intentionally not part of the grouping -- both are whole-monorepo HEAD SHAs, so they change on any commit anywhere in the repo, not just when the tool itself changes; see the linked run in "Individual runs" for a given attempt's exact revision.
 
-Generated from `0` recorded run(s) across `0` configuration(s). Regenerate with `python3 tools/pharmbench/generate_leaderboard.py` after adding new results to `tools/pharmbench/results/`.
+**Excluded from this render:** `pmb-mab-pkpd-v0`. Still recorded in `tools/pharmbench/results/`, just left off this page for now -- regenerate without `--exclude-dataset` to bring it back.
 
-| Scenario | Tool | Harness | Model | N | Overall (mean±sd) | Min–Max |
-|---|---|---|---|---|---|---|
+**Failed** counts known attempts that never produced a submission (see "Known failed attempts" below). **Cost** is per-run API spend computed by the wrapper script from the harness's own accounting -- exact for `claude` (its own reported total) and `pi` (summed via OpenRouter's per-generation cost, so it stays correct even when runs overlap in time); unavailable for harnesses like `codex` that expose neither a total nor a per-request id to look one up, and for runs recorded before this was tracked. **Duration** is wall-clock time timed by the wrapper script itself (harness-agnostic, no concurrency caveats).
 
-## Configuration detail
+Generated from `22` recorded run(s) across `8` configuration(s). Regenerate with `python3 tools/pharmbench/generate_leaderboard.py` after adding new results to `tools/pharmbench/results/`.
 
-`tool_sha` / `pharmbench_sha` are the git revisions of the workflow and of pharmbench itself at run time (short form). Both live in the same monorepo today, so they coincide unless a workflow becomes a separate repo in the future.
 
-| Scenario | Tool | tool_sha | pharmbench_sha | Harness | Model | N |
-|---|---|---|---|---|---|---|
+<style>
+.pmb-chart-group { background:#fcfcfb; border:1px solid rgba(11,11,11,0.10); border-radius:12px;
+  padding:16px 20px 12px; margin:18px 0; }
+.pmb-chart-legend { font-size:12px; color:#52514e; margin-bottom:6px; }
+.pmb-chart-panels { display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start; }
+.pmb-chart-panel { flex:0 0 486px; max-width:100%; }
+.pmb-chart-panel svg { display:block; width:100%; height:auto; }
+.pmb-c-title { font:600 12px system-ui,-apple-system,"Segoe UI",sans-serif; fill:#0b0b0b; }
+.pmb-c-label { font:12px system-ui,-apple-system,"Segoe UI",sans-serif; fill:#0b0b0b; }
+.pmb-c-val { font:11px system-ui,-apple-system,"Segoe UI",sans-serif; fill:#52514e; font-variant-numeric:tabular-nums; }
+.pmb-c-tick { font:10px system-ui,-apple-system,"Segoe UI",sans-serif; fill:#898781; }
+.pmb-c-grid { stroke:#e1e0d9; stroke-width:1; }
+.pmb-c-axis { stroke:#c3c2b7; stroke-width:1; }
+.pmb-c-whisker { stroke:#898781; stroke-width:1.25; }
+.pmb-c-swatch { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:4px; vertical-align:middle; }
+.pmb-chart-panels path:hover { opacity:0.85; }
+</style>
+<div class="pmb-chart-group">
+<div class="pmb-chart-legend">`pmb-mab-poppk-v0` &mdash; <span class="pmb-c-swatch" style="background:#2a78d6"></span> modus &nbsp;&nbsp; <span class="pmb-c-swatch" style="background:#1baf7a"></span> baseline</div>
+<div class="pmb-chart-panels">
+<div class="pmb-chart-panel"><svg viewBox="0 0 486 294" width="100%" height="294" role="img" aria-label="Score by configuration">
+<text x="0" y="18" class="pmb-c-title">Score</text>
+<line x1="172.0" y1="28" x2="172.0" y2="268" class="pmb-c-grid" />
+<text x="172.0" y="284" class="pmb-c-tick" text-anchor="middle">0</text>
+<line x1="232.0" y1="28" x2="232.0" y2="268" class="pmb-c-grid" />
+<text x="232.0" y="284" class="pmb-c-tick" text-anchor="middle">0.25</text>
+<line x1="292.0" y1="28" x2="292.0" y2="268" class="pmb-c-grid" />
+<text x="292.0" y="284" class="pmb-c-tick" text-anchor="middle">0.5</text>
+<line x1="352.0" y1="28" x2="352.0" y2="268" class="pmb-c-grid" />
+<text x="352.0" y="284" class="pmb-c-tick" text-anchor="middle">0.75</text>
+<line x1="412.0" y1="28" x2="412.0" y2="268" class="pmb-c-grid" />
+<text x="412.0" y="284" class="pmb-c-tick" text-anchor="middle">1</text>
+<line x1="172" y1="28" x2="172" y2="268" class="pmb-c-axis" />
+<text x="164" y="43.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · pi z-ai/glm-5.2</text>
+<path d="M172,34.0 H390.936 A4,4 0 0 1 394.936,38.0 V48.0 A4,4 0 0 1 390.936,52.0 H172 Z" fill="#2a78d6"><title>modus · pi z-ai/glm-5.2: 0.929 (n=3)</title></path>
+<line x1="377.3" y1="43.0" x2="412.0" y2="43.0" class="pmb-c-whisker" />
+<line x1="377.3" y1="39.0" x2="377.3" y2="47.0" class="pmb-c-whisker" />
+<line x1="412.0" y1="39.0" x2="412.0" y2="47.0" class="pmb-c-whisker" />
+<text x="418.0" y="43.0" class="pmb-c-val" dominant-baseline="middle">0.929</text>
+<text x="164" y="73.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · pi z-ai/glm-5.2</text>
+<path d="M172,64.0 H377.256 A4,4 0 0 1 381.256,68.0 V78.0 A4,4 0 0 1 377.256,82.0 H172 Z" fill="#1baf7a"><title>baseline · pi z-ai/glm-5.2: 0.872 (n=3)</title></path>
+<line x1="365.6" y1="73.0" x2="396.9" y2="73.0" class="pmb-c-whisker" />
+<line x1="365.6" y1="69.0" x2="365.6" y2="77.0" class="pmb-c-whisker" />
+<line x1="396.9" y1="69.0" x2="396.9" y2="77.0" class="pmb-c-whisker" />
+<text x="402.9" y="73.0" class="pmb-c-val" dominant-baseline="middle">0.872</text>
+<text x="164" y="103.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · claude opus</text>
+<path d="M172,94.0 H370.416 A4,4 0 0 1 374.416,98.0 V108.0 A4,4 0 0 1 370.416,112.0 H172 Z" fill="#2a78d6"><title>modus · claude opus: 0.843 (n=3)</title></path>
+<line x1="373.4" y1="103.0" x2="375.4" y2="103.0" class="pmb-c-whisker" />
+<line x1="373.4" y1="99.0" x2="373.4" y2="107.0" class="pmb-c-whisker" />
+<line x1="375.4" y1="99.0" x2="375.4" y2="107.0" class="pmb-c-whisker" />
+<text x="381.4" y="103.0" class="pmb-c-val" dominant-baseline="middle">0.843</text>
+<text x="164" y="133.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · claude sonnet</text>
+<path d="M172,124.0 H370.272 A4,4 0 0 1 374.272,128.0 V138.0 A4,4 0 0 1 370.272,142.0 H172 Z" fill="#1baf7a"><title>baseline · claude sonnet: 0.843 (n=2)</title></path>
+<line x1="372.7" y1="133.0" x2="375.9" y2="133.0" class="pmb-c-whisker" />
+<line x1="372.7" y1="129.0" x2="372.7" y2="137.0" class="pmb-c-whisker" />
+<line x1="375.9" y1="129.0" x2="375.9" y2="137.0" class="pmb-c-whisker" />
+<text x="381.9" y="133.0" class="pmb-c-val" dominant-baseline="middle">0.843</text>
+<text x="164" y="163.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · claude opus</text>
+<path d="M172,154.0 H367.632 A4,4 0 0 1 371.632,158.0 V168.0 A4,4 0 0 1 367.632,172.0 H172 Z" fill="#1baf7a"><title>baseline · claude opus: 0.832 (n=2)</title></path>
+<line x1="332.3" y1="163.0" x2="410.9" y2="163.0" class="pmb-c-whisker" />
+<line x1="332.3" y1="159.0" x2="332.3" y2="167.0" class="pmb-c-whisker" />
+<line x1="410.9" y1="159.0" x2="410.9" y2="167.0" class="pmb-c-whisker" />
+<text x="416.9" y="163.0" class="pmb-c-val" dominant-baseline="middle">0.832</text>
+<text x="164" y="193.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · claude sonnet</text>
+<path d="M172,184.0 H365.448 A4,4 0 0 1 369.448,188.0 V198.0 A4,4 0 0 1 365.448,202.0 H172 Z" fill="#2a78d6"><title>modus · claude sonnet: 0.823 (n=3)</title></path>
+<line x1="359.6" y1="193.0" x2="379.3" y2="193.0" class="pmb-c-whisker" />
+<line x1="359.6" y1="189.0" x2="359.6" y2="197.0" class="pmb-c-whisker" />
+<line x1="379.3" y1="189.0" x2="379.3" y2="197.0" class="pmb-c-whisker" />
+<text x="385.3" y="193.0" class="pmb-c-val" dominant-baseline="middle">0.823</text>
+<text x="164" y="223.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · claude haiku</text>
+<path d="M172,214.0 H217.584 A4,4 0 0 1 221.584,218.0 V228.0 A4,4 0 0 1 217.584,232.0 H172 Z" fill="#2a78d6"><title>modus · claude haiku: 0.207 (n=3)</title></path>
+<line x1="172.0" y1="223.0" x2="276.2" y2="223.0" class="pmb-c-whisker" />
+<line x1="172.0" y1="219.0" x2="172.0" y2="227.0" class="pmb-c-whisker" />
+<line x1="276.2" y1="219.0" x2="276.2" y2="227.0" class="pmb-c-whisker" />
+<text x="282.2" y="223.0" class="pmb-c-val" dominant-baseline="middle">0.207</text>
+<text x="164" y="253.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · claude haiku</text>
+<path d="M172,244.0 H206.736 A4,4 0 0 1 210.736,248.0 V258.0 A4,4 0 0 1 206.736,262.0 H172 Z" fill="#1baf7a"><title>baseline · claude haiku: 0.161 (n=3)</title></path>
+<line x1="180.7" y1="253.0" x2="240.8" y2="253.0" class="pmb-c-whisker" />
+<line x1="180.7" y1="249.0" x2="180.7" y2="257.0" class="pmb-c-whisker" />
+<line x1="240.8" y1="249.0" x2="240.8" y2="257.0" class="pmb-c-whisker" />
+<text x="246.8" y="253.0" class="pmb-c-val" dominant-baseline="middle">0.161</text>
+</svg></div>
+<div class="pmb-chart-panel"><svg viewBox="0 0 486 294" width="100%" height="294" role="img" aria-label="Cost by configuration">
+<text x="0" y="18" class="pmb-c-title">Cost</text>
+<line x1="172.0" y1="28" x2="172.0" y2="268" class="pmb-c-grid" />
+<text x="172.0" y="284" class="pmb-c-tick" text-anchor="middle">$0.00</text>
+<line x1="232.0" y1="28" x2="232.0" y2="268" class="pmb-c-grid" />
+<text x="232.0" y="284" class="pmb-c-tick" text-anchor="middle">$5.00</text>
+<line x1="292.0" y1="28" x2="292.0" y2="268" class="pmb-c-grid" />
+<text x="292.0" y="284" class="pmb-c-tick" text-anchor="middle">$10.00</text>
+<line x1="352.0" y1="28" x2="352.0" y2="268" class="pmb-c-grid" />
+<text x="352.0" y="284" class="pmb-c-tick" text-anchor="middle">$15.00</text>
+<line x1="412.0" y1="28" x2="412.0" y2="268" class="pmb-c-grid" />
+<text x="412.0" y="284" class="pmb-c-tick" text-anchor="middle">$20.00</text>
+<line x1="172" y1="28" x2="172" y2="268" class="pmb-c-axis" />
+<text x="164" y="43.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · pi z-ai/glm-5.2</text>
+<path d="M172,34.0 H185.5728 A4,4 0 0 1 189.5728,38.0 V48.0 A4,4 0 0 1 185.5728,52.0 H172 Z" fill="#2a78d6"><title>modus · pi z-ai/glm-5.2: $1.46 (n=3)</title></path>
+<line x1="182.0" y1="43.0" x2="197.1" y2="43.0" class="pmb-c-whisker" />
+<line x1="182.0" y1="39.0" x2="182.0" y2="47.0" class="pmb-c-whisker" />
+<line x1="197.1" y1="39.0" x2="197.1" y2="47.0" class="pmb-c-whisker" />
+<text x="203.1" y="43.0" class="pmb-c-val" dominant-baseline="middle">$1.46</text>
+<text x="164" y="73.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · pi z-ai/glm-5.2</text>
+<path d="M172,64.0 H172.0 A2.6484,2.6484 0 0 1 174.6484,66.6484 V79.3516 A2.6484,2.6484 0 0 1 172.0,82.0 H172 Z" fill="#1baf7a"><title>baseline · pi z-ai/glm-5.2: $0.22 (n=3)</title></path>
+<line x1="173.7" y1="73.0" x2="175.6" y2="73.0" class="pmb-c-whisker" />
+<line x1="173.7" y1="69.0" x2="173.7" y2="77.0" class="pmb-c-whisker" />
+<line x1="175.6" y1="69.0" x2="175.6" y2="77.0" class="pmb-c-whisker" />
+<text x="181.6" y="73.0" class="pmb-c-val" dominant-baseline="middle">$0.22</text>
+<text x="164" y="103.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · claude opus</text>
+<path d="M172,94.0 H267.942 A4,4 0 0 1 271.942,98.0 V108.0 A4,4 0 0 1 267.942,112.0 H172 Z" fill="#2a78d6"><title>modus · claude opus: $8.33 (n=3)</title></path>
+<line x1="267.8" y1="103.0" x2="276.1" y2="103.0" class="pmb-c-whisker" />
+<line x1="267.8" y1="99.0" x2="267.8" y2="107.0" class="pmb-c-whisker" />
+<line x1="276.1" y1="99.0" x2="276.1" y2="107.0" class="pmb-c-whisker" />
+<text x="282.1" y="103.0" class="pmb-c-val" dominant-baseline="middle">$8.33</text>
+<text x="164" y="133.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · claude sonnet</text>
+<path d="M172,124.0 H246.3576 A4,4 0 0 1 250.3576,128.0 V138.0 A4,4 0 0 1 246.3576,142.0 H172 Z" fill="#1baf7a"><title>baseline · claude sonnet: $6.53 (n=2)</title></path>
+<line x1="200.0" y1="133.0" x2="300.7" y2="133.0" class="pmb-c-whisker" />
+<line x1="200.0" y1="129.0" x2="200.0" y2="137.0" class="pmb-c-whisker" />
+<line x1="300.7" y1="129.0" x2="300.7" y2="137.0" class="pmb-c-whisker" />
+<text x="306.7" y="133.0" class="pmb-c-val" dominant-baseline="middle">$6.53</text>
+<text x="164" y="163.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · claude opus</text>
+<path d="M172,154.0 H193.4652 A4,4 0 0 1 197.4652,158.0 V168.0 A4,4 0 0 1 193.4652,172.0 H172 Z" fill="#1baf7a"><title>baseline · claude opus: $2.12 (n=2)</title></path>
+<line x1="191.2" y1="163.0" x2="203.7" y2="163.0" class="pmb-c-whisker" />
+<line x1="191.2" y1="159.0" x2="191.2" y2="167.0" class="pmb-c-whisker" />
+<line x1="203.7" y1="159.0" x2="203.7" y2="167.0" class="pmb-c-whisker" />
+<text x="209.7" y="163.0" class="pmb-c-val" dominant-baseline="middle">$2.12</text>
+<text x="164" y="193.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · claude sonnet</text>
+<path d="M172,184.0 H301.0068 A4,4 0 0 1 305.0068,188.0 V198.0 A4,4 0 0 1 301.0068,202.0 H172 Z" fill="#2a78d6"><title>modus · claude sonnet: $11.08 (n=3)</title></path>
+<line x1="265.7" y1="193.0" x2="344.4" y2="193.0" class="pmb-c-whisker" />
+<line x1="265.7" y1="189.0" x2="265.7" y2="197.0" class="pmb-c-whisker" />
+<line x1="344.4" y1="189.0" x2="344.4" y2="197.0" class="pmb-c-whisker" />
+<text x="350.4" y="193.0" class="pmb-c-val" dominant-baseline="middle">$11.08</text>
+<text x="164" y="223.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · claude haiku</text>
+<path d="M172,214.0 H185.7108 A4,4 0 0 1 189.7108,218.0 V228.0 A4,4 0 0 1 185.7108,232.0 H172 Z" fill="#2a78d6"><title>modus · claude haiku: $1.48 (n=3)</title></path>
+<line x1="184.0" y1="223.0" x2="195.4" y2="223.0" class="pmb-c-whisker" />
+<line x1="184.0" y1="219.0" x2="184.0" y2="227.0" class="pmb-c-whisker" />
+<line x1="195.4" y1="219.0" x2="195.4" y2="227.0" class="pmb-c-whisker" />
+<text x="201.4" y="223.0" class="pmb-c-val" dominant-baseline="middle">$1.48</text>
+<text x="164" y="253.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · claude haiku</text>
+<path d="M172,244.0 H172.0 A3.4728,3.4728 0 0 1 175.4728,247.4728 V258.5272 A3.4728,3.4728 0 0 1 172.0,262.0 H172 Z" fill="#1baf7a"><title>baseline · claude haiku: $0.29 (n=3)</title></path>
+<line x1="174.0" y1="253.0" x2="176.9" y2="253.0" class="pmb-c-whisker" />
+<line x1="174.0" y1="249.0" x2="174.0" y2="257.0" class="pmb-c-whisker" />
+<line x1="176.9" y1="249.0" x2="176.9" y2="257.0" class="pmb-c-whisker" />
+<text x="182.9" y="253.0" class="pmb-c-val" dominant-baseline="middle">$0.29</text>
+</svg></div>
+<div class="pmb-chart-panel"><svg viewBox="0 0 486 294" width="100%" height="294" role="img" aria-label="Duration by configuration">
+<text x="0" y="18" class="pmb-c-title">Duration</text>
+<line x1="172.0" y1="28" x2="172.0" y2="268" class="pmb-c-grid" />
+<text x="172.0" y="284" class="pmb-c-tick" text-anchor="middle">0m</text>
+<line x1="232.0" y1="28" x2="232.0" y2="268" class="pmb-c-grid" />
+<text x="232.0" y="284" class="pmb-c-tick" text-anchor="middle">42m</text>
+<line x1="292.0" y1="28" x2="292.0" y2="268" class="pmb-c-grid" />
+<text x="292.0" y="284" class="pmb-c-tick" text-anchor="middle">1h23m</text>
+<line x1="352.0" y1="28" x2="352.0" y2="268" class="pmb-c-grid" />
+<text x="352.0" y="284" class="pmb-c-tick" text-anchor="middle">2h05m</text>
+<line x1="412.0" y1="28" x2="412.0" y2="268" class="pmb-c-grid" />
+<text x="412.0" y="284" class="pmb-c-tick" text-anchor="middle">2h47m</text>
+<line x1="172" y1="28" x2="172" y2="268" class="pmb-c-axis" />
+<text x="164" y="43.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · pi z-ai/glm-5.2</text>
+<path d="M172,34.0 H305.28 A4,4 0 0 1 309.28,38.0 V48.0 A4,4 0 0 1 305.28,52.0 H172 Z" fill="#2a78d6"><title>modus · pi z-ai/glm-5.2: 1h35m (n=3)</title></path>
+<line x1="243.8" y1="43.0" x2="374.7" y2="43.0" class="pmb-c-whisker" />
+<line x1="243.8" y1="39.0" x2="243.8" y2="47.0" class="pmb-c-whisker" />
+<line x1="374.7" y1="39.0" x2="374.7" y2="47.0" class="pmb-c-whisker" />
+<text x="380.7" y="43.0" class="pmb-c-val" dominant-baseline="middle">1h35m</text>
+<text x="164" y="73.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · pi z-ai/glm-5.2</text>
+<path d="M172,64.0 H205.4080008 A4,4 0 0 1 209.4080008,68.0 V78.0 A4,4 0 0 1 205.4080008,82.0 H172 Z" fill="#1baf7a"><title>baseline · pi z-ai/glm-5.2: 25m59s (n=3)</title></path>
+<line x1="203.7" y1="73.0" x2="215.1" y2="73.0" class="pmb-c-whisker" />
+<line x1="203.7" y1="69.0" x2="203.7" y2="77.0" class="pmb-c-whisker" />
+<line x1="215.1" y1="69.0" x2="215.1" y2="77.0" class="pmb-c-whisker" />
+<text x="221.1" y="73.0" class="pmb-c-val" dominant-baseline="middle">25m59s</text>
+<text x="164" y="103.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · claude opus</text>
+<path d="M172,94.0 H267.0160008 A4,4 0 0 1 271.0160008,98.0 V108.0 A4,4 0 0 1 267.0160008,112.0 H172 Z" fill="#2a78d6"><title>modus · claude opus: 1h08m (n=3)</title></path>
+<line x1="241.7" y1="103.0" x2="300.3" y2="103.0" class="pmb-c-whisker" />
+<line x1="241.7" y1="99.0" x2="241.7" y2="107.0" class="pmb-c-whisker" />
+<line x1="300.3" y1="99.0" x2="300.3" y2="107.0" class="pmb-c-whisker" />
+<text x="306.3" y="103.0" class="pmb-c-val" dominant-baseline="middle">1h08m</text>
+<text x="164" y="133.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · claude sonnet</text>
+<path d="M172,124.0 H188.928 A4,4 0 0 1 192.928,128.0 V138.0 A4,4 0 0 1 188.928,142.0 H172 Z" fill="#1baf7a"><title>baseline · claude sonnet: 14m32s (n=2)</title></path>
+<line x1="183.8" y1="133.0" x2="202.1" y2="133.0" class="pmb-c-whisker" />
+<line x1="183.8" y1="129.0" x2="183.8" y2="137.0" class="pmb-c-whisker" />
+<line x1="202.1" y1="129.0" x2="202.1" y2="137.0" class="pmb-c-whisker" />
+<text x="208.1" y="133.0" class="pmb-c-val" dominant-baseline="middle">14m32s</text>
+<text x="164" y="163.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · claude opus</text>
+<path d="M172,154.0 H219.96 A4,4 0 0 1 223.96,158.0 V168.0 A4,4 0 0 1 219.96,172.0 H172 Z" fill="#1baf7a"><title>baseline · claude opus: 36m05s (n=2)</title></path>
+<line x1="215.1" y1="163.0" x2="232.8" y2="163.0" class="pmb-c-whisker" />
+<line x1="215.1" y1="159.0" x2="215.1" y2="167.0" class="pmb-c-whisker" />
+<line x1="232.8" y1="159.0" x2="232.8" y2="167.0" class="pmb-c-whisker" />
+<text x="238.8" y="163.0" class="pmb-c-val" dominant-baseline="middle">36m05s</text>
+<text x="164" y="193.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · claude sonnet</text>
+<path d="M172,184.0 H240.024 A4,4 0 0 1 244.024,188.0 V198.0 A4,4 0 0 1 240.024,202.0 H172 Z" fill="#2a78d6"><title>modus · claude sonnet: 50m01s (n=3)</title></path>
+<line x1="231.9" y1="193.0" x2="256.1" y2="193.0" class="pmb-c-whisker" />
+<line x1="231.9" y1="189.0" x2="231.9" y2="197.0" class="pmb-c-whisker" />
+<line x1="256.1" y1="189.0" x2="256.1" y2="197.0" class="pmb-c-whisker" />
+<text x="262.1" y="193.0" class="pmb-c-val" dominant-baseline="middle">50m01s</text>
+<text x="164" y="223.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">modus · claude haiku</text>
+<path d="M172,214.0 H198.744 A4,4 0 0 1 202.744,218.0 V228.0 A4,4 0 0 1 198.744,232.0 H172 Z" fill="#2a78d6"><title>modus · claude haiku: 21m21s (n=3)</title></path>
+<line x1="192.6" y1="223.0" x2="212.9" y2="223.0" class="pmb-c-whisker" />
+<line x1="192.6" y1="219.0" x2="192.6" y2="227.0" class="pmb-c-whisker" />
+<line x1="212.9" y1="219.0" x2="212.9" y2="227.0" class="pmb-c-whisker" />
+<text x="218.9" y="223.0" class="pmb-c-val" dominant-baseline="middle">21m21s</text>
+<text x="164" y="253.0" class="pmb-c-label" text-anchor="end" dominant-baseline="middle">baseline · claude haiku</text>
+<path d="M172,244.0 H174.432 A4,4 0 0 1 178.432,248.0 V258.0 A4,4 0 0 1 174.432,262.0 H172 Z" fill="#1baf7a"><title>baseline · claude haiku: 4m28s (n=3)</title></path>
+<line x1="176.7" y1="253.0" x2="180.2" y2="253.0" class="pmb-c-whisker" />
+<line x1="176.7" y1="249.0" x2="176.7" y2="257.0" class="pmb-c-whisker" />
+<line x1="180.2" y1="249.0" x2="180.2" y2="257.0" class="pmb-c-whisker" />
+<text x="186.2" y="253.0" class="pmb-c-val" dominant-baseline="middle">4m28s</text>
+</svg></div>
+</div>
+</div>
 
-## Individual runs
 
-Raw records live in [`tools/pharmbench/results/`](https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pharmbench/results) -- one folder per run (`scorecard.yaml` + `submission.yaml` written by `score.R --record`, plus a `slide.html` rendered by this script). No raw agent log is archived (see `score.R`), so a slide's score breakdown and trap ledger are complete but it has no wall-clock/cost timeline.
+| Scenario | Tool | Harness | Model | N | Failed | Overall (mean±sd) | Min–Max | Cost (mean±sd) | Duration (mean) | Covariate Analysis | Data Quality | Estimation | Structural |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `pmb-mab-poppk-v0` | modus | pi | `z-ai/glm-5.2` | 3 | — | **0.929** ±0.073 | 0.846–0.986 | $1.46 ±0.63 | 1h35m | 0.868 | 1.000 | 0.888 | 1.000 |
+| `pmb-mab-poppk-v0` | baseline | pi | `z-ai/glm-5.2` | 3 | — | **0.872** ±0.065 | 0.824–0.946 | $0.22 ±0.08 | 25m59s | 0.689 | 1.000 | 0.835 | 1.000 |
+| `pmb-mab-poppk-v0` | modus | claude | `opus` | 3 | — | **0.843** ±0.004 | 0.839–0.846 | $8.33 ±0.34 | 1h08m | 0.770 | 1.000 | 0.723 | 1.000 |
+| `pmb-mab-poppk-v0` | baseline | claude | `sonnet` | 2 | 3 | **0.843** ±0.007 | 0.838–0.848 | $6.53 ±4.20 | 14m32s | 0.783 | 1.000 | 0.715 | 1.000 |
+| `pmb-mab-poppk-v0` | baseline | claude | `opus` | 2 | 2 | **0.832** ±0.164 | 0.716–0.948 | $2.12 ±0.52 | 36m05s | 0.563 | 1.000 | 0.798 | 1.000 |
+| `pmb-mab-poppk-v0` | modus | claude | `sonnet` | 3 | — | **0.823** ±0.041 | 0.776–0.852 | $11.08 ±3.28 | 50m01s | 0.683 | 1.000 | 0.715 | 1.000 |
+| `pmb-mab-poppk-v0` | modus | claude | `haiku` | 3 | — | **0.207** ±0.228 | 0.024–0.462 | $1.48 ±0.48 | 21m21s | 0.083 | 0.556 | 0.030 | 0.333 |
+| `pmb-mab-poppk-v0` | baseline | claude | `haiku` | 3 | — | **0.161** ±0.125 | 0.021–0.262 | $0.29 ±0.12 | 4m28s | 0.106 | 0.536 | 0.083 | 0.000 |
 
-| Timestamp | Scenario | Tool | Harness | Model | Overall | Run |
-|---|---|---|---|---|---|---|
+## Known failed attempts
+
+Runs that never produced a `submission.yaml` -- `score.R` has nothing to score without one, so these don't appear as their own folder in `results/`. Manually curated in `results/failed_runs.yaml`; `confidence: approximate` entries are carried over from an earlier session's notes with no surviving log to re-verify against.
+
+| Date | Scenario | Tool | Harness | Model | Count | Confidence | Failure mode |
+|---|---|---|---|---|---|---|---|
+| 2026-07-12 | `pmb-mab-poppk-v0` | baseline | claude | `sonnet` | 1 | exact | Not the backgrounding pitfall -- the log shows continuous, correct Monitor/poll usage (24 background+monitor tool calls) while the model struggled with BLQ/M3-censoring instability across ~14 retries (LOQ/2 substitution, reduced-IIV variants, structural comparisons). Still actively blocked on a real fit when the 55-minute TASK_TIMEOUT killed the process (~50m48s elapsed) -- ran out of time budget mid-analysis, same pattern as the earlier baseline/pi/GLM-5.2 timeout on this scenario. Not retried: a longer timeout would break comparability with every other 55-minute-default run on the board. |
+| 2026-07-12 | `pmb-mab-poppk-v0` | baseline | claude | `opus` | 1 | exact | Classic backgrounding pitfall, confirmed live: backgrounded two covariate-model refits (nlminb reruns), then ended its turn on bare text -- "The first covariate model is compiling and fitting. I'll continue when the monitor reports completion." -- with no follow-up Monitor/poll call. stop_reason: end_turn, terminal_reason: completed, only 7m47s elapsed (nowhere near the 55-minute timeout); headless -p mode exited right there and killed both background fits as orphans. |
+| 2026-07-10 | `pmb-mab-poppk-v0` | baseline | claude | `sonnet` | 1 | exact | Stream cut off mid-turn: the model narrated its next action ("Now let's write the final submission.yaml.") but no tool_use for Write was ever transmitted, no result event appears anywhere in the log, and no rate-limit/network/API-error signal precedes it either. Distinct from the backgrounding pitfall below -- this run correctly used Monitor to block on every prior long-running fit. |
+| 2026-07-08 | `pmb-mab-poppk-v0` | baseline | claude | `opus` | 1 | approximate | Same backgrounding pitfall as above. |
+| 2026-07-07 | `pmb-mab-poppk-v0` | baseline | claude | `sonnet` | 1 | approximate | Backgrounded a long fit (Bash run_in_background) and then ended its turn on bare text with no follow-up Monitor/poll call -- headless -p mode exits the moment the model stops taking actions, killing the background job with no submission written. |
+
+*The per-run drill-down table is withheld from this render for now. Every run is still recorded in [`tools/pharmbench/results/`](https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pharmbench/results); regenerate without `--no-individual-runs` to list them.*
