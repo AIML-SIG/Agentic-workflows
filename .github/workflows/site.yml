@@ -60,8 +60,20 @@ jobs:
             --exclude-dataset pmb-mab-pkpd-v0 \
             --no-individual-runs
 
-      # Writes only docs/, while the trigger watches results/ and docs/. The
-      # [skip ci] tag is what stops the docs/ path from retriggering this run.
+      # Best-effort, deliberately. The "Protect main" ruleset requires a pull
+      # request with one approval for every change to main, and its only bypass
+      # actor is OrganizationAdmin -- github-actions[bot] is not on that list, so
+      # this push is expected to be rejected until someone adds it.
+      #
+      # It must not fail the job: the deploy below is what actually updates the
+      # published site, and it is rendered from the freshly generated file in the
+      # working tree, not from whatever is committed. So a rejected push means the
+      # copy of the board tracked on main lags -- it does not mean the site is
+      # stale. Failing here would block the deploy and cause the very staleness
+      # the push was meant to prevent.
+      #
+      # Writes only docs/, and the [skip ci] tag stops the docs/ trigger path from
+      # retriggering this workflow if the push does land.
       - name: Commit the board if it changed
         run: |
           if git diff --quiet -- docs/leaderboard.qmd; then
@@ -72,7 +84,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/leaderboard.qmd
           git commit -m "Regenerate leaderboard from results/ [skip ci]"
-          git push
+          if git push; then
+            echo "Committed the regenerated board to main."
+          else
+            echo "::warning title=Board not committed::Push to main was rejected, \
+          almost certainly by the 'Protect main' ruleset. The site deploy below is \
+          unaffected and will publish the current board. To make this push succeed, \
+          add github-actions[bot] as a bypass actor on the ruleset."
+          fi
 
       - uses: quarto-dev/quarto-actions/setup@v2
 
