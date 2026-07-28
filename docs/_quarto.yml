@@ -13,6 +13,14 @@ website:
         href: learning/glossary/agent.qmd
       - text: "Leaderboard"
         href: leaderboard.qmd
+    right:
+      # Labelled rather than icon-only. Much of this audience arrives from a talk
+      # or a LinkedIn post to read the glossary, not from GitHub, and a bare
+      # octocat is easy to miss if you are not already looking for one.
+      - text: "Repo"
+        icon: github
+        href: https://github.com/AIML-SIG/Agentic-workflows
+        aria-label: "Agentic Workflows on GitHub"
 
   sidebar:
     - id: glossary
