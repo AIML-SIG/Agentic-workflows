@@ -1,0 +1,103 @@
+# Known failed attempts -- runs that never produced a submission.yaml, so
+# score.R had nothing to score and they never land in results/ the normal
+# way (one folder per successful run). Manually curated; matched onto
+# leaderboard rows by (dataset, tool, harness, model) only -- not tool_sha,
+# since a failed attempt has no artifact to pin a revision to.
+#
+# `confidence: exact` means the failure was diagnosed from a live log this
+# session. `confidence: approximate` means it's carried over from an earlier
+# session's memory notes, with no surviving log (the /tmp run dir was a
+# transient container path, since gone) -- date and count are as reported at
+# the time, not independently re-verified here.
+
+- dataset: pmb-mab-poppk-v0
+  tool: baseline
+  harness: claude
+  model: claude-sonnet-5
+  date: "2026-07-10"
+  count: 1
+  confidence: exact
+  failure_mode: >
+    Stream cut off mid-turn: the model narrated its next action ("Now let's
+    write the final submission.yaml.") but no tool_use for Write was ever
+    transmitted, no result event appears anywhere in the log, and no
+    rate-limit/network/API-error signal precedes it either. Distinct from
+    the backgrounding pitfall below -- this run correctly used Monitor to
+    block on every prior long-running fit.
+  note: "run dir /tmp/pmbench-baseline-sonnet-20260710T083351 (baseline_20260710_153405.log), on the container as of this session"
+
+- dataset: pmb-mab-poppk-v0
+  tool: baseline
+  harness: claude
+  model: claude-sonnet-5
+  date: "2026-07-07"
+  count: 1
+  confidence: approximate
+  failure_mode: >
+    Backgrounded a long fit (Bash run_in_background) and then ended its turn
+    on bare text with no follow-up Monitor/poll call -- headless -p mode
+    exits the moment the model stops taking actions, killing the background
+    job with no submission written.
+  note: "preceded the successful c2b6fc run (2026-07-07T20:25:43Z); no surviving log, from a prior session's diagnosis"
+
+- dataset: pmb-mab-poppk-v0
+  tool: baseline
+  harness: claude
+  model: opus
+  date: "2026-07-08"
+  count: 1
+  confidence: approximate
+  failure_mode: "Same backgrounding pitfall as above."
+  note: "preceded the successful a64ecc run (2026-07-08T00:15:39Z); no surviving log, from a prior session's diagnosis"
+
+- dataset: pmb-mab-pkpd-v0
+  tool: baseline
+  harness: claude
+  model: claude-sonnet-5
+  date: "2026-07-08"
+  count: 3
+  confidence: approximate
+  failure_mode: >
+    Backgrounded the fit and stopped on bare text every time (3/3 attempts).
+    This scenario's fit (4 candidate PK structures + PD Emax) is slower than
+    mab-poppk-v0's, which seems to push sonnet toward backgrounding it, and
+    -- as of the prior session that recorded this -- it had never been
+    observed succeeding here. No successful baseline/claude/sonnet run on
+    pmb-mab-pkpd-v0 appears on the leaderboard, consistent with that.
+  note: "no surviving logs, from a prior session's diagnosis"
+
+- dataset: pmb-mab-poppk-v0
+  tool: baseline
+  harness: claude
+  model: claude-sonnet-5
+  date: "2026-07-12"
+  count: 1
+  confidence: exact
+  failure_mode: >
+    Not the backgrounding pitfall -- the log shows continuous, correct
+    Monitor/poll usage (24 background+monitor tool calls) while the model
+    struggled with BLQ/M3-censoring instability across ~14 retries (LOQ/2
+    substitution, reduced-IIV variants, structural comparisons). Still
+    actively blocked on a real fit when the 55-minute TASK_TIMEOUT killed
+    the process (~50m48s elapsed) -- ran out of time budget mid-analysis,
+    same pattern as the earlier baseline/pi/GLM-5.2 timeout on this
+    scenario. Not retried: a longer timeout would break comparability with
+    every other 55-minute-default run on the board.
+  note: "run dir /tmp/pmbench-baseline-sonnet-n3-20260712T141119Z (baseline_20260712_141127.log), kept on the container for spot-checking"
+
+- dataset: pmb-mab-poppk-v0
+  tool: baseline
+  harness: claude
+  model: opus
+  date: "2026-07-12"
+  count: 1
+  confidence: exact
+  failure_mode: >
+    Classic backgrounding pitfall, confirmed live: backgrounded two
+    covariate-model refits (nlminb reruns), then ended its turn on bare
+    text -- "The first covariate model is compiling and fitting. I'll
+    continue when the monitor reports completion." -- with no follow-up
+    Monitor/poll call. stop_reason: end_turn, terminal_reason: completed,
+    only 7m47s elapsed (nowhere near the 55-minute timeout); headless -p
+    mode exited right there and killed both background fits as orphans.
+  note: "run dir /tmp/pmbench-baseline-opus-n3-20260712T151404Z (baseline_20260712_151406.log), kept on the container for spot-checking"

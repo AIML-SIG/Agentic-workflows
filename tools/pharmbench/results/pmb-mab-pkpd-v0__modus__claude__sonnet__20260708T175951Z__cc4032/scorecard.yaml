@@ -1,0 +1,65 @@
+dataset: pmb-mab-pkpd-v0
+provenance:
+  tool: modus
+  tool_sha: 27ecc102a2ee
+  model: claude-sonnet-5
+  run_utc: '2026-07-08T17:59:51Z'
+  analysis_steps:
+  - scope
+  - study_context
+  - data_qc
+  - structural_model
+  - pkpd_model
+  - review
+  - submission
+  pharmbench_sha: 51d01acbfc97
+  harness: claude
+  agent_cmd: claude -p --model sonnet --verbose --output-format stream-json --dangerously-skip-permissions
+  cost_usd: '12.073816'
+  duration_s: '3161'
+items:
+  structural_elimination:
+    score: 1.0
+    scorer: categorical
+    answered: true
+    pmx_area: structural
+    weight: 1
+  disposition_params:
+    score: 0.0562
+    scorer: map
+    answered: true
+    pmx_area: estimation
+    weight: 1
+  nonlinear_pk_params:
+    score: 0.0879
+    scorer: map
+    answered: true
+    pmx_area: structural
+    weight: 1
+  pd_params:
+    score: 0.9025
+    scorer: map
+    answered: true
+    pmx_area: pk-pd-linkage
+    weight: 1
+  pd_cov_effects:
+    score: 0.956
+    scorer: map_nested
+    answered: true
+    pmx_area: covariate-analysis
+    weight: 1
+  pd_assay_artifact_day:
+    score: 1.0
+    scorer: categorical
+    answered: true
+    pmx_area: data-quality
+    weight: 1
+by_pmx_area:
+  structural: 0.544
+  estimation: 0.0562
+  pk-pd-linkage: 0.9025
+  covariate-analysis: 0.956
+  data-quality: 1.0
+overall: 0.6671
+unanswered_items: none
+traps_fallen_for: none detected

@@ -1,0 +1,69 @@
+# submission.yaml — PMB-MAB-01 population PK analysis (baseline)
+#
+# Analysis summary
+# ----------------
+# Structural model: 2-compartment (mammillary) IV infusion model selected over
+#   1-compartment by FOCEI -2LL (1-cmt OBJ=5494.4 vs 2-cmt OBJ=3590.4; dOFV=1904
+#   for 4 added parameters: Q, Vp, eta.Q, eta.Vp).
+# Estimation: nlmixr2 FOCEI, 120 subjects, 1437 observation records (1401
+#   quantifiable + 36 BLQ handled as left-censored at LLOQ=0.1 mg/L via the M3
+#   method; predose BLQ records carry no information and were dropped). Combined
+#   proportional + additive residual error.
+# Final parameterization (power covariate on WT, reference 70 kg):
+#   CL = exp(tcl) * (WT/70)^theta_wt_cl
+#   Vc = exp(tv)  * (WT/70)^theta_wt_v
+#   Q  = exp(tq);  Vp = exp(tvp)
+# Typical values below are at WT = 70 kg (so the (WT/70) factor = 1).
+#
+# Covariates: WT supported on CL (dOFV=21.2, 1 d.f.) and on Vc (dOFV=58.2,
+#   1 d.f.) as power relationships. ALB and CRCL were NOT supported:
+#   - CRCL on CL: estimated exponent ~3e-6 (~0), dOFV ~0 (no improvement).
+#   - ALB on CL/Vc: empirical-Bayes screen after WT showed no residual
+#     correlation (cor(eta_CL, ALB)=0.07, cor(eta_Vc, ALB)=-0.08); regression
+#     eta_CL ~ WT+ALB+CRCL gave ALB p=0.55, CRCL p=0.34, overall p=0.69.
+#   This is consistent with the mechanism (IgG1 cleared by FcRn-modulated
+#   catabolism, not renal; ALB uncorrelated with residual IIV after WT).
+#
+# Data quality (outlier_records): three records show impossible spikes at
+#   TIME=7 day, ~10x both neighbouring points in otherwise smooth profiles:
+#     ROWID 62  (ID 5,  100 mg, DV=132.3  vs nbrs 16.7 / 8.45)
+#     ROWID 692 (ID 50, 300 mg, DV=381.2  vs nbrs 52.4 / 32.5)
+#     ROWID 1322(ID 95, 600 mg, DV=841.8  vs nbrs 102  / 35.6)
+#   These were excluded from estimation. Subject 32's elevated terminal
+#   concentrations are genuine slow-elimination IIV (internally consistent
+#   profile), not data errors, and were retained.
+
+provenance:
+  tool: baseline
+  tool_sha: ""
+  model: "nlmixr2 (FOCEI)"
+  run_utc: "2026-07-07T00:00:00Z"
+  analysis_steps:
+    - data_import_and_qc
+    - outlier_screening
+    - structural_model_selection_1cmt_vs_2cmt
+    - blq_handling_m3_left_censored_at_lloq
+    - covariate_forward_selection_wt_alb_crcl
+    - eta_based_covariate_screen_alb_crcl
+    - final_model_foa_diagnostics_cwres
+
+answers:
+  structural_ncmt: 2
+
+  disposition_params:
+    CL: 0.1964      # L/day, typical at 70 kg
+    Vc: 2.9787      # L, central volume, typical at 70 kg
+    Q:  0.6096      # L/day, intercompartmental clearance
+    Vp: 2.9879      # L, peripheral volume
+
+  error_model:
+    prop: 0.1482    # proportional residual error (CV fraction)
+    add:  0.01707   # additive residual error (SD, mg/L)
+
+  cov_effects:
+    CL:
+      WT: 0.7826    # power exponent on (WT/70)
+    Vc:
+      WT: 1.0438    # power exponent on (WT/70)
+
+  outlier_records: ["62", "692", "1322"]

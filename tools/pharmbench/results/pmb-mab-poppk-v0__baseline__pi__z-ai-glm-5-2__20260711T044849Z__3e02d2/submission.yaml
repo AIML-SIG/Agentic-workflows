@@ -1,0 +1,56 @@
+# submission.yaml -- PMB-MAB-01 population PK analysis
+# Produced by a baseline (nlmixr2 / R) workflow.
+
+provenance:
+  tool: baseline
+  tool_sha: ""
+  model: "z-ai/glm-5.2"
+  run_utc: "2026-07-11T04:48:49Z"
+  analysis_steps:
+    - data_load_and_qc
+    - outlier_screen_population_logz
+    - blq_exclusion_documented
+    - structural_1c_vs_2c_focei
+    - iiv_base_2comp
+    - forward_covariate_screening_WT_ALB_CRCL
+    - backward_retention_check
+    - final_model_focei
+
+answers:
+  # Structural model: 2-compartment IV infusion (bi-exponential decline;
+  # 2-comp objf 3460.7 vs 1-comp 5786.2, dOFV -2325 for 3 added params).
+  structural_ncmt: 2
+
+  # Typical (population) disposition values of the final model, reported at a
+  # 70 kg reference weight (the model is centered WT/70). 2-comp IV infusion,
+  # parameterized as CL, Vc (central), Q, Vp (peripheral).
+  # Units: CL/Q in L/day, Vc/Vp in L.
+  disposition_params:
+    CL: 0.19929      # L/day  (typical clearance at 70 kg)
+    Vc: 2.9952       # L      (typical central volume at 70 kg)
+    Q:  0.6729       # L/day  (inter-compartmental clearance)
+    Vp: 3.1963       # L      (typical peripheral volume at 70 kg)
+
+  # Residual error: proportional only.
+  error_model:
+    prop: 0.15170    # proportional residual error (fraction, ~CV)
+
+  # Supported covariate effects. WT (power exponent, centered on 70 kg) is
+  # supported on both central volume and clearance. ALB showed a borderline
+  # univariate signal that disappeared once WT was in the model (correlated
+  # with WT, r=0.40) -> judged spurious, not retained. CRCL was never
+  # significant in any step (consistent with non-renal IgG1 elimination) ->
+  # decoy, not retained.
+  cov_effects:
+    Vc:
+      WT: 1.0044     # power exponent: Vc ~ (WT/70)^1.0044
+    CL:
+      WT: 0.7426     # power exponent: CL ~ (WT/70)^0.7426
+
+  # Records flagged as data-quality outliers: single corrupted samples at
+  # day 7 that spiked ~8x above a subject's own neighboring points and
+  # exceeded |population log-z|>4 within dose+time. ROWID strings.
+  outlier_records:
+    - "62"
+    - "692"
+    - "1322"

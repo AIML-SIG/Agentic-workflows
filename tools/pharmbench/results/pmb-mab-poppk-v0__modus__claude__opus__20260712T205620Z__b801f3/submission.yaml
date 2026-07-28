@@ -1,0 +1,48 @@
+# submission.yaml — the machine-readable answer extraction for PMB-MAB-01.
+# Values filled from the upstream task summaries (data_qc, structural_model,
+# covariate_analysis, review). Only analysis-supported answers are reported.
+
+provenance:
+  tool: modus
+  tool_sha: "8499dba53b65830cac16cea46b52b94b4fa91e83"
+  model: "claude-opus-4-8"
+  run_utc: "2026-07-12T20:56:20Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+    - submission
+
+answers:
+  structural_ncmt: 2
+
+  # Typical (population) disposition parameters of the final 2-compartment model
+  # at a 70 kg reference weight. Units: L/day for clearances, L for volumes.
+  disposition_params:
+    CL: 0.196    # L/day, typical clearance at 70 kg
+    Vc: 2.98     # L, typical central volume at 70 kg
+    Q: 0.604     # L/day, inter-compartmental clearance
+    Vp: 2.97     # L, peripheral volume
+
+  # Residual-error terms of the final model.
+  error_model:
+    prop: 0.150    # proportional fraction
+    add: 0.0119    # additive, mg/L
+
+  # Supported covariate effects (power-model exponents), grouped by the
+  # disposition parameter they act on. Only WT (body weight) is supported;
+  # ALB and CRCL were tested and rejected.
+  cov_effects:
+    CL:
+      WT: 0.795
+    Vc:
+      WT: 1.04
+
+  # Day-7 concentration spikes excluded as data-quality outliers, by ROWID.
+  outlier_records:
+    - "62"
+    - "692"
+    - "1322"

@@ -1,0 +1,63 @@
+# submission.yaml — machine-readable answer extraction for PMB-MAB-01.
+# Filled by the baseline workflow (population PK analysis with nlmixr2/FOCEi).
+#
+# Analysis summary:
+#   * Structural model: 2-compartment (biexponential decline) selected over
+#     1-compartment (1-cmt failed to converge / could not describe the
+#     biexponential mAb profile). IV 1-hour infusion (rate = AMT*24 mg/day).
+#   * BLQ handling: BLQ records (DV=0, BLQ=1) excluded from the fit (dropped,
+#     documented). LLOQ = 0.1 mg/L. Most BLQ at predose (expected) and late
+#     terminal phase (t>=90 d).
+#   * Outliers: 3 records flagged as data-quality outliers — decimal-point
+#     errors producing ~8-10x upward spikes at DAY=7 that break each subject's
+#     declining profile (subjects 5, 50, 95). Excluded from the fit.
+#   * IIV: log-normal on CL, V1, Q, V2 (diagonal omega). Residual: proportional.
+#   * Covariates: WT allometric scaling with ESTIMATED exponents on CL and V1
+#     (significant), conventional fixed allometry on Q (0.75) and V2 (1.0).
+#     ALB and CRCL tested on CL and V1 (exponential form); neither was
+#     supported (dOFV < 3.84, NS), consistent with mechanism (IgG1 not renally
+#     eliminated). CRCL is a decoy covariate.
+#   * Typical values reported at WT = 70 kg reference ((WT/70)^exponent = 1).
+#
+# Key model-selection numbers (FOCEi, n=120 subjects, 1401 observations):
+#   base 2-cmt (WT est. on CL/V1)        OFV 3511.9  BIC 6166.4
+#   2-cmt + ALB on CL                     OFV 3510.7  BIC 6172.5  (dOFV 1.14, NS)
+#   2-cmt + ALB on V1                     OFV 3511.2  BIC 6173.0  (dOFV 0.70, NS)
+#   2-cmt, all 4 WT exponents est.        OFV 3431.3  BIC 6100.3  (WT on Q/V2 NS)
+
+provenance:
+  tool: baseline
+  tool_sha: "abdc99d3e242"
+  model: "z-ai/glm-5.2"
+  run_utc: "2026-07-12T14:35:55Z"
+  analysis_steps:
+    - data_ingest
+    - data_quality_screen
+    - outlier_identification
+    - blq_handling_drop
+    - structural_model_selection_1cmt_vs_2cmt
+    - base_2cmt_allometric_WT_fit
+    - covariate_testing_ALB_CRCL_on_CL_and_V1
+    - full_model_all_WT_exponents
+    - final_model_selection
+    - submission_write
+
+answers:
+  structural_ncmt: 2
+
+  disposition_params:
+    CL: 0.194      # L/day, typical at 70 kg
+    V1: 3.04       # L, central volume, typical at 70 kg
+    Q: 0.584       # L/day, intercompartmental clearance, typical at 70 kg
+    V2: 2.81       # L, peripheral volume, typical at 70 kg
+
+  error_model:
+    prop: 0.151    # proportional residual error (CV fraction)
+
+  cov_effects:
+    CL:
+      WT: 0.933    # power exponent: CL ~ (WT/70)^0.933
+    V1:
+      WT: 0.759    # power exponent: V1 ~ (WT/70)^0.759
+
+  outlier_records: ["62", "692", "1322"]

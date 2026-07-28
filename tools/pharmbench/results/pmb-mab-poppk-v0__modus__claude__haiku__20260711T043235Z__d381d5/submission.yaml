@@ -1,0 +1,39 @@
+provenance:
+  tool: modus
+  tool_sha: 26329d50f7bab9e483847165b03e8bf01a04f662
+  model: claude-haiku-4-5-20251001
+  run_utc: '2026-07-11T04:32:35Z'
+  analysis_steps:
+  - scope
+  - study_context
+  - data_qc
+  - structural_model
+  - covariate_analysis
+  - review
+answers:
+  structural_ncmt: 2.0
+  disposition_params:
+    CL: 0.01955
+    Vc: 2.056
+    Q: 0.0562
+    Vp: 76.518
+  error_model:
+    prop: 1.27
+  cov_effects:
+    CL:
+      WT: 0.75
+      ALB: 0.468
+    Vc:
+      WT: 1.0
+      ALB: 0.624
+    Q:
+      WT: 0.75
+      ALB: 0.468
+    Vp:
+      WT: 1.0
+      ALB: 0.624
+  outlier_records:
+  - '62'
+  - '692'
+  - '1322'
+

@@ -16,6 +16,13 @@ Three objectives, three lanes:
 
 How they connect: learn by doing, tools discovered and evaluated, evaluation turned into trust.
 
+## The site
+
+The group publishes at **[aiml-sig.github.io/Agentic-workflows](https://aiml-sig.github.io/Agentic-workflows/)**. Two things worth going straight to:
+
+- **[Glossary](https://aiml-sig.github.io/Agentic-workflows/learning/glossary/agent.html)** — plain-language definitions of the terms this field uses loosely: agent, harness, tools, MCP. Start here if the vocabulary is the barrier.
+- **[Leaderboard](https://aiml-sig.github.io/Agentic-workflows/leaderboard.html)** — PMbench scores for every recorded run: which workflow, on which model and harness, at what score and cost. To add a row of your own, work through the [First Run milestone](../../milestone/1).
+
 
 ## Join us
 

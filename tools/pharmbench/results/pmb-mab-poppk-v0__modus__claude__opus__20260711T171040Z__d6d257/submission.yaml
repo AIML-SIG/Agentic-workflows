@@ -1,0 +1,48 @@
+# submission.yaml — machine-readable answer extraction for PMB-MAB-01.
+# Answers filled from the modus workflow's upstream task summaries.
+# Items the analysis did not address are left null; nothing is guessed.
+
+provenance:
+  tool: modus
+  tool_sha: "7df0f27386041bd65b98b897c444493df33d4f15"
+  model: "claude-opus-4-8"
+  run_utc: "2026-07-11T17:10:40Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+    - submission
+
+answers:
+  # 2-compartment disposition selected by comparison (dOBJF -1915 vs 1-cmt).
+  structural_ncmt: 2
+
+  # Typical population disposition parameters of the final model, at 70 kg reference.
+  disposition_params:
+    CL: 0.1957   # L/day
+    Vc: 2.978    # L (central volume)
+    Q: 0.6048    # L/day (inter-compartmental clearance)
+    Vp: 2.969    # L (peripheral volume)
+
+  # Residual-error terms of the final model.
+  error_model:
+    prop: 0.1498   # proportional fraction (CV)
+    add: 0.01227   # mg/L (additive)
+
+  # Supported covariate effects, grouped by disposition parameter then covariate.
+  # Body weight retained as allometric power scaling on CL and Vc (ref 70 kg).
+  # ALB and CRCL tested and rejected -> not reported.
+  cov_effects:
+    CL:
+      WT: 0.7931   # allometric power exponent
+    Vc:
+      WT: 1.037    # allometric power exponent
+
+  # Data-quality outliers excluded in QC, reported by ROWID (isolated day-7 spikes).
+  outlier_records:
+    - "62"
+    - "692"
+    - "1322"

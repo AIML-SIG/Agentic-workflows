@@ -1,0 +1,33 @@
+provenance:
+  tool: modus
+  tool_sha: "27ecc102a2ee855e5ef675a523008dc7ed1adf4a"
+  model: "openai/gpt-5.5"
+  run_utc: "2026-07-08T19:27:14Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+    - pkpd_model
+    - submission
+
+answers:
+  structural_elimination: saturable
+  disposition_params:
+    Vc: 3.19551424564683
+    Vp: 2.79802476369133
+    CL: 0.105593696300684
+    Q: 0.414092789371452
+  nonlinear_pk_params:
+    VMAX: 0.169851168110104
+    KM: 0.745048447695911
+  pd_params:
+    BASE: 85.8132237581518
+    IMAX: 0.891654357520082
+    IC50: 2.10220314737036
+  pd_cov_effects:
+    BASE:
+      SEVERITY: 0.6859380145803
+  pd_assay_artifact_day: 28

@@ -1,0 +1,57 @@
+dataset: pmb-mab-poppk-v0
+provenance:
+  tool: modus
+  tool_sha: b893113000d8
+  model: haiku
+  run_utc: '2026-07-11T04:32:35Z'
+  analysis_steps:
+  - scope
+  - study_context
+  - data_qc
+  - structural_model
+  - covariate_analysis
+  - review
+  pharmbench_sha: b893113000d8
+  harness: claude
+  agent_cmd: claude -p --model haiku --verbose --output-format stream-json --dangerously-skip-permissions
+  cost_usd: '1.009735'
+  duration_s: '851'
+items:
+  structural_ncmt:
+    score: 1.0
+    scorer: categorical
+    answered: true
+    pmx_area: structural
+    weight: 1
+  disposition_params:
+    score: 0.0573
+    scorer: map
+    answered: true
+    pmx_area: estimation
+    weight: 1
+  error_model:
+    score: 0.0
+    scorer: map
+    answered: true
+    pmx_area: estimation
+    weight: 1
+  cov_effects:
+    score: 0.25
+    scorer: map_nested
+    answered: true
+    pmx_area: covariate-analysis
+    weight: 1
+  outlier_records:
+    score: 1.0
+    scorer: set
+    answered: true
+    pmx_area: data-quality
+    weight: 1
+by_pmx_area:
+  structural: 1.0
+  estimation: 0.0286
+  covariate-analysis: 0.25
+  data-quality: 1.0
+overall: 0.4615
+unanswered_items: none
+traps_fallen_for: 'cov_effects: decoy(s) included -> alb'

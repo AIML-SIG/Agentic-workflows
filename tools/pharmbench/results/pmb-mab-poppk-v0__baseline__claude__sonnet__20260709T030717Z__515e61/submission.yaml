@@ -1,0 +1,59 @@
+# submission.yaml — the machine-readable answer extraction for PMB-MAB-01.
+
+provenance:
+  tool: baseline
+  tool_sha: ""
+  model: claude-sonnet-5
+  run_utc: "2026-07-09T03:07:17Z"
+  analysis_steps:
+    - data_qc_screen: screened for BLQ pattern and per-subject implausible
+        records using log-linear neighbor-interpolation residuals; found and
+        excluded 3 isolated ~7-8x concentration spikes at DAY 7 (ID 5, 50, 95)
+        inconsistent with each subject's own otherwise-smooth decline
+    - blq_handling: M3 likelihood-based censoring (DV set to LLOQ=0.1 mg/L,
+        censored below) via CENS/LIMIT columns in nlmixr2/rxode2
+    - structural_model_selection: compared 1- vs 2-compartment IV infusion
+        models (FOCEI); 2-compartment strongly preferred (OFV 3808.7 vs
+        5725.2, dOFV ~1916)
+    - iiv_and_error_model_refinement: compared full IIV (CL,V1,Q,V2) vs
+        reduced IIV (CL,V1 only), and proportional-only vs combined
+        (proportional+additive) residual error; reduced-IIV + combined-error
+        was equal-or-better with fewer parameters (OFV 3806.9, AIC 6684.4)
+        and eliminated high shrinkage (73-81%) on Q,V2 etas
+    - covariate_screening: examined empirical Bayes eta-covariate
+        correlations for WT, ALB, CRCL, including partial correlations
+        controlling for WT to distinguish real effects from confounding
+        (ALB correlates with WT at r=0.40); WT was significant on both
+        eta.CL and eta.V1 in multivariable regression (p<0.0001) while ALB
+        and CRCL were not, after adjusting for WT
+    - covariate_model_building: fit power/allometric-form WT effect on CL
+        and V1 with estimated (not fixed) exponents (dOFV=73.2 for 2 df vs
+        no-covariate model, p<<0.001); formally tested adding ALB or CRCL
+        power effects on top of the WT model via LRT with multiple
+        optimizers (FOCEI and bobyqa) for convergence stability - neither
+        improved OFV meaningfully (dOFV<1 for 1 df) and both had 95% CIs
+        spanning zero, so neither was retained
+    - final_model_diagnostics: log-scale DV-IPRED correlation 0.997,
+        DV-PRED correlation 0.944, CWRES approximately standard normal
+        (mean -0.02, no |CWRES|>4)
+
+answers:
+  structural_ncmt: 2
+
+  disposition_params:
+    CL: 0.1961
+    V1: 2.9716
+    Q: 0.6047
+    V2: 2.9705
+
+  error_model:
+    prop: 0.1492
+    add: 0.00307
+
+  cov_effects:
+    CL:
+      WT: 0.782
+    V1:
+      WT: 1.044
+
+  outlier_records: ["62", "692", "1322"]

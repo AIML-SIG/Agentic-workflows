@@ -1,0 +1,23 @@
+provenance:
+  tool: baseline
+  tool_sha: ''
+  model: claude-haiku-4-5-20251001
+  run_utc: '2026-07-12T14:36:33Z'
+  analysis_steps:
+  - data_quality_check
+  - one_compartment_model_fitting
+  - weight_scaling_allometric
+  - covariate_screening
+  - outlier_identification
+answers:
+  structural_ncmt: 1.0
+  disposition_params:
+    CL: 0.0959761
+    V: 3.6401046
+  error_model:
+    prop: 0.6026734
+  cov_effects:
+    CL:
+      ALB: 0.0288868
+      CRCL: -0.1102607
+  outlier_records: []

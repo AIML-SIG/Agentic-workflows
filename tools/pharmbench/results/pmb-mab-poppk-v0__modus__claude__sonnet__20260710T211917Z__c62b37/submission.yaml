@@ -1,0 +1,41 @@
+# submission.yaml — machine-readable answer extraction for PMB-MAB-01.
+
+provenance:
+  tool: modus
+  tool_sha: "ad8c775162660f937a34609053c978dc30f99c82"
+  model: "claude-sonnet-5"
+  run_utc: "2026-07-10T21:19:17Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+    - submission
+
+answers:
+  structural_ncmt: 2
+
+  # Final (covariate) model's typical values at the 70 kg reference weight.
+  # WT-CL and WT-Vc power exponents are centered so the multiplier is 1 at WT=70,
+  # i.e. these theta values already are the reference-weight typical values
+  # (fit_step2_wtv1_wtcl.rds, re-derived independently in review).
+  disposition_params:
+    CL: 0.1957502350569808
+    Vc: 2.97973306722934
+    Q: 0.6040990567816148
+    Vp: 2.9666152142549005
+
+  error_model:
+    add: 0.01297200819
+    prop: 0.14972188749
+
+  # Power-model exponents on (WT/70); only WT was retained for either parameter.
+  cov_effects:
+    CL:
+      WT: 0.786
+    Vc:
+      WT: 1.032
+
+  outlier_records: ["62", "692", "1322"]
