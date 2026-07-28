@@ -2,7 +2,7 @@
 
 A working subgroup of the [ISoP AI/ML SIG](https://www.isop.org/special-interest-groups/aiml-sig), bringing pharmacometricians together around AI agents and agentic workflows. Join the conversation in [Discussions](../../discussions).
 
-**New here?** The fastest way in is the [First Run milestone](../../milestone/1), the on-ramp into the biweekly evaluation subgroup. The bar is effort, not a passing score: run it, tell us what happened, and you're in. Questions and reports go in the [First Run discussion](../../discussions/28).
+**New here?** Start with the [First Run milestone](../../milestone/1). Run it, tell us what happened, and you're in the biweekly evaluation subgroup. You don't need a passing score. Reporting what blocked you counts. Questions and results go in the [First Run discussion](../../discussions/28).
 
 ## Mission
 
@@ -22,8 +22,8 @@ How they connect: learn by doing, tools discovered and evaluated, evaluation tur
 
 The group publishes at **[aiml-sig.github.io/Agentic-workflows](https://aiml-sig.github.io/Agentic-workflows/)**. Two things worth going straight to:
 
-- **[Glossary](https://aiml-sig.github.io/Agentic-workflows/learning/glossary/agent.html)** — plain-language definitions of the terms this field uses loosely: agent, harness, tools, MCP. Start here if the vocabulary is the barrier.
-- **[Leaderboard](https://aiml-sig.github.io/Agentic-workflows/leaderboard.html)** — PMbench scores for every recorded run: which workflow, on which model and harness, at what score and cost. To add a row of your own, work through the [First Run milestone](../../milestone/1).
+- **[Glossary](https://aiml-sig.github.io/Agentic-workflows/learning/glossary/agent.html).** Plain-language definitions of the terms this field uses loosely: agent, harness, tools, MCP. Start here if the vocabulary is the barrier.
+- **[Leaderboard](https://aiml-sig.github.io/Agentic-workflows/leaderboard.html).** PMbench scores for every recorded run: which workflow, on which model and harness, at what score and cost. To add a row of your own, work through the [First Run milestone](../../milestone/1).
 
 
 ## Join us
