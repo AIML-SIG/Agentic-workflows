@@ -76,7 +76,10 @@ Verify, and install what's missing, before running anything:
    is the fitting engine the workflow tasks use at run time. Install:
    `Rscript -e 'install.packages(c("mrgsolve","yaml","nlmixr2"))'`. Confirm
    with `Rscript -e 'library(nlmixr2)'`.
-3. **Python 3 + pyyaml** — only for the optional `pharmbench/visualize_results.py`.
+3. **Python 3 + pyyaml** — for `pharmbench/generate_leaderboard.py` (renders
+   `docs/leaderboard.qmd` and the per-run drill-down slides; CI runs it on every push
+   to `main`, so you only need it to preview the board locally) and for the optional
+   `pharmbench/visualize_results.py`.
 
 ## Then run, in this order
 

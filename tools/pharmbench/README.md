@@ -181,18 +181,28 @@ harness streams a different event shape (`claude`'s `stream-json` vs. `pi`'s
 own format, etc.), so parsing them for drill-down would mean a bespoke
 extractor per harness rather than one general tool.
 
-Then regenerate the leaderboard, which also (re)renders every run's
-drill-down slide (score breakdown + trap ledger, derived from the scorecard,
-submission, and the scenario's `truth.yaml` — no wall-clock/cost timeline,
-since that needs the log this deliberately doesn't keep):
+**Commit only the new `results/<slug>/` folder.** `--record` is opt-in specifically
+so ad hoc scoring (the smoke test above) doesn't silently create a leaderboard entry.
+
+**Do not commit `docs/leaderboard.qmd`** — it is generated, and it is not tracked in
+git. `.github/workflows/site.yml` regenerates it from the whole of `results/` on every
+push to `main` and publishes the site, so your run reaches the board on merge without
+you doing anything. This is also why contributor PRs never collide on it: a generated
+file committed by many people at once means later merges silently drop earlier entries.
+
+You only need to run the generator yourself to preview the board locally, or to work
+out why a run isn't appearing. It also (re)renders every run's drill-down slide (score
+breakdown + trap ledger, derived from the scorecard, submission and the scenario's
+`truth.yaml` — no wall-clock/cost timeline, since that needs the log this deliberately
+doesn't keep):
 
 ```sh
-python3 generate_leaderboard.py
+python3 generate_leaderboard.py --exclude-dataset pmb-mab-pkpd-v0
 ```
 
-Commit the new `results/<slug>/` folder together with the regenerated
-`docs/leaderboard.qmd`. `--record` is opt-in specifically so ad hoc scoring
-(the smoke test above) doesn't silently create a leaderboard entry.
+`--exclude-dataset` matters: without it the board picks up `pmb-mab-pkpd-v0` runs,
+which are excluded from the published leaderboard. The workflow always passes it, so
+pass it locally too or your preview won't match the site. Needs `pyyaml`.
 
 ## Scoring
 
