@@ -1,0 +1,105 @@
+name: Build and publish the site
+
+# Owns the whole path from a merged result to the live page: regenerate the
+# leaderboard, render the Quarto site, deploy it to GitHub Pages.
+#
+# Triggers on a paths-filtered push to main. A merged PR *is* a push to main, so
+# this fires exactly when a results-carrying submission lands -- and also when a
+# maintainer pushes results directly, which `pull_request: [closed]` would miss.
+# docs/** is included so editing the glossary republishes the site too; the
+# leaderboard is not the only thing here.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/pharmbench/results/**'
+      - 'docs/**'
+      - '.github/workflows/site.yml'
+  workflow_dispatch:
+
+# Serialise. Several submissions can merge in the same week -- the whole point of
+# the First Run milestone -- and two runs racing to push docs/ or deploy Pages
+# would conflict. Not cancel-in-progress: regeneration reads the full results/
+# tree and a half-finished deploy is worse than a queued one.
+concurrency:
+  group: site
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # commit the regenerated board back to main
+  pages: write      # deploy to GitHub Pages
+  id-token: write   # OIDC for the Pages deployment
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pyyaml
+        run: pip install pyyaml
+
+      # Run unconditionally rather than branching on which paths changed: the
+      # generator is idempotent (verified), so on a docs-only push this is a
+      # no-op costing seconds, and that is cheaper than path-filter logic.
+      #
+      # Both flags are required and have each regressed once when run by hand.
+      # Encoding them here is the actual fix -- nobody types them again.
+      #
+      # --no-individual-runs can be dropped now that results/ lives on main and
+      # the per-run links resolve (see #21). Left on so the board matches what is
+      # published today; flipping it is a one-line change.
+      - name: Regenerate docs/leaderboard.qmd
+        working-directory: tools/pharmbench
+        run: |
+          python3 generate_leaderboard.py \
+            --exclude-dataset pmb-mab-pkpd-v0 \
+            --no-individual-runs
+
+      # Writes only docs/, while the trigger watches results/ and docs/. The
+      # [skip ci] tag is what stops the docs/ path from retriggering this run.
+      - name: Commit the board if it changed
+        run: |
+          if git diff --quiet -- docs/leaderboard.qmd; then
+            echo "Board unchanged; nothing to commit."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/leaderboard.qmd
+          git commit -m "Regenerate leaderboard from results/ [skip ci]"
+          git push
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render the site
+        run: quarto render docs
+
+      # Native Pages deployment, replacing the legacy build-from-gh-pages-branch
+      # path. No gh-pages branch to keep in sync, and the deploy is a first-class
+      # step with its own logs instead of an opaque background build.
+      #
+      # REQUIRES: Settings -> Pages -> Source must be "GitHub Actions", not
+      # "Deploy from a branch". Until that is switched the site will not update.
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
