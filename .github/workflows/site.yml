@@ -1,7 +1,12 @@
 name: Build and publish the site
 
-# Owns the whole path from a merged result to the live page: regenerate the
+# Owns the whole path from a merged result to the live page: generate the
 # leaderboard, render the Quarto site, deploy it to GitHub Pages.
+#
+# CI is the only author of docs/leaderboard.qmd. It is generated here from
+# results/ on every run and is not tracked in git, so there is no committed copy
+# that can drift out of step with the runs -- and nothing tempting a contributor
+# to regenerate it in their PR, which #18 forbids.
 #
 # Triggers on a paths-filtered push to main. A merged PR *is* a push to main, so
 # this fires exactly when a results-carrying submission lands -- and also when a
@@ -18,15 +23,15 @@ on:
   workflow_dispatch:
 
 # Serialise. Several submissions can merge in the same week -- the whole point of
-# the First Run milestone -- and two runs racing to push docs/ or deploy Pages
-# would conflict. Not cancel-in-progress: regeneration reads the full results/
-# tree and a half-finished deploy is worse than a queued one.
+# the First Run milestone -- and two runs racing to deploy Pages would conflict.
+# Not cancel-in-progress: generation reads the full results/ tree and a
+# half-finished deploy is worse than a queued one.
 concurrency:
   group: site
   cancel-in-progress: false
 
 permissions:
-  contents: write   # commit the regenerated board back to main
+  contents: read    # read-only: the board is never committed back, only rendered
   pages: write      # deploy to GitHub Pages
   id-token: write   # OIDC for the Pages deployment
 
@@ -43,9 +48,14 @@ jobs:
       - name: Install pyyaml
         run: pip install pyyaml
 
-      # Run unconditionally rather than branching on which paths changed: the
-      # generator is idempotent (verified), so on a docs-only push this is a
-      # no-op costing seconds, and that is cheaper than path-filter logic.
+      # docs/leaderboard.qmd is NOT tracked in git -- it is generated here, on
+      # every run, and consumed by the render step below. CI is its only author.
+      # That is why this job needs no write access and no bypass on the branch
+      # ruleset: nothing is ever pushed back to main.
+      #
+      # Runs unconditionally rather than branching on which paths changed. It
+      # costs seconds, and the render step needs the file to exist regardless of
+      # what triggered the run.
       #
       # Both flags are required and have each regressed once when run by hand.
       # Encoding them here is the actual fix -- nobody types them again.
@@ -53,45 +63,12 @@ jobs:
       # --no-individual-runs can be dropped now that results/ lives on main and
       # the per-run links resolve (see #21). Left on so the board matches what is
       # published today; flipping it is a one-line change.
-      - name: Regenerate docs/leaderboard.qmd
+      - name: Generate docs/leaderboard.qmd
         working-directory: tools/pharmbench
         run: |
           python3 generate_leaderboard.py \
             --exclude-dataset pmb-mab-pkpd-v0 \
             --no-individual-runs
-
-      # Best-effort, deliberately. The "Protect main" ruleset requires a pull
-      # request with one approval for every change to main, and its only bypass
-      # actor is OrganizationAdmin -- github-actions[bot] is not on that list, so
-      # this push is expected to be rejected until someone adds it.
-      #
-      # It must not fail the job: the deploy below is what actually updates the
-      # published site, and it is rendered from the freshly generated file in the
-      # working tree, not from whatever is committed. So a rejected push means the
-      # copy of the board tracked on main lags -- it does not mean the site is
-      # stale. Failing here would block the deploy and cause the very staleness
-      # the push was meant to prevent.
-      #
-      # Writes only docs/, and the [skip ci] tag stops the docs/ trigger path from
-      # retriggering this workflow if the push does land.
-      - name: Commit the board if it changed
-        run: |
-          if git diff --quiet -- docs/leaderboard.qmd; then
-            echo "Board unchanged; nothing to commit."
-            exit 0
-          fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/leaderboard.qmd
-          git commit -m "Regenerate leaderboard from results/ [skip ci]"
-          if git push; then
-            echo "Committed the regenerated board to main."
-          else
-            echo "::warning title=Board not committed::Push to main was rejected, \
-          almost certainly by the 'Protect main' ruleset. The site deploy below is \
-          unaffected and will publish the current board. To make this push succeed, \
-          add github-actions[bot] as a bypass actor on the ruleset."
-          fi
 
       - uses: quarto-dev/quarto-actions/setup@v2
 
