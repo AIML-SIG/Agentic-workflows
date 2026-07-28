@@ -57,18 +57,16 @@ jobs:
       # costs seconds, and the render step needs the file to exist regardless of
       # what triggered the run.
       #
-      # Both flags are required and have each regressed once when run by hand.
-      # Encoding them here is the actual fix -- nobody types them again.
-      #
-      # --no-individual-runs can be dropped now that results/ lives on main and
-      # the per-run links resolve (see #21). Left on so the board matches what is
-      # published today; flipping it is a one-line change.
+      # --exclude-dataset has regressed once when run by hand; encoding it here is
+      # the fix. --no-individual-runs was dropped once results/ landed on main:
+      # it existed only because the per-run drill-down links pointed at folders
+      # that did not exist there yet and would have 404'd. They resolve now, so
+      # the board carries its individual-runs table (#21).
       - name: Generate docs/leaderboard.qmd
         working-directory: tools/pharmbench
         run: |
           python3 generate_leaderboard.py \
-            --exclude-dataset pmb-mab-pkpd-v0 \
-            --no-individual-runs
+            --exclude-dataset pmb-mab-pkpd-v0
 
       - uses: quarto-dev/quarto-actions/setup@v2
 
