@@ -2,6 +2,8 @@
 
 A working subgroup of the [ISoP AI/ML SIG](https://www.isop.org/special-interest-groups/aiml-sig), bringing pharmacometricians together around AI agents and agentic workflows. Join the conversation in [Discussions](../../discussions).
 
+**New here?** The fastest way in is the [First Run milestone](../../milestone/1), the on-ramp into the biweekly evaluation subgroup. The bar is effort, not a passing score: run it, tell us what happened, and you're in. Questions and reports go in the [First Run discussion](../../discussions/28).
+
 ## Mission
 
 To bring together a community of pharmacometricians to discover, evaluate, and produce agentic workflows, codifying their collective expertise into shared, verifiable standards of practice that grow with the field.
