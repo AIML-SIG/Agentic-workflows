@@ -23,6 +23,12 @@ Use public or synthetic data only. [nlmixr2lib](https://github.com/nlmixr2/nlmix
 
 Write tasks and workflows other people can run. Document them well enough that someone new to the topic can follow along. Include public or synthetic examples so others can reproduce your results.
 
+## Linking your own work
+
+Fine, and often the point. Say what it does, why it belongs in the thread you're posting in, and that it's yours.
+
+What gets hidden: a comment whose substance is the pitch, an account whose only activity here is a product link, or a commercial product introduced as a community contribution. If you want your tool taken seriously, run it through [First Run](../../milestone/1) and post what happened. That lands better than a link.
+
 ## Questions
 
 Ask in [Discussions](../../discussions) or raise them at a monthly meeting.
