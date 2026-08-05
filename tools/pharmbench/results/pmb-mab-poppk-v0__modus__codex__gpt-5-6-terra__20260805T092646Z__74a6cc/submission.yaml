@@ -1,0 +1,32 @@
+provenance:
+  tool: modus
+  tool_sha: "unknown"
+  model: gpt-5.6-terra
+  run_utc: "2026-08-05T09:26:46Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+    - submission
+
+answers:
+  structural_ncmt: 2
+  disposition_params:
+    CL: 0.2076179562277894
+    V: 3.1543653086997905
+    Q: 0.6128899616793901
+    VP: 3.0890802415164345
+  error_model:
+    log_residual_sd: 0.11492395100024592
+  cov_effects:
+    CL:
+      WT: 0.819
+    V:
+      WT: 1.010
+  outlier_records:
+    - "62"
+    - "692"
+    - "1322"

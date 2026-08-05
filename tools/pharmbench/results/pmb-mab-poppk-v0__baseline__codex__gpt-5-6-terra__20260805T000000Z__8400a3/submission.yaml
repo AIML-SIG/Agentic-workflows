@@ -1,0 +1,32 @@
+provenance:
+  tool: baseline
+  tool_sha: ""
+  model: ""
+  run_utc: "2026-08-05T00:00:00Z"
+  analysis_steps:
+    - dataset_qc
+    - censored_data_diagnostic
+    - individual_log_pk_fits
+    - structural_model_comparison
+    - covariate_screening
+    - population_parameter_estimation
+
+answers:
+  structural_ncmt: 2
+  disposition_params:
+    CL: 0.20
+    Vc: 3.00
+    Q: 0.50
+    Vp: 3.00
+  error_model:
+    prop: 0.15
+  cov_effects:
+    CL:
+      WT: 0.75
+    Vc:
+      WT: 1.0
+  outlier_records:
+    - "62"
+    - "692"
+    - "1322"
+    - "1323"

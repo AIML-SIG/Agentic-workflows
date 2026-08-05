@@ -1,0 +1,57 @@
+dataset: pmb-mab-poppk-v0
+provenance:
+  tool: modus
+  tool_sha: unknown
+  model: gpt-5.6-terra
+  run_utc: '2026-08-05T09:26:46Z'
+  analysis_steps:
+  - scope
+  - study_context
+  - data_qc
+  - structural_model
+  - covariate_analysis
+  - review
+  - submission
+  pharmbench_sha: 43c3e8087a5a
+  harness: codex
+  agent_cmd: codex exec --json --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox
+    --model gpt-5.6-terra
+items:
+  structural_ncmt:
+    score: 1.0
+    scorer: categorical
+    answered: yes
+    pmx_area: structural
+    weight: 1
+  disposition_params:
+    score: 0.84
+    scorer: map
+    answered: yes
+    pmx_area: estimation
+    weight: 1
+  error_model:
+    score: 0.0
+    scorer: map
+    answered: yes
+    pmx_area: estimation
+    weight: 1
+  cov_effects:
+    score: 0.7913
+    scorer: map_nested
+    answered: yes
+    pmx_area: covariate-analysis
+    weight: 1
+  outlier_records:
+    score: 1.0
+    scorer: set
+    answered: yes
+    pmx_area: data-quality
+    weight: 1
+by_pmx_area:
+  structural: 1.0
+  estimation: 0.42
+  covariate-analysis: 0.7913
+  data-quality: 1.0
+overall: 0.7263
+unanswered_items: none
+traps_fallen_for: none detected
