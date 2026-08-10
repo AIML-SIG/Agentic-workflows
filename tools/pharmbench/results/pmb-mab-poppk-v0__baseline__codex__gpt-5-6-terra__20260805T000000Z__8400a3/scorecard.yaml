@@ -1,0 +1,56 @@
+dataset: pmb-mab-poppk-v0
+provenance:
+  tool: baseline
+  tool_sha: unknown
+  model: gpt-5.6-terra
+  run_utc: '2026-08-05T00:00:00Z'
+  analysis_steps:
+  - dataset_qc
+  - censored_data_diagnostic
+  - individual_log_pk_fits
+  - structural_model_comparison
+  - covariate_screening
+  - population_parameter_estimation
+  pharmbench_sha: 43c3e8087a5a
+  harness: codex
+  agent_cmd: codex exec --json --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox
+    --model gpt-5.6-terra
+items:
+  structural_ncmt:
+    score: 1.0
+    scorer: categorical
+    answered: yes
+    pmx_area: structural
+    weight: 1
+  disposition_params:
+    score: 0.8586
+    scorer: map
+    answered: yes
+    pmx_area: estimation
+    weight: 1
+  error_model:
+    score: 1.0
+    scorer: map
+    answered: yes
+    pmx_area: estimation
+    weight: 1
+  cov_effects:
+    score: 1.0
+    scorer: map_nested
+    answered: yes
+    pmx_area: covariate-analysis
+    weight: 1
+  outlier_records:
+    score: 0.8571
+    scorer: set
+    answered: yes
+    pmx_area: data-quality
+    weight: 1
+by_pmx_area:
+  structural: 1.0
+  estimation: 0.9293
+  covariate-analysis: 1.0
+  data-quality: 0.8571
+overall: 0.9431
+unanswered_items: none
+traps_fallen_for: none detected
