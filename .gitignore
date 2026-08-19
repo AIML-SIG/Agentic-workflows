@@ -1,0 +1,12 @@
+# Archived pmbench run workspaces copied out of the ephemeral devcontainer /tmp.
+# Full project dirs incl. raw logs -- large (GBs), local-only, never committed.
+run_archive/
+
+# Local-only live-demo explorer (run dirs copied from devcontainer /tmp; see demo/DEMO.md)
+demo/
+
+# Claude Code local config + vendored skills (node_modules etc.) — local-only.
+.claude/
+
+# Scratch working dirs (unpacked decks, render output, staging) — regenerable.
+.scratch/
