@@ -11,7 +11,7 @@ Two ways in, both take under a minute. Membership is free and open to anyone.
 
 Once you are in, the conversation happens in [Discussions](../../discussions).
 
-**New here?** Start with the [First Run milestone](../../milestone/1). Run it, tell us what happened, and you're in the biweekly evaluation subgroup. You don't need a passing score. Reporting what blocked you counts. Questions and results go in the [First Run discussion](../../discussions/28).
+**New here?** Start with the [First Run milestone](../../milestone/1). Run it, tell us what happened, and you're in the biweekly evaluation subgroup. You don't need a passing score. Reporting what blocked you counts.
 
 ## Mission
 
