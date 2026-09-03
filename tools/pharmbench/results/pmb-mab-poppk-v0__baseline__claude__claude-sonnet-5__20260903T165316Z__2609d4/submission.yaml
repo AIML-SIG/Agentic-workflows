@@ -1,0 +1,36 @@
+# submission.yaml — the machine-readable answer extraction for PMB-MAB-01.
+
+provenance:
+  tool: baseline
+  tool_sha: ""
+  model: "claude-sonnet-5"
+  run_utc: "2026-09-03T16:53:16Z"
+  analysis_steps:
+    - "exploratory data review: dose/covariate ranges, BLQ patterns, N=120 subjects, 3 dose cohorts"
+    - "QC scan: per-subject log-linear interpolation residuals flagged 3 gross outlier records (ROWID 62, 692, 1322), each a >8-fold spike at DAY 7 inconsistent with neighboring visits and with the population; excluded from fitting"
+    - "structural model selection via nlmixr2: fit 1-compartment vs 2-compartment IV infusion models (SAEM); 2-compartment strongly favored (AIC 11599 vs 14188) and gave physiologically reasonable IIV, so selected as final structural model"
+    - "BLQ handling: records below LLOQ (0.1 mg/L) modeled as left-censored (M3-type likelihood via CENS/LIMIT) rather than discarded or set to LLOQ/2"
+    - "covariate screening: correlated empirical Bayes etas (CL, V) against WT, ALB, CRCL (log-log) on a well-converged, low-shrinkage base 2-compartment fit"
+    - "covariate model building via nested FOCEI fits and likelihood ratio tests: WT supported as a power (allometric) covariate on both CL (exponent ~0.79, LRT p<0.0001) and V (exponent ~1.04, LRT p<0.0001); ALB's univariate association with CL eta disappeared after adjusting for WT (confounded via WT-ALB correlation, r=0.40) and was not retained; CRCL showed no association with either parameter, consistent with the mAb not being renally eliminated"
+    - "final model diagnostics: CWRES mean~0, SD~0.94, <0.15% beyond |3|; eta shrinkage 1.2% (CL) and 9.6% (V), supporting reliable individual estimates"
+
+answers:
+  structural_ncmt: 2
+
+  disposition_params:
+    CL: 0.196
+    V: 2.98
+    Q: 0.605
+    VP: 2.97
+
+  error_model:
+    prop: 0.150
+    add: 0.0116
+
+  cov_effects:
+    CL:
+      WT: 0.787
+    V:
+      WT: 1.04
+
+  outlier_records: ["62", "692", "1322"]
