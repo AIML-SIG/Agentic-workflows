@@ -1,0 +1,43 @@
+# submission.yaml — the machine-readable answer extraction for PMB-MAB-01.
+
+provenance:
+  tool: modus
+  tool_sha: "56d16563b445f86a29990193e61eef878ed068c4"
+  model: "claude-sonnet-5"
+  run_utc: "2026-09-03T18:45:13Z"
+  analysis_steps:
+    - scope
+    - study_context
+    - data_qc
+    - structural_model
+    - covariate_analysis
+    - review
+
+answers:
+  structural_ncmt: 2
+
+  # Typical (population) disposition-parameter values at the 70 kg reference
+  # weight, from covariate_analysis_final_params.csv (final model: 2-compartment,
+  # WT on CL and V).
+  disposition_params:
+    CL: 0.195522248802137
+    V: 2.97890594479337
+    Vp: 2.9736961838271
+    Q: 0.60380541592913
+
+  # Residual-error terms of the final model.
+  error_model:
+    add: 0.0120327550215327
+    prop: 0.149018219334315
+
+  # Covariate effects the analysis defends (power exponents on (WT/70)).
+  cov_effects:
+    CL:
+      WT: 0.830329833457148
+    V:
+      WT: 1.02142388063459
+
+  outlier_records:
+    - "62"
+    - "692"
+    - "1322"
