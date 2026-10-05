@@ -7,8 +7,11 @@ it running. This file is the orientation; the per-folder READMEs are the detail.
 
 - `modus/` — a **workflow**: drives fresh agent instances through a task library
   (`modus/ai_docs/task_library.json`) via `modus/run.sh`. Harness-agnostic.
-- `pharmbench/` — a **benchmark**: scores a workflow's `submission.yaml` against a
-  held-out answer key. Tool-agnostic — it scores any workflow, not just modus.
+- `pmxbench/`: a **benchmark** that scores a `submission.yaml` against a held-out
+  answer key. Tool-agnostic, so it scores any workflow, not just modus. Participant
+  payload in `scenario_00/`; answer key and scorer in `template_scenario_00/`.
+  Recorded results and the leaderboard build live in the private repo
+  `AIML-SIG/pmxbench-private`.
 
 The contract between them is one file: a workflow reads a `data/` packet and
 writes `workspace/submission/submission.yaml`; the benchmark scores that.
@@ -76,29 +79,27 @@ Verify, and install what's missing, before running anything:
    is the fitting engine the workflow tasks use at run time. Install:
    `Rscript -e 'install.packages(c("mrgsolve","yaml","nlmixr2"))'`. Confirm
    with `Rscript -e 'library(nlmixr2)'`.
-3. **Python 3 + pyyaml** — for `pharmbench/generate_leaderboard.py` (renders
+3. **Python 3 + pyyaml**, for the private repo's `tools/generate_leaderboard.py` (renders
    `docs/leaderboard.qmd` and the per-run drill-down slides; CI runs it on every push
    to `main`, so you only need it to preview the board locally) and for the optional
-   `pharmbench/visualize_results.py`.
+   `tools/visualize_results.py` there.
 
 ## Then run, in this order
 
 1. **Score-only smoke test** (no agent, proves R + scorer work):
-   `cd pharmbench && Rscript score.R --truth
-   scenarios/mab-poppk-v0/evals/truth.yaml
-   scenarios/mab-poppk-v0/evals/submission.example.yaml` → expect overall ≈ 0.71.
-2. **Full loop** — follow `pharmbench/README.md` → *Quickstart: the full benchmark
-   loop*: `proctor.sh` stages the scenario into a fresh project dir outside the
-   repo (this copy is the blinding — never run the workflow in-place against the
-   pharmbench tree), then `modus/run.sh` runs the workflow, then `score.R` grades
-   it from outside the loop.
+   `cd pmxbench/template_scenario_00 && python3 score.py submission.example.yaml`
+   → expect overall ≈ 0.72.
+2. **Full loop.** Copy `pmxbench/scenario_00/*` into `<dir>/data/` with `<dir>`
+   outside the repo (this copy is the blinding; never run a workflow in place
+   inside the repo), then `modus/run.sh <dir>` or `modus/baseline.sh <dir>`, then
+   grade the submission with `score.py` from outside the loop.
 
 ## Two things not to get wrong
 
-- **Blinding.** `pharmbench/evals/` and `build/` are held out — never copy them
-  into a workflow's working directory, and never run a workflow in-place inside
-  `pharmbench/`. Only `scenario/*` travels. The proctor enforces this; don't
-  bypass it.
+- **Blinding.** `pmxbench/template_scenario_00/` holds the answer key, so never copy
+  it into a workflow's working directory, and never run a workflow in-place inside
+  `pmxbench/`. Only `scenario_XX/*` travels. `baseline.sh` refuses a project
+  dir inside the repo.
 - **No leakage into the workflow.** A scenario's specific answers (which covariate
   is a decoy, which records are corrupted) must never be written into
   `modus/ai_docs/task_library.json` or anything the runtime loads. Rules stay at

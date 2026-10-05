@@ -7,7 +7,7 @@ study with known ground truth.
 | Folder | What it is |
 |--------|------------|
 | [`modus/`](modus/) | The **workflow**. Wraps an agent harness (Claude Code, Codex, …) and drives fresh agent instances through a task library until the work verifiably passes. |
-| [`pharmbench/`](pharmbench/) | The **benchmark**. Ships synthetic scenarios (a visible question packet + a sealed answer key + traps) and a scorer. Tool-agnostic: it scores *any* workflow that reads a `data/` packet and writes a `submission.yaml`. |
+| [`pmxbench/`](pmxbench/) | The **benchmark**. Synthetic scenarios (`data.csv`, `sap.md`, `submission.template.yaml`) with a known answer, plus a scorer. Tool-agnostic: it scores *any* analysis, by hand or by agent, that writes a `submission.yaml`. |
 
 They meet at exactly one artifact — `submission.yaml` — and one rule: **design is
 visible, results are held out**.
@@ -17,17 +17,16 @@ visible, results are held out**.
 **Score a submission** (benchmark only, no agent needed):
 
 ```sh
-cd pharmbench
-Rscript score.R --truth scenarios/mab-poppk-v0/evals/truth.yaml \
-  scenarios/mab-poppk-v0/evals/submission.example.yaml
+cd pmxbench/template_scenario_00
+python3 score.py submission.example.yaml
 ```
 
-Prints a scorecard for a deliberately imperfect submission (overall ≈ 0.71) so
+Prints a scorecard for a deliberately imperfect submission (overall ≈ 0.72) so
 you see the traps biting.
 
-**Run the full loop** (workflow + benchmark): see
-[`pharmbench/README.md`](pharmbench/README.md) → *Quickstart: the full benchmark
-loop* (proctor → run → score). To adapt the workflow to your own domain, see
+**Run the full loop** (workflow + benchmark): copy `pmxbench/scenario_00/*` into
+a project's `data/`, run `modus/run.sh` (or `modus/baseline.sh`) on it, then score
+the `submission.yaml` with `pmxbench/template_scenario_00/score.py`. To adapt the workflow to your own domain, see
 [`modus/README.md`](modus/README.md) → *Writing your own task library*.
 
 ## Prerequisites

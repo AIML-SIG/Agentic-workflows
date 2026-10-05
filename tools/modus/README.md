@@ -111,6 +111,18 @@ Point it at a project whose `data/` holds a protocol, an analysis plan, and a
 dataset and it runs as-is. To adapt Modus to your own domain, replace this
 library (see *Writing your own task library* below).
 
+## Baseline
+
+`baseline.sh` is the floor `run.sh` should beat: one headless agent call on the
+same project directory, with no task library. It honors the same `AGENT_CMD`, so
+the score gap isolates what the task library adds. To run it on PMxbench:
+
+```sh
+mkdir -p /tmp/pmx-baseline/data
+cp ../pmxbench/scenario_00/* /tmp/pmx-baseline/data/
+./baseline.sh /tmp/pmx-baseline
+```
+
 ## Configuration
 
 All overridable by environment variable:

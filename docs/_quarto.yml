@@ -1,6 +1,7 @@
 project:
   type: website
   output-dir: _site
+    - downloads/   # scenario zips, built by site.yml
 
 website:
   title: "Agentic Workflows in PMx"
@@ -11,6 +12,8 @@ website:
     left:
       - text: "Glossary"
         href: learning/glossary/agent.qmd
+      - text: "PMxbench"
+        href: index.qmd
       - text: "Leaderboard"
         href: leaderboard.qmd
     right:
@@ -40,6 +43,9 @@ website:
 
 format:
   html:
-    theme: cosmo
+    theme:
+      light: cosmo
+      dark: darkly
+    respect-user-color-scheme: true
     toc: true
     toc-title: "On this page"
