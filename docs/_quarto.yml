@@ -44,6 +44,9 @@ website:
 
 format:
   html:
-    theme: cosmo
+    theme:
+      light: cosmo
+      dark: darkly
+    respect-user-color-scheme: true
     toc: true
     toc-title: "On this page"

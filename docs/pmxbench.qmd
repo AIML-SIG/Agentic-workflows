@@ -18,6 +18,15 @@ page-layout: article
   --soft: #f3f1ec;
   --accent: #1f6f5c;
   --accent-soft: #e6f2ee;
+  --accent-hover: #185a4a;
+  --on-accent: #ffffff;
+  --box: #ffffff;
+  --done: #fcfefd;
+  --allset-ink: #134d40;
+  --note: #7b8490;
+  --d1: #9fd1c3;
+  --d2: #4b9e88;
+  --d3: #174f42;
   --sans: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
@@ -45,14 +54,14 @@ page-layout: article
   padding: 24px; display: grid; grid-template-columns: auto 72px minmax(0, 1fr); gap: 20px; align-items: start;
   transition: border-color .2s, background .2s;
 }
-.pmx .step.done { border-color: var(--accent); background: #fcfefd; }
+.pmx .step.done { border-color: var(--accent); background: var(--done); }
 .pmx .check { position: relative; display: block; cursor: pointer; padding-top: 4px; }
 .pmx .check input { position: absolute; opacity: 0; width: 34px; height: 34px; margin: 0; cursor: pointer; }
 .pmx .box {
   width: 34px; height: 34px; border: 2px solid #b9b4aa; border-radius: 9px; display: grid; place-items: center;
-  background: #fff; transition: background .15s, border-color .15s;
+  background: var(--box); transition: background .15s, border-color .15s;
 }
-.pmx .box svg { width: 20px; height: 20px; opacity: 0; transition: opacity .15s; }
+.pmx .box svg { color: var(--on-accent); width: 20px; height: 20px; opacity: 0; transition: opacity .15s; }
 .pmx .check input:checked + .box { background: var(--accent); border-color: var(--accent); }
 .pmx .check input:checked + .box svg { opacity: 1; }
 .pmx .icon { width: 72px; height: 72px; color: var(--ink); display: grid; place-items: center; }
@@ -73,15 +82,15 @@ page-layout: article
 .pmx .either .or { align-self: center; font-size: 14px; color: var(--muted); font-style: italic; padding-bottom: 18px; }
 .pmx .btn {
   display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
-  background: var(--accent); color: #fff; font-weight: 700; font-size: 17px;
+  background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 17px;
   padding: 12px 20px; border-radius: 10px; margin-top: 4px;
 }
-.pmx .btn:hover { background: #185a4a; }
+.pmx .btn:hover { background: var(--accent-hover); color: var(--on-accent); }
 .pmx .btn svg { width: 18px; height: 18px; }
 .pmx .hint { color: var(--muted); font-size: 15px; }
 .pmx .allset {
   display: none; margin: 18px 0 0; padding: 16px 20px; border-radius: 12px;
-  background: var(--accent-soft); color: #134d40; font-weight: 700;
+  background: var(--accent-soft); color: var(--allset-ink); font-weight: 700;
 }
 .pmx .allset.show { display: block; }
 .pmx section.block { margin: 56px 0 0; }
@@ -114,7 +123,7 @@ page-layout: article
 .pmx .faq .a p { margin: 0 0 10px; }
 .pmx .faq .a p:last-child { margin: 0; }
 .pmx pre.mini { font-family: var(--mono); font-size: 14px; background: var(--soft); border-radius: 10px; padding: 12px 14px; margin: 8px 0 10px; overflow-x: auto; line-height: 1.6; }
-.pmx pre.mini .c { color: #7b8490; }
+.pmx pre.mini .c { color: var(--note); }
 .pmx footer { margin: 56px 0 0; padding: 22px 0 40px; border-top: 1.5px solid var(--line); color: var(--muted); font-size: 15px; }
 .pmx footer a { color: var(--ink); }
 @media (max-width: 640px) {
@@ -133,6 +142,12 @@ page-layout: article
 
 .pmx .btn.alt { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); margin-top: 12px; }
 .pmx .btn.alt:hover { background: var(--accent-soft); }
+body.quarto-dark .pmx {
+  --card: #2b3035; --ink: #e7ebee; --muted: #a9b3bd; --line: #444b52; --soft: #33393f;
+  --accent: #5cc0a0; --accent-soft: #1d3d34; --accent-hover: #7fd3b7; --on-accent: #0c1f19;
+  --box: #2b3035; --done: #24302c; --allset-ink: #c4ecdf; --note: #8f99a4;
+  --d1: #3d7d6b; --d2: #5cc0a0; --d3: #b4e8d6;
+}
 </style>
 <div class="pmx">
 <!-- Glyphs from the talk, defined once and reused. -->
@@ -140,7 +155,7 @@ page-layout: article
   <symbol id="g-doc" viewBox="0 0 96 96"><path fill="currentColor" d="M23 82 23 14 48 14 48 35 73 35 73 82 23 82ZM54 16.5 66.5 29 54 29 54 16.5ZM54 8 17 8 17 88 79 88 79 30 54 8Z"/><g fill="currentColor"><rect x="29" y="45" width="38" height="4"/><rect x="29" y="37" width="13" height="4"/><rect x="29" y="53" width="38" height="4"/><rect x="29" y="61" width="38" height="4"/><rect x="29" y="69" width="38" height="4"/></g></symbol>
   <symbol id="g-code" viewBox="0 0 53 68"><g fill="currentColor" transform="translate(-1121 -415)"><path d="M1139.22 463 1132 456 1139.22 449 1141 450.73 1135.58 456 1141 461.27 1139.22 463Z" fill-rule="evenodd"/><path d="M1155.78 463 1154 461.27 1159.42 456 1154 450.73 1155.78 449 1163 456 1155.78 463Z" fill-rule="evenodd"/><path d="M1143.6 463.006 1149.58 448.571 1151.89 449.529 1145.91 463.963Z" fill-rule="evenodd"/><path d="M1126.13 477.9 1126.13 420.1 1147.5 420.1 1147.5 437.95 1168.87 437.95 1168.87 477.9 1126.13 477.9ZM1152.63 422.225 1163.31 432.85 1152.63 432.85 1152.63 422.225ZM1152.63 415 1121 415 1121 483 1174 483 1174 433.7 1152.63 415Z" fill-rule="evenodd"/></g></symbol>
   <symbol id="g-llm" viewBox="0 0 96 96"><path fill="currentColor" d="M89 35.7C78.3 33.6 64.5 32.7 52 37.7 49.4 38.6 46.6 38.6 44 37.7 31.5 32.7 17.7 33.6 7 35.7 5.4 36 4 37.1 4 38.7 4 40.4 5.3 41.7 7 41.7 7 41.7 7.9 45.7 9.3 52.2 10.7 58.7 14.2 62 25 62 30.3 62 34.2 61.8 37 59 40.5 55.4 44.4 45.9 44.4 45.9 45.1 44.6 46.5 43.8 48 43.8 49.5 43.8 50.9 44.6 51.6 45.9 51.6 45.9 55.5 55.4 59 59 61.8 61.8 65.7 62 71 62 81.8 62 85.2 58.8 86.7 52.2 88.2 45.6 89 41.8 89 41.8 90.7 41.8 92 40.5 92 38.8 92 37 90.6 36 89 35.7Z"/></symbol>
-  <symbol id="tick" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="tick" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
 <div class="wrap">
@@ -198,7 +213,7 @@ page-layout: article
       <h2>Fill in the form and submit it</h2>
       <p>Put your results into the template. Save it as <code>submission.yaml</code>. Then paste the whole file into the submission form on GitHub.</p>
       <a class="btn" href="https://github.com/AIML-SIG/Agentic-workflows/issues/new?template=pmxbench-submission.yml">Open the submission form
-        <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10M10 5l4 4-4 4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10M10 5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <p class="hint" style="margin-top:10px">Needs a free GitHub account. See the questions below.</p>
     </div>
   </li>
@@ -222,7 +237,7 @@ page-layout: article
     </div>
     <figure style="margin:0">
       <svg class="chart" viewBox="0 0 320 172" role="img" aria-label="Median concentration over 150 days for each dose on a log scale, falling from about 30, 95 and 200 mg/L to under 1 mg/L">
-        <g stroke="#e4e1da" stroke-width="1">
+        <g style="stroke:var(--line)" stroke-width="1">
           <line x1="44" x2="312" y1="150" y2="150"/><line x1="44" x2="312" y1="110.9" y2="110.9"/>
           <line x1="44" x2="312" y1="71.8" y2="71.8"/><line x1="44" x2="312" y1="32.7" y2="32.7"/>
         </g>
@@ -230,12 +245,12 @@ page-layout: article
         <g text-anchor="middle"><text x="44" y="164">0</text><text x="97.6" y="164">30</text><text x="151.2" y="164">60</text><text x="204.8" y="164">90</text><text x="258.4" y="164">120</text><text x="303" y="164">150 d</text></g>
         <text x="44" y="10">Median concentration, mg/L (log scale)</text>
         <g fill="none" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
-          <polyline stroke="#9fd1c3" points="44.1,52.5 45.8,55.8 49.4,63.2 56.5,69.1 69.0,74.0 94.0,81.5 119.0,88.3 144.1,96.3 169.1,103.1 204.8,113.8 258.4,127.1 312.0,131.0"/>
-          <polyline stroke="#4b9e88" points="44.1,33.5 45.8,37.8 49.4,43.0 56.5,49.8 69.0,55.8 94.0,62.1 119.0,71.5 144.1,76.2 169.1,81.5 204.8,92.8 258.4,106.8 312.0,119.2"/>
-          <polyline stroke="#174f42" points="44.1,21.1 45.8,26.4 49.4,32.3 56.5,38.8 69.0,43.5 94.0,51.0 119.0,59.7 144.1,67.0 169.1,75.6 204.8,84.2 258.4,100.0 312.0,113.9"/>
+          <polyline style="stroke:var(--d1)" points="44.1,52.5 45.8,55.8 49.4,63.2 56.5,69.1 69.0,74.0 94.0,81.5 119.0,88.3 144.1,96.3 169.1,103.1 204.8,113.8 258.4,127.1 312.0,131.0"/>
+          <polyline style="stroke:var(--d2)" points="44.1,33.5 45.8,37.8 49.4,43.0 56.5,49.8 69.0,55.8 94.0,62.1 119.0,71.5 144.1,76.2 169.1,81.5 204.8,92.8 258.4,106.8 312.0,119.2"/>
+          <polyline style="stroke:var(--d3)" points="44.1,21.1 45.8,26.4 49.4,32.3 56.5,38.8 69.0,43.5 94.0,51.0 119.0,59.7 144.1,67.0 169.1,75.6 204.8,84.2 258.4,100.0 312.0,113.9"/>
         </g>
       </svg>
-      <figcaption class="legend"><span style="--c:#9fd1c3">100 mg</span><span style="--c:#4b9e88">300 mg</span><span style="--c:#174f42">600 mg</span></figcaption>
+      <figcaption class="legend"><span style="--c:var(--d1)">100 mg</span><span style="--c:var(--d2)">300 mg</span><span style="--c:var(--d3)">600 mg</span></figcaption>
     </figure>
   </div>
 </section>
