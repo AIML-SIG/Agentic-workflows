@@ -48,7 +48,7 @@ fi
 # image's unprivileged user, since some harnesses refuse to skip permission
 # prompts as root.
 SETUP='set -e
-Rscript -e "install.packages(c(\"nlmixr2\", \"mrgsolve\", \"yaml\"))" >/tmp/setup.log 2>&1
+Rscript -e "options(bspm.version.check = FALSE); install.packages(c(\"nlmixr2\", \"mrgsolve\", \"yaml\"))" >/tmp/setup.log 2>&1
 npm install -g "$HARNESS_PKG" >>/tmp/setup.log 2>&1
 exec runuser -u vscode -- env HOME=/home/vscode PATH="$PATH" \
     /opt/pmx/tools/modus/baseline.sh /work'

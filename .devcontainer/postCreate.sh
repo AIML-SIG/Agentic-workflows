@@ -2,7 +2,9 @@
 set -euo pipefail
 
 echo "Installing R packages (mrgsolve, yaml, nlmixr2) via r2u/bspm binaries..."
-Rscript -e 'install.packages(c("mrgsolve", "yaml", "nlmixr2"))'
+# version.check off: take an r2u binary even when CRAN has a newer source,
+# rather than compiling (rxode2ll from source takes many minutes).
+Rscript -e 'options(bspm.version.check = FALSE); install.packages(c("mrgsolve", "yaml", "nlmixr2"))'
 
 echo "Verifying nlmixr2 loads..."
 Rscript -e 'library(nlmixr2)'
