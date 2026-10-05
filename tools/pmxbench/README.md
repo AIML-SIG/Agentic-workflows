@@ -5,6 +5,8 @@ by hand or with an AI agent, and submit your answers in one YAML file.
 
 **Start here: [aiml-sig.github.io/Agentic-workflows/pmxbench.html](https://aiml-sig.github.io/Agentic-workflows/pmxbench.html)**
 
+![How PMxbench works: participants download, analyze and submit in public; maintainers score, record and rebuild the leaderboard in a private repo](how-it-works.svg)
+
 ## Three steps
 
 1. **Get the data.** Everything is in [`scenario_00/`](scenario_00/):

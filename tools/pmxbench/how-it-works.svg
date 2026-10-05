@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480" font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">How PMxbench works</title>
+  <desc id="d">A participant downloads the public scenario files, analyzes them by hand or with an AI agent, and pastes submission.yaml into a GitHub issue. A maintainer scores and records it in the private repo, regenerates the leaderboard, and merges it into the public site by PR. New scenarios are authored privately and only their three payload files are published.</desc>
+  <defs>
+    <symbol id="doc" viewBox="0 0 96 96"><path d="M23 82 23 14 48 14 48 35 73 35 73 82 23 82ZM54 16.5 66.5 29 54 29 54 16.5ZM54 8 17 8 17 88 79 88 79 30 54 8Z"/><rect x="29" y="45" width="38" height="4"/><rect x="29" y="37" width="13" height="4"/><rect x="29" y="53" width="38" height="4"/><rect x="29" y="61" width="38" height="4"/><rect x="29" y="69" width="38" height="4"/></symbol>
+    <symbol id="code" viewBox="0 0 53 68"><g transform="translate(-1121 -415)"><path d="M1139.22 463 1132 456 1139.22 449 1141 450.73 1135.58 456 1141 461.27 1139.22 463Z"/><path d="M1155.78 463 1154 461.27 1159.42 456 1154 450.73 1155.78 449 1163 456 1155.78 463Z"/><path d="M1143.6 463.006 1149.58 448.571 1151.89 449.529 1145.91 463.963Z"/><path d="M1126.13 477.9 1126.13 420.1 1147.5 420.1 1147.5 437.95 1168.87 437.95 1168.87 477.9 1126.13 477.9ZM1152.63 422.225 1163.31 432.85 1152.63 432.85 1152.63 422.225ZM1152.63 415 1121 415 1121 483 1174 483 1174 433.7 1152.63 415Z"/></g></symbol>
+    <symbol id="llm" viewBox="0 0 96 96"><path d="M89 35.7C78.3 33.6 64.5 32.7 52 37.7 49.4 38.6 46.6 38.6 44 37.7 31.5 32.7 17.7 33.6 7 35.7 5.4 36 4 37.1 4 38.7 4 40.4 5.3 41.7 7 41.7 7 41.7 7.9 45.7 9.3 52.2 10.7 58.7 14.2 62 25 62 30.3 62 34.2 61.8 37 59 40.5 55.4 44.4 45.9 44.4 45.9 45.1 44.6 46.5 43.8 48 43.8 49.5 43.8 50.9 44.6 51.6 45.9 51.6 45.9 55.5 55.4 59 59 61.8 61.8 65.7 62 71 62 81.8 62 85.2 58.8 86.7 52.2 88.2 45.6 89 41.8 89 41.8 90.7 41.8 92 40.5 92 38.8 92 37 90.6 36 89 35.7Z"/></symbol>
+    <symbol id="web" viewBox="0 0 96 96"><path d="M10 18h76v60H10z" fill="none" stroke="#000" stroke-width="6"/><path d="M10 18h76v14H10z"/><circle cx="20" cy="25" r="3" fill="#fff"/><circle cx="30" cy="25" r="3" fill="#fff"/><rect x="22" y="44" width="52" height="5"/><rect x="22" y="56" width="36" height="5"/></symbol>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#000"/></marker>
+  </defs>
+
+  <rect width="960" height="480" fill="#fff"/>
+
+  <!-- zones -->
+  <rect x="12" y="12" width="936" height="214" rx="10" fill="#f4f8f6" stroke="#1f6f5c" stroke-width="1.5"/>
+  <text x="28" y="36" font-size="12" font-weight="700" letter-spacing="1.2" fill="#1f6f5c">PUBLIC · AIML-SIG/Agentic-workflows</text>
+  <rect x="12" y="258" width="936" height="210" rx="10" fill="#f3f3f1" stroke="#6b6a65" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="28" y="282" font-size="12" font-weight="700" letter-spacing="1.2" fill="#55544f">PRIVATE · AIML-SIG/pmxbench-private (maintainers)</text>
+
+  <g fill="#000">
+    <!-- public row -->
+    <use href="#doc" x="70" y="62" width="44" height="44"/>
+    <use href="#llm" x="236" y="66" width="36" height="36"/><use href="#code" x="276" y="64" width="31" height="40"/>
+    <use href="#doc" x="430" y="62" width="44" height="44"/>
+    <use href="#doc" x="608" y="62" width="44" height="44"/>
+    <use href="#web" x="816" y="62" width="48" height="44"/>
+    <!-- private row -->
+    <use href="#code" x="74" y="310" width="34" height="44"/>
+    <use href="#code" x="614" y="310" width="34" height="44"/>
+    <use href="#code" x="824" y="310" width="34" height="44"/>
+  </g>
+
+  <g font-size="13.5" font-weight="700" text-anchor="middle" fill="#000">
+    <text x="92" y="128">1. Get the data</text>
+    <text x="272" y="128">2. Analyze</text>
+    <text x="452" y="128">3. Fill the template</text>
+    <text x="630" y="128">4. Submit</text>
+    <text x="840" y="128">Website</text>
+    <text x="92" y="374">New scenario</text>
+    <text x="631" y="374">Score and record</text>
+    <text x="841" y="374">Rebuild the board</text>
+  </g>
+  <g font-size="12" text-anchor="middle" fill="#44433f">
+    <text x="92" y="146" font-family="ui-monospace, Menlo, Consolas, monospace">scenario_00/</text>
+    <text x="92" y="162">data.csv, sap.md,</text>
+    <text x="92" y="177">submission template</text>
+    <text x="272" y="146">by hand or with</text>
+    <text x="272" y="162">an AI agent, any software</text>
+    <text x="452" y="146" font-family="ui-monospace, Menlo, Consolas, monospace">submission.yaml</text>
+    <text x="630" y="146">GitHub issue form,</text>
+    <text x="630" y="162">labelled automatically</text>
+    <text x="840" y="146">PMxbench page</text>
+    <text x="840" y="162">and leaderboard</text>
+    <text x="92" y="392" font-family="ui-monospace, Menlo, Consolas, monospace">generate.R</text>
+    <text x="92" y="408" font-family="ui-monospace, Menlo, Consolas, monospace">truth.yaml</text>
+    <text x="92" y="424">answer key stays here</text>
+    <text x="631" y="392" font-family="ui-monospace, Menlo, Consolas, monospace">score.py --record</text>
+    <text x="631" y="408">stores the submission only:</text>
+    <text x="631" y="424" font-family="ui-monospace, Menlo, Consolas, monospace">results/&lt;run&gt;.yaml</text>
+    <text x="841" y="392" font-family="ui-monospace, Menlo, Consolas, monospace">build_leaderboard.py</text>
+    <text x="841" y="408">rescores every run,</text>
+    <text x="841" y="424">writes scores only</text>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#000" stroke-width="1.6" fill="none" marker-end="url(#ah)">
+    <path d="M130 84 H222"/>
+    <path d="M322 84 H414"/>
+    <path d="M490 84 H592"/>
+    <path d="M630 186 V300"/>
+    <path d="M676 332 H806"/>
+    <path d="M841 300 V186"/>
+    <path d="M92 300 V196"/>
+  </g>
+  <g font-size="11.5" font-style="italic" fill="#55544f">
+    <text x="620" y="241" text-anchor="end">maintainer copies it in</text>
+    <text x="831" y="236" text-anchor="end">PR with leaderboard.qmd;</text>
+    <text x="831" y="251" text-anchor="end">merge rebuilds the site</text>
+    <text x="102" y="236">publish_payload.sh:</text>
+    <text x="102" y="251">the 3 payload files only</text>
+  </g>
+</svg>
