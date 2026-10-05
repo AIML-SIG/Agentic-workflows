@@ -11,5 +11,3 @@
 /leaderboard.qmd
 # Scenario zips built by site.yml.
 /downloads/
-# Per-run slides copied in by site.yml at build time.
-/runs/

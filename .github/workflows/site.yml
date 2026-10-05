@@ -59,20 +59,22 @@ jobs:
           token: ${{ secrets.PMXBENCH_PRIVATE_TOKEN }}
           path: pmxbench-private
 
+      # The board stores submissions only; build_leaderboard.py rescores each
+      # one with the public score.R, so R and its yaml package are needed here.
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install the R yaml package
+        run: Rscript -e 'install.packages("yaml")'
+
       # docs/leaderboard.qmd is NOT tracked in git -- it is generated here, on
       # every run, and consumed by the render step below. CI is its only author,
       # so this job needs no write access and nothing is ever pushed to main.
-      #
-      # --public-safe: runs on a scenario whose answer key is public get their
-      # drill-down slide copied into docs/runs/; runs on a held-out scenario show
-      # scores only, with no slide and no submission, since either would reveal
-      # the answers.
       - name: Generate docs/leaderboard.qmd
         run: |
-          python3 pmxbench-private/tools/generate_leaderboard.py \
-            --public-safe \
+          python3 pmxbench-private/tools/build_leaderboard.py \
             --public-dir tools/pmxbench \
-            --runs-out docs/runs \
             --out docs/leaderboard.qmd
 
       # One zip per public scenario, so the intro page can offer "download all".
