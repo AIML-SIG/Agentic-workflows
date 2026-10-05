@@ -131,6 +131,8 @@ page-layout: article
 .pmx { background: transparent; }
 #title-block-header { display: none; }
 
+.pmx .btn.alt { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); margin-top: 12px; }
+.pmx .btn.alt:hover { background: var(--accent-soft); }
 </style>
 <div class="pmx">
 <!-- Glyphs from the talk, defined once and reused. -->
@@ -167,6 +169,8 @@ page-layout: article
         <li><a href="https://github.com/AIML-SIG/Agentic-workflows/blob/main/tools/pmxbench/scenario_00/sap.md">sap.md</a> <small>the protocol and analysis plan. Read this first.</small></li>
         <li><a href="https://raw.githubusercontent.com/AIML-SIG/Agentic-workflows/main/tools/pmxbench/scenario_00/submission.template.yaml">submission.template.yaml</a> <small>the answer form you fill in</small></li>
       </ul>
+      <a class="btn alt" href="downloads/scenario_00.zip" download>Download all three (.zip)
+        <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v10M5 9l4 4 4-4M3 15h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
   </li>
 

@@ -68,6 +68,14 @@ jobs:
           python3 generate_leaderboard.py \
             --exclude-dataset pmb-mab-pkpd-v0
 
+      # One zip per public scenario, so the intro page can offer "download all".
+      - name: Zip each scenario's files
+        run: |
+          mkdir -p docs/downloads
+          for d in tools/pmxbench/scenario_*/; do
+            (cd "$d" && zip -q -j "$GITHUB_WORKSPACE/docs/downloads/$(basename "$d").zip" ./*)
+          done
+
       - uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Render the site
