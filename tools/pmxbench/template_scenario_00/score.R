@@ -1,6 +1,7 @@
 #!/usr/bin/env Rscript
 # PMxbench scorer (scenario-agnostic).
-#   Rscript score.R --truth ../template_scenario_00/truth.yaml path/to/submission.yaml
+#   Rscript score.R --truth truth.yaml submission.example.yaml
+# --truth defaults to the truth.yaml beside this script.
 # Loads truth and the submission, scores each item in [0,1], and prints + writes
 # scorecard.yaml next to the submission.
 #
@@ -28,21 +29,25 @@ argv <- commandArgs(trailingOnly = TRUE)
 truth_path <- NULL
 sub_path   <- NULL
 record     <- FALSE
+results_dir <- NULL
 i <- 1
 while (i <= length(argv)) {
   if (argv[[i]] == "--truth") {
     truth_path <- argv[[i + 1]]
     i <- i + 2
   } else if (argv[[i]] == "--record") {
+    # --record DIR: the results folder that holds leaderboard entries. It lives
+    # in the private maintainer repo, never next to this public script.
     record <- TRUE
-    i <- i + 1
+    results_dir <- argv[[i + 1]]
+    i <- i + 2
   } else {
     sub_path <- argv[[i]]
     i <- i + 1
   }
 }
 if (is.null(sub_path)) {
-  stop("usage: Rscript score.R [--truth path/to/truth.yaml] [--record] path/to/submission.yaml")
+  stop("usage: Rscript score.R [--truth path/to/truth.yaml] [--record results/dir] path/to/submission.yaml")
 }
 
 this_file <- sub("^--file=", "",
@@ -340,7 +345,6 @@ if (record) {
   }
   run_id <- substr(paste0(as.hexmode(sample(16^6, 1))), 1, 6)
 
-  results_dir <- file.path(script_dir, "results")
   run_slug <- sprintf("%s__%s__%s__%s__%s__%s",
                        slug(scorecard$dataset), slug(provenance$tool),
                        slug(provenance$harness), slug(provenance$model),
@@ -352,5 +356,5 @@ if (record) {
   file.copy(sub_path, file.path(run_dir, "submission.yaml"), overwrite = TRUE)
   cat("recorded to", run_dir, "\n")
   cat("  regenerate the leaderboard (also renders this run's drill-down slide):\n")
-  cat("  python3 generate_leaderboard.py\n")
+  cat("  python3 tools/generate_leaderboard.py   (in the private repo)\n")
 }

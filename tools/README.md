@@ -17,16 +17,16 @@ visible, results are held out**.
 **Score a submission** (benchmark only, no agent needed):
 
 ```sh
-cd pmxbench/maintainer
-Rscript score.R --truth ../template_scenario_00/truth.yaml submission.example.yaml
+cd pmxbench/template_scenario_00
+Rscript score.R submission.example.yaml
 ```
 
 Prints a scorecard for a deliberately imperfect submission (overall ≈ 0.72) so
 you see the traps biting.
 
 **Run the full loop** (workflow + benchmark): see
-[`pmxbench/maintainer/README.md`](pmxbench/maintainer/README.md) → *Run an agent
-against a scenario* (proctor → run → score). To adapt the workflow to your own domain, see
+the private maintainer repo (`AIML-SIG/pmxbench-private`), which holds the
+proctor, the baseline and the results (proctor → run → score). To adapt the workflow to your own domain, see
 [`modus/README.md`](modus/README.md) → *Writing your own task library*.
 
 ## Prerequisites

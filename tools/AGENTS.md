@@ -9,8 +9,9 @@ it running. This file is the orientation; the per-folder READMEs are the detail.
   (`modus/ai_docs/task_library.json`) via `modus/run.sh`. Harness-agnostic.
 - `pmxbench/`: a **benchmark** that scores a `submission.yaml` against a held-out
   answer key. Tool-agnostic, so it scores any workflow, not just modus. Participant
-  payload in `scenario_00/`; answer key in `template_scenario_00/`; tooling in
-  `pmxbench/maintainer/`.
+  payload in `scenario_00/`; answer key and scorer in `template_scenario_00/`.
+  Proctor, baseline, results and the leaderboard generator live in the private
+  repo `AIML-SIG/pmxbench-private`.
 
 The contract between them is one file: a workflow reads a `data/` packet and
 writes `workspace/submission/submission.yaml`; the benchmark scores that.
@@ -78,18 +79,18 @@ Verify, and install what's missing, before running anything:
    is the fitting engine the workflow tasks use at run time. Install:
    `Rscript -e 'install.packages(c("mrgsolve","yaml","nlmixr2"))'`. Confirm
    with `Rscript -e 'library(nlmixr2)'`.
-3. **Python 3 + pyyaml**, for `pmxbench/maintainer/generate_leaderboard.py` (renders
+3. **Python 3 + pyyaml**, for the private repo's `tools/generate_leaderboard.py` (renders
    `docs/leaderboard.qmd` and the per-run drill-down slides; CI runs it on every push
    to `main`, so you only need it to preview the board locally) and for the optional
-   `pmxbench/maintainer/visualize_results.py`.
+   `tools/visualize_results.py` there.
 
 ## Then run, in this order
 
 1. **Score-only smoke test** (no agent, proves R + scorer work):
-   `cd pmxbench/maintainer && Rscript score.R --truth
-   ../template_scenario_00/truth.yaml submission.example.yaml` → expect overall ≈ 0.72.
-2. **Full loop.** Follow `pmxbench/maintainer/README.md` → *Run an agent against
-   a scenario*: `proctor.sh scenario_00 <dir>` stages the scenario into a fresh project dir outside the
+   `cd pmxbench/template_scenario_00 && Rscript score.R submission.example.yaml`
+   → expect overall ≈ 0.72.
+2. **Full loop** (maintainers, from `AIML-SIG/pmxbench-private`): `tools/proctor.sh
+   scenario_00 <dir>` stages the scenario into a fresh project dir outside the
    repo (this copy is the blinding — never run the workflow in-place against the
    pmxbench tree), then `modus/run.sh` runs the workflow, then `score.R` grades
    it from outside the loop.

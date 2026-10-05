@@ -28,7 +28,8 @@ template_scenario_00/        the same study, plus how it was built and scored
   submission.template.yaml
   generate.R                 simulates data.csv from a fixed seed (--plots for EDA figures)
   truth.yaml                 the answer key, with the planted traps explained
-maintainer/                  scorer and leaderboard tooling; participants never need it
+  score.R                    the scorer: Rscript score.R submission.example.yaml
+  submission.example.yaml    a deliberately imperfect submission, to see scoring work
 ```
 
 `template_scenario_00/` shows how every scenario is structured. From
@@ -36,4 +37,5 @@ maintainer/                  scorer and leaderboard tooling; participants never 
 `truth.yaml` stay in a private repo, so the answers can't be looked up.
 
 Contributing a scenario: start from a copy of `template_scenario_00/` and open an
-issue. See [`maintainer/README.md`](maintainer/README.md#adding-a-scenario).
+issue. Running agents against scenarios, recording results and building the
+leaderboard happen in a private maintainer repo, because they handle answer keys.

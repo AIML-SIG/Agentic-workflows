@@ -8,23 +8,24 @@ name: Build and publish the site
 # that can drift out of step with the runs -- and nothing tempting a contributor
 # to regenerate it in their PR, which #18 forbids.
 #
-# Triggers on a paths-filtered push to main. A merged PR *is* a push to main, so
-# this fires exactly when a results-carrying submission lands -- and also when a
-# maintainer pushes results directly, which `pull_request: [closed]` would miss.
-# docs/** is included so editing the glossary republishes the site too; the
-# leaderboard is not the only thing here.
+# Results live in the private repo AIML-SIG/pmxbench-private. It fires a
+# repository_dispatch (type pmxbench-results) here whenever a result lands, so the
+# board rebuilds without anything being committed to this repo. A push to main
+# that touches the site or the public scenarios rebuilds too.
 on:
   push:
     branches: [main]
     paths:
-      - 'tools/pmxbench/maintainer/results/**'
       - 'docs/**'
+      - 'tools/pmxbench/**'
       - '.github/workflows/site.yml'
+  repository_dispatch:
+    types: [pmxbench-results]
   workflow_dispatch:
 
 # Serialise. Several submissions can merge in the same week -- the whole point of
 # the First Run milestone -- and two runs racing to deploy Pages would conflict.
-# Not cancel-in-progress: generation reads the full results/ tree and a
+# Not cancel-in-progress: generation reads the full results tree and a
 # half-finished deploy is worse than a queued one.
 concurrency:
   group: site
@@ -48,25 +49,31 @@ jobs:
       - name: Install pyyaml
         run: pip install pyyaml
 
+      # The results and the leaderboard generator are private. A fine-grained
+      # token with read-only Contents access to pmxbench-private, stored here as
+      # PMXBENCH_PRIVATE_TOKEN, lets this job read them. Secrets are not exposed
+      # to pull requests from forks, and this workflow only runs on main.
+      - uses: actions/checkout@v4
+        with:
+          repository: AIML-SIG/pmxbench-private
+          token: ${{ secrets.PMXBENCH_PRIVATE_TOKEN }}
+          path: pmxbench-private
+
       # docs/leaderboard.qmd is NOT tracked in git -- it is generated here, on
-      # every run, and consumed by the render step below. CI is its only author.
-      # That is why this job needs no write access and no bypass on the branch
-      # ruleset: nothing is ever pushed back to main.
+      # every run, and consumed by the render step below. CI is its only author,
+      # so this job needs no write access and nothing is ever pushed to main.
       #
-      # Runs unconditionally rather than branching on which paths changed. It
-      # costs seconds, and the render step needs the file to exist regardless of
-      # what triggered the run.
-      #
-      # --exclude-dataset has regressed once when run by hand; encoding it here is
-      # the fix. --no-individual-runs was dropped once results/ landed on main:
-      # it existed only because the per-run drill-down links pointed at folders
-      # that did not exist there yet and would have 404'd. They resolve now, so
-      # the board carries its individual-runs table (#21).
+      # --public-safe: runs on a scenario whose answer key is public get their
+      # drill-down slide copied into docs/runs/; runs on a held-out scenario show
+      # scores only, with no slide and no submission, since either would reveal
+      # the answers.
       - name: Generate docs/leaderboard.qmd
-        working-directory: tools/pmxbench/maintainer
         run: |
-          python3 generate_leaderboard.py \
-            --exclude-dataset pmb-mab-pkpd-v0
+          python3 pmxbench-private/tools/generate_leaderboard.py \
+            --public-safe \
+            --public-dir tools/pmxbench \
+            --runs-out docs/runs \
+            --out docs/leaderboard.qmd
 
       # One zip per public scenario, so the intro page can offer "download all".
       - name: Zip each scenario's files

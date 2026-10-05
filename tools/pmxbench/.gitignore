@@ -1,2 +1,3 @@
-# Written by template_scenario_*/generate.R --plots. They annotate the traps.
+# Written by score.R next to the submission it scores, and by generate.R --plots.
+scorecard.yaml
 */figures/
