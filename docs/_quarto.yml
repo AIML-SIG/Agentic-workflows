@@ -13,7 +13,7 @@ website:
       - text: "Glossary"
         href: learning/glossary/agent.qmd
       - text: "PMxbench"
-        href: pmxbench.qmd
+        href: index.qmd
       - text: "Leaderboard"
         href: leaderboard.qmd
     right:

@@ -1,12 +1,335 @@
 ---
-title: "Agentic Workflows in Pharmacometrics"
+title: "PMxbench"
+description: "Analyze one simulated population PK study and send back one file."
 sidebar: false
+toc: false
+page-layout: article
 ---
 
-Community resources from the AIML-SIG on agentic workflows in pharmacometrics.
+```{=html}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+.pmx {
+  --bg: #fbfaf7;
+  --card: #ffffff;
+  --ink: #18202a;
+  --muted: #5d6773;
+  --line: #e4e1da;
+  --soft: #f3f1ec;
+  --accent: #1f6f5c;
+  --accent-soft: #e6f2ee;
+  --accent-hover: #185a4a;
+  --on-accent: #ffffff;
+  --box: #ffffff;
+  --done: #fcfefd;
+  --allset-ink: #134d40;
+  --note: #7b8490;
+  --d1: #9fd1c3;
+  --d2: #4b9e88;
+  --d3: #174f42;
+  --sans: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.pmx * { box-sizing: border-box; }
+.pmx {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--sans); font-size: 17px; line-height: 1.55;
+}
+.pmx a { color: var(--accent); text-underline-offset: 3px; }
+.pmx a:focus-visible, .pmx summary:focus-visible, .pmx .check input:focus-visible + .box { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.pmx code { font-family: var(--mono); font-size: 0.86em; background: var(--soft); padding: 0.1em 0.35em; border-radius: 4px; }
+.pmx .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+.pmx header.top { padding: 40px 0 8px; }
+.pmx .brand { font-weight: 700; letter-spacing: 0.02em; font-size: 15px; color: var(--muted); margin: 0 0 18px; }
+.pmx .brand b { color: var(--ink); }
+.pmx h1 { font-size: clamp(30px, 5.2vw, 46px); line-height: 1.12; margin: 0 0 14px; letter-spacing: -0.01em; text-wrap: balance; }
+.pmx .lede { font-size: clamp(17px, 2.3vw, 20px); color: var(--muted); margin: 0 0 22px; max-width: 40em; }
+.pmx .progress { display: flex; align-items: center; gap: 14px; margin: 26px 0 18px; }
+.pmx .bar { flex: 1; height: 8px; background: var(--soft); border-radius: 99px; overflow: hidden; }
+.pmx .bar span { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 99px; transition: width .25s ease; }
+.pmx .progress output { font-weight: 700; font-size: 15px; white-space: nowrap; min-width: 7.5em; text-align: right; }
+.pmx ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.pmx .step {
+  background: var(--card); border: 1.5px solid var(--line); border-radius: 14px;
+  padding: 24px; display: grid; grid-template-columns: auto 72px minmax(0, 1fr); gap: 20px; align-items: start;
+  transition: border-color .2s, background .2s;
+}
+.pmx .step.done { border-color: var(--accent); background: var(--done); }
+.pmx .check { position: relative; display: block; cursor: pointer; padding-top: 4px; }
+.pmx .check input { position: absolute; opacity: 0; width: 34px; height: 34px; margin: 0; cursor: pointer; }
+.pmx .box {
+  width: 34px; height: 34px; border: 2px solid #b9b4aa; border-radius: 9px; display: grid; place-items: center;
+  background: var(--box); transition: background .15s, border-color .15s;
+}
+.pmx .box svg { color: var(--on-accent); width: 20px; height: 20px; opacity: 0; transition: opacity .15s; }
+.pmx .check input:checked + .box { background: var(--accent); border-color: var(--accent); }
+.pmx .check input:checked + .box svg { opacity: 1; }
+.pmx .icon { width: 72px; height: 72px; color: var(--ink); display: grid; place-items: center; }
+.pmx .icon svg { width: 100%; height: 100%; }
+.pmx .step-num { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 2px; }
+.pmx .step h2 { font-size: 23px; line-height: 1.25; margin: 0 0 8px; }
+.pmx .step.done h2 { text-decoration: line-through; text-decoration-color: rgba(31,111,92,.5); text-decoration-thickness: 2px; }
+.pmx .step p { margin: 0 0 12px; }
+.pmx .step p:last-child { margin-bottom: 0; }
+.pmx .files { list-style: none; padding: 0; margin: 4px 0 0; display: grid; gap: 8px; }
+.pmx .files li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; padding: 10px 14px; background: var(--soft); border-radius: 10px; }
+.pmx .files a { font-family: var(--mono); font-size: 15px; font-weight: 600; word-break: break-all; }
+.pmx .files small { color: var(--muted); font-size: 15px; }
+.pmx .either { display: flex; align-items: flex-start; gap: 18px; margin: 6px 0 14px; flex-wrap: wrap; }
+.pmx .either figure { margin: 0; text-align: center; width: 92px; }
+.pmx .either figure svg { width: 44px; height: 44px; color: var(--ink); display: block; margin: 0 auto 4px; }
+.pmx .either figcaption { font-size: 14px; line-height: 1.3; }
+.pmx .either .or { align-self: center; font-size: 14px; color: var(--muted); font-style: italic; padding-bottom: 18px; }
+.pmx .btn {
+  display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
+  background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 17px;
+  padding: 12px 20px; border-radius: 10px; margin-top: 4px;
+}
+.pmx .btn:hover { background: var(--accent-hover); color: var(--on-accent); }
+.pmx .btn svg { width: 18px; height: 18px; }
+.pmx .hint { color: var(--muted); font-size: 15px; }
+.pmx .allset {
+  display: none; margin: 18px 0 0; padding: 16px 20px; border-radius: 12px;
+  background: var(--accent-soft); color: var(--allset-ink); font-weight: 700;
+}
+.pmx .allset.show { display: block; }
+.pmx section.block { margin: 56px 0 0; }
+.pmx .block h2.sec { font-size: 26px; margin: 0 0 6px; }
+.pmx .block p.sub { color: var(--muted); margin: 0 0 18px; }
+.pmx .scenario { background: var(--card); border: 1.5px solid var(--line); border-radius: 14px; padding: 22px 24px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: center; }
+.pmx .scenario dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 18px; margin: 0; font-size: 16px; }
+.pmx .scenario dt { color: var(--muted); }
+.pmx .scenario dd { margin: 0; font-variant-numeric: tabular-nums; }
+.pmx .chart { width: 100%; height: auto; display: block; }
+.pmx .chart text { font-family: var(--sans); font-size: 10px; fill: var(--muted); }
+.pmx .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; color: var(--muted); margin-top: 4px; }
+.pmx .legend span::before { content: ""; display: inline-block; width: 16px; height: 3px; border-radius: 2px; background: var(--c); vertical-align: middle; margin-right: 6px; }
+.pmx .keys { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.pmx .keys li { background: var(--card); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+.pmx .keys code { background: none; padding: 0; font-weight: 600; color: var(--accent); font-size: 15px; }
+.pmx .keys span { display: block; color: var(--muted); font-size: 15px; margin-top: 2px; }
+.pmx .faq { border-top: 1.5px solid var(--line); }
+.pmx .faq details { border-bottom: 1.5px solid var(--line); }
+.pmx .faq summary {
+  list-style: none; cursor: pointer; padding: 18px 40px 18px 0; font-weight: 700; font-size: 18px; position: relative;
+}
+.pmx .faq summary::-webkit-details-marker { display: none; }
+.pmx .faq summary::after {
+  content: ""; position: absolute; right: 8px; top: 50%; width: 10px; height: 10px; margin-top: -7px;
+  border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: rotate(45deg); transition: transform .2s;
+}
+.pmx .faq details[open] summary::after { transform: rotate(-135deg); margin-top: -2px; }
+.pmx .faq .a { padding: 0 0 18px; max-width: 42em; }
+.pmx .faq .a p { margin: 0 0 10px; }
+.pmx .faq .a p:last-child { margin: 0; }
+.pmx pre.mini { font-family: var(--mono); font-size: 14px; background: var(--soft); border-radius: 10px; padding: 12px 14px; margin: 8px 0 10px; overflow-x: auto; line-height: 1.6; }
+.pmx pre.mini .c { color: var(--note); }
+.pmx footer { margin: 56px 0 0; padding: 22px 0 40px; border-top: 1.5px solid var(--line); color: var(--muted); font-size: 15px; }
+.pmx footer a { color: var(--ink); }
+@media (max-width: 640px) {
+.pmx header.top { padding-top: 28px; }
+.pmx .step { grid-template-columns: auto minmax(0, 1fr); gap: 14px 16px; padding: 18px; }
+.pmx .icon { grid-column: 2; grid-row: 1; width: 52px; height: 52px; justify-self: start; }
+.pmx .step .body { grid-column: 1 / -1; }
+.pmx .scenario { grid-template-columns: 1fr; padding: 18px; }
+.pmx .scenario dl { grid-template-columns: 1fr; gap: 0; }
+.pmx .scenario dd { margin-bottom: 8px; }
+}
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.  
+.pmx h1, .pmx h2 { border: 0; padding: 0; font-family: var(--sans); }
+.pmx { background: transparent; }
+#title-block-header { display: none; }
 
-Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.  
+.pmx .btn.alt { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); margin-top: 12px; }
+.pmx .btn.alt:hover { background: var(--accent-soft); }
+body.quarto-dark .pmx {
+  --card: #2b3035; --ink: #e7ebee; --muted: #a9b3bd; --line: #444b52; --soft: #33393f;
+  --accent: #5cc0a0; --accent-soft: #1d3d34; --accent-hover: #7fd3b7; --on-accent: #0c1f19;
+  --box: #2b3035; --done: #24302c; --allset-ink: #c4ecdf; --note: #8f99a4;
+  --d1: #3d7d6b; --d2: #5cc0a0; --d3: #b4e8d6;
+}
+</style>
+<div class="pmx">
+<!-- Glyphs from the talk, defined once and reused. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="g-doc" viewBox="0 0 96 96"><path fill="currentColor" d="M23 82 23 14 48 14 48 35 73 35 73 82 23 82ZM54 16.5 66.5 29 54 29 54 16.5ZM54 8 17 8 17 88 79 88 79 30 54 8Z"/><g fill="currentColor"><rect x="29" y="45" width="38" height="4"/><rect x="29" y="37" width="13" height="4"/><rect x="29" y="53" width="38" height="4"/><rect x="29" y="61" width="38" height="4"/><rect x="29" y="69" width="38" height="4"/></g></symbol>
+  <symbol id="g-code" viewBox="0 0 53 68"><g fill="currentColor" transform="translate(-1121 -415)"><path d="M1139.22 463 1132 456 1139.22 449 1141 450.73 1135.58 456 1141 461.27 1139.22 463Z" fill-rule="evenodd"/><path d="M1155.78 463 1154 461.27 1159.42 456 1154 450.73 1155.78 449 1163 456 1155.78 463Z" fill-rule="evenodd"/><path d="M1143.6 463.006 1149.58 448.571 1151.89 449.529 1145.91 463.963Z" fill-rule="evenodd"/><path d="M1126.13 477.9 1126.13 420.1 1147.5 420.1 1147.5 437.95 1168.87 437.95 1168.87 477.9 1126.13 477.9ZM1152.63 422.225 1163.31 432.85 1152.63 432.85 1152.63 422.225ZM1152.63 415 1121 415 1121 483 1174 483 1174 433.7 1152.63 415Z" fill-rule="evenodd"/></g></symbol>
+  <symbol id="g-llm" viewBox="0 0 96 96"><path fill="currentColor" d="M89 35.7C78.3 33.6 64.5 32.7 52 37.7 49.4 38.6 46.6 38.6 44 37.7 31.5 32.7 17.7 33.6 7 35.7 5.4 36 4 37.1 4 38.7 4 40.4 5.3 41.7 7 41.7 7 41.7 7.9 45.7 9.3 52.2 10.7 58.7 14.2 62 25 62 30.3 62 34.2 61.8 37 59 40.5 55.4 44.4 45.9 44.4 45.9 45.1 44.6 46.5 43.8 48 43.8 49.5 43.8 50.9 44.6 51.6 45.9 51.6 45.9 55.5 55.4 59 59 61.8 61.8 65.7 62 71 62 81.8 62 85.2 58.8 86.7 52.2 88.2 45.6 89 41.8 89 41.8 90.7 41.8 92 40.5 92 38.8 92 37 90.6 36 89 35.7Z"/></symbol>
+  <symbol id="tick" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
 
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.  
+<div class="wrap">
+
+<header class="top">
+  <p class="brand"><b>PMxbench</b> &middot; a pharmacometrics benchmark from the AIML-SIG</p>
+  <h1>Analyze one PK study. Send back one file.</h1>
+  <p class="lede">The study is simulated, so there is a right answer. Three steps, any software you like. Tick each box as you go.</p>
+
+  <div class="progress" aria-live="polite">
+    <div class="bar" aria-hidden="true"><span id="fill"></span></div>
+    <output id="count">0 of 3 done</output>
+  </div>
+</header>
+
+<ol class="steps">
+  <li class="step" id="s1">
+    <label class="check" aria-label="Mark step 1 as done"><input type="checkbox"><span class="box"><svg aria-hidden="true"><use href="#tick"/></svg></span></label>
+    <div class="icon" aria-hidden="true"><svg><use href="#g-doc"/></svg></div>
+    <div class="body">
+      <p class="step-num">Step 1</p>
+      <h2>Download three files</h2>
+      <p>That is everything you need. No sign-up for this part.</p>
+      <ul class="files">
+        <li><a href="https://raw.githubusercontent.com/AIML-SIG/Agentic-workflows/main/tools/pmxbench/scenario_00/data.csv">data.csv</a> <small>the dataset, one row per record</small></li>
+        <li><a href="https://github.com/AIML-SIG/Agentic-workflows/blob/main/tools/pmxbench/scenario_00/sap.md">sap.md</a> <small>the protocol and analysis plan. Read this first.</small></li>
+        <li><a href="https://raw.githubusercontent.com/AIML-SIG/Agentic-workflows/main/tools/pmxbench/scenario_00/submission.template.yaml">submission.template.yaml</a> <small>the answer form you fill in</small></li>
+      </ul>
+      <a class="btn alt" href="downloads/scenario_00.zip" download>Download all three (.zip)
+        <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v10M5 9l4 4 4-4M3 15h12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </li>
+
+  <li class="step" id="s2">
+    <label class="check" aria-label="Mark step 2 as done"><input type="checkbox"><span class="box"><svg aria-hidden="true"><use href="#tick"/></svg></span></label>
+    <div class="icon" aria-hidden="true"><svg><use href="#g-code"/></svg></div>
+    <div class="body">
+      <p class="step-num">Step 2</p>
+      <h2>Run the analysis your way</h2>
+      <p>Do the population PK analysis that <code>sap.md</code> asks for. NONMEM, nlmixr2, Monolix, Pumas, anything works.</p>
+      <div class="either" aria-label="Two ways to do it">
+        <figure><svg aria-hidden="true"><use href="#g-code"/></svg><figcaption>Your own script</figcaption></figure>
+        <span class="or">or</span>
+        <figure><svg aria-hidden="true"><use href="#g-llm"/></svg><figcaption>An AI agent</figcaption></figure>
+      </div>
+      <p class="hint">Both are welcome. The leaderboard records which one you used.</p>
+    </div>
+  </li>
+
+  <li class="step" id="s3">
+    <label class="check" aria-label="Mark step 3 as done"><input type="checkbox"><span class="box"><svg aria-hidden="true"><use href="#tick"/></svg></span></label>
+    <div class="icon" aria-hidden="true"><svg><use href="#g-doc"/></svg></div>
+    <div class="body">
+      <p class="step-num">Step 3</p>
+      <h2>Fill in the form and submit it</h2>
+      <p>Put your results into the template. Save it as <code>submission.yaml</code>. Then paste the whole file into the submission form on GitHub.</p>
+      <a class="btn" href="https://github.com/AIML-SIG/Agentic-workflows/issues/new?template=pmxbench-submission.yml">Open the submission form
+        <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10M10 5l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <p class="hint" style="margin-top:10px">Needs a free GitHub account. See the questions below.</p>
+    </div>
+  </li>
+</ol>
+
+<p class="allset" id="allset">All three done. We score your file against the answer key and post the result on the leaderboard.</p>
+
+<section class="block" aria-labelledby="h-study">
+  <h2 class="sec" id="h-study">The study</h2>
+  <p class="sub">Scenario 00. Open to everyone.</p>
+  <div class="scenario">
+    <div>
+      <p style="margin:0 0 12px;font-weight:700;font-size:19px;line-height:1.3">First-in-human study of an IgG1 monoclonal antibody</p>
+      <dl>
+        <dt>Subjects</dt><dd>120 healthy adults, 50 to 110 kg</dd>
+        <dt>Dosing</dt><dd>Single 1-h IV infusion of 100, 300 or 600 mg</dd>
+        <dt>Sampling</dt><dd>Predose to day 150, 13 draws each</dd>
+        <dt>Assay</dt><dd>LLOQ 0.1 mg/L</dd>
+        <dt>Covariates</dt><dd>WT, ALB, CRCL</dd>
+      </dl>
+    </div>
+    <figure style="margin:0">
+      <svg class="chart" viewBox="0 0 320 172" role="img" aria-label="Median concentration over 150 days for each dose on a log scale, falling from about 30, 95 and 200 mg/L to under 1 mg/L">
+        <g style="stroke:var(--line)" stroke-width="1">
+          <line x1="44" x2="312" y1="150" y2="150"/><line x1="44" x2="312" y1="110.9" y2="110.9"/>
+          <line x1="44" x2="312" y1="71.8" y2="71.8"/><line x1="44" x2="312" y1="32.7" y2="32.7"/>
+        </g>
+        <g text-anchor="end"><text x="39" y="153">0.1</text><text x="39" y="114">1</text><text x="39" y="75">10</text><text x="39" y="36">100</text></g>
+        <g text-anchor="middle"><text x="44" y="164">0</text><text x="97.6" y="164">30</text><text x="151.2" y="164">60</text><text x="204.8" y="164">90</text><text x="258.4" y="164">120</text><text x="303" y="164">150 d</text></g>
+        <text x="44" y="10">Median concentration, mg/L (log scale)</text>
+        <g fill="none" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+          <polyline style="stroke:var(--d1)" points="44.1,52.5 45.8,55.8 49.4,63.2 56.5,69.1 69.0,74.0 94.0,81.5 119.0,88.3 144.1,96.3 169.1,103.1 204.8,113.8 258.4,127.1 312.0,131.0"/>
+          <polyline style="stroke:var(--d2)" points="44.1,33.5 45.8,37.8 49.4,43.0 56.5,49.8 69.0,55.8 94.0,62.1 119.0,71.5 144.1,76.2 169.1,81.5 204.8,92.8 258.4,106.8 312.0,119.2"/>
+          <polyline style="stroke:var(--d3)" points="44.1,21.1 45.8,26.4 49.4,32.3 56.5,38.8 69.0,43.5 94.0,51.0 119.0,59.7 144.1,67.0 169.1,75.6 204.8,84.2 258.4,100.0 312.0,113.9"/>
+        </g>
+      </svg>
+      <figcaption class="legend"><span style="--c:var(--d1)">100 mg</span><span style="--c:var(--d2)">300 mg</span><span style="--c:var(--d3)">600 mg</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="block" aria-labelledby="h-keys">
+  <h2 class="sec" id="h-keys">The five answers you report</h2>
+  <p class="sub">Each one is defined in section 9 of <code>sap.md</code>. Leave out anything your analysis did not cover.</p>
+  <ul class="keys">
+    <li><code>structural_ncmt</code><span>How many compartments your final model has</span></li>
+    <li><code>disposition_params</code><span>Typical CL, volumes and distribution parameters at 70 kg</span></li>
+    <li><code>error_model</code><span>The residual error terms</span></li>
+    <li><code>cov_effects</code><span>Which covariates act on which parameter, and how strongly</span></li>
+    <li><code>outlier_records</code><span>The <code>ROWID</code>s of records you flagged as data errors</span></li>
+  </ul>
+</section>
+
+<section class="block" aria-labelledby="h-faq">
+  <h2 class="sec" id="h-faq">Questions people ask</h2>
+  <p class="sub">Short answers. Tap a question to open it.</p>
+  <div class="faq">
+    <details>
+      <summary>What is YAML?</summary>
+      <div class="a">
+        <p>A plain text file with one <code>name: value</code> per line. You can open and edit it in Notepad, TextEdit, RStudio or any text editor. Lines that start with <code>#</code> are notes and are ignored.</p>
+        <pre class="mini"><span class="c"># this line is a note</span>
+structural_ncmt: &lt;your value&gt;
+outlier_records: ["&lt;row id&gt;"]</pre>
+        <p>Indentation matters, so keep the spaces at the start of each line as they are in the template.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Do I need NONMEM?</summary>
+      <div class="a"><p>No. Use whatever you are comfortable with: NONMEM, nlmixr2, Monolix, Pumas, or your own code. Only the answers in your file are scored, not the software.</p></div>
+    </details>
+    <details>
+      <summary>Can I use ChatGPT or Claude?</summary>
+      <div class="a"><p>Yes. Running the analysis with an AI agent is allowed and is part of what the benchmark measures. The template has a short section where you say what did the work (by hand, or which agent and model), so results can be compared fairly.</p></div>
+    </details>
+    <details>
+      <summary>How is it scored?</summary>
+      <div class="a"><p>The data were simulated from a known model, so there is an answer key. Maintainers compare your file with it. You get a score from 0 to 1 in each area (structural model, estimation, covariate analysis, data quality) plus an overall score. 1 means a full match.</p></div>
+    </details>
+    <details>
+      <summary>Do I need a GitHub account?</summary>
+      <div class="a"><p>Yes, to submit. The submission form is a GitHub issue, and GitHub only lets signed-in users open one. The account is free and takes a couple of minutes at <a href="https://github.com/signup">github.com/signup</a>. You do not need it to download the files or do the analysis.</p></div>
+    </details>
+    <details>
+      <summary>What if I can't answer one of the five?</summary>
+      <div class="a"><p>Leave it out. The template says so too: report only what your analysis supports, and do not guess.</p></div>
+    </details>
+  </div>
+</section>
+
+<footer class="pmx-foot">
+  Past results are on the <a href="leaderboard.html">leaderboard</a>. All files live in <a href="https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pmxbench">tools/pmxbench</a>.
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var steps = document.querySelectorAll('.step');
+  var fill = document.getElementById('fill');
+  var count = document.getElementById('count');
+  var allset = document.getElementById('allset');
+  function update() {
+    var n = 0;
+    steps.forEach(function (s) {
+      var on = s.querySelector('input').checked;
+      s.classList.toggle('done', on);
+      if (on) n++;
+    });
+    fill.style.width = (n / steps.length * 100) + '%';
+    count.textContent = n + ' of ' + steps.length + ' done';
+    allset.classList.toggle('show', n === steps.length);
+  }
+  steps.forEach(function (s) { s.querySelector('input').addEventListener('change', update); });
+  update();
+})();
+</script>
+</div>
+```
