@@ -46,14 +46,14 @@ jobs:
       - name: Install pyyaml
         run: pip install pyyaml
 
-      # The results and the leaderboard generator are private. A fine-grained
-      # token with read-only Contents access to pmxbench-private, stored here as
-      # PMXBENCH_PRIVATE_TOKEN, lets this job read them. Secrets are not exposed
-      # to pull requests from forks, and this workflow only runs on main.
+      # The results and the leaderboard builder are private. A read-only deploy
+      # key on pmxbench-private, stored here as PMXBENCH_PRIVATE_KEY, lets this job
+      # read them. Secrets are not exposed to pull requests from forks, and this
+      # workflow only runs on main.
       - uses: actions/checkout@v4
         with:
           repository: AIML-SIG/pmxbench-private
-          token: ${{ secrets.PMXBENCH_PRIVATE_TOKEN }}
+          ssh-key: ${{ secrets.PMXBENCH_PRIVATE_KEY }}
           path: pmxbench-private
 
       # docs/leaderboard.qmd is NOT tracked in git -- it is generated here, on
