@@ -1,16 +1,12 @@
 name: Build and publish the site
 
-# Owns the whole path from a merged result to the live page: generate the
-# leaderboard, render the Quarto site, deploy it to GitHub Pages.
+# Renders the Quarto site and deploys it to GitHub Pages on any push to main
+# that touches the site or the public PMxbench files.
 #
-# CI is the only author of docs/leaderboard.qmd. It is generated here from
-# results/ on every run and is not tracked in git, so there is no committed copy
-# that can drift out of step with the runs -- and nothing tempting a contributor
-# to regenerate it in their PR, which #18 forbids.
-#
-# Results live in the private repo AIML-SIG/pmxbench-private. After recording
-# one, run this workflow by hand (workflow_dispatch). A push to main that touches
-# the site or the public scenarios rebuilds too.
+# docs/leaderboard.qmd is committed. Maintainers generate it from the private
+# repo AIML-SIG/pmxbench-private (tools/build_leaderboard.py) after recording a
+# submission, and merge it here by PR. So this build needs no secret and never
+# reads anything private.
 on:
   push:
     branches: [main]
@@ -20,16 +16,14 @@ on:
       - '.github/workflows/site.yml'
   workflow_dispatch:
 
-# Serialise. Several submissions can merge in the same week -- the whole point of
-# the First Run milestone -- and two runs racing to deploy Pages would conflict.
-# Not cancel-in-progress: generation reads the full results tree and a
-# half-finished deploy is worse than a queued one.
+# Serialise: two runs racing to deploy Pages would conflict, and a half-finished
+# deploy is worse than a queued one.
 concurrency:
   group: site
   cancel-in-progress: false
 
 permissions:
-  contents: read    # read-only: the board is never committed back, only rendered
+  contents: read    # nothing is ever pushed back
   pages: write      # deploy to GitHub Pages
   id-token: write   # OIDC for the Pages deployment
 
@@ -38,32 +32,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install pyyaml
-        run: pip install pyyaml
-
-      # The results and the leaderboard builder are private. A read-only deploy
-      # key on pmxbench-private, stored here as PMXBENCH_PRIVATE_KEY, lets this job
-      # read them. Secrets are not exposed to pull requests from forks, and this
-      # workflow only runs on main.
-      - uses: actions/checkout@v4
-        with:
-          repository: AIML-SIG/pmxbench-private
-          ssh-key: ${{ secrets.PMXBENCH_PRIVATE_KEY }}
-          path: pmxbench-private
-
-      # docs/leaderboard.qmd is NOT tracked in git -- it is generated here, on
-      # every run, and consumed by the render step below. CI is its only author,
-      # so this job needs no write access and nothing is ever pushed to main.
-      - name: Generate docs/leaderboard.qmd
-        run: |
-          python3 pmxbench-private/tools/build_leaderboard.py \
-            --public-dir tools/pmxbench \
-            --out docs/leaderboard.qmd
 
       # One zip per public scenario, so the intro page can offer "download all".
       - name: Zip each scenario's files
@@ -78,12 +46,7 @@ jobs:
       - name: Render the site
         run: quarto render docs
 
-      # Native Pages deployment, replacing the legacy build-from-gh-pages-branch
-      # path. No gh-pages branch to keep in sync, and the deploy is a first-class
-      # step with its own logs instead of an opaque background build.
-      #
-      # REQUIRES: Settings -> Pages -> Source must be "GitHub Actions", not
-      # "Deploy from a branch". Until that is switched the site will not update.
+      # REQUIRES: Settings -> Pages -> Source must be "GitHub Actions".
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
