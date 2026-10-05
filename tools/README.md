@@ -24,9 +24,9 @@ python3 score.py submission.example.yaml
 Prints a scorecard for a deliberately imperfect submission (overall ≈ 0.72) so
 you see the traps biting.
 
-**Run the full loop** (workflow + benchmark): see
-the private maintainer repo (`AIML-SIG/pmxbench-private`), which holds the
-proctor, the baseline and the results (proctor → run → score). To adapt the workflow to your own domain, see
+**Run the full loop** (workflow + benchmark): copy `pmxbench/scenario_00/*` into
+a project's `data/`, run `modus/run.sh` (or `modus/baseline.sh`) on it, then score
+the `submission.yaml` with `pmxbench/template_scenario_00/score.py`. To adapt the workflow to your own domain, see
 [`modus/README.md`](modus/README.md) → *Writing your own task library*.
 
 ## Prerequisites

@@ -10,8 +10,8 @@ it running. This file is the orientation; the per-folder READMEs are the detail.
 - `pmxbench/`: a **benchmark** that scores a `submission.yaml` against a held-out
   answer key. Tool-agnostic, so it scores any workflow, not just modus. Participant
   payload in `scenario_00/`; answer key and scorer in `template_scenario_00/`.
-  Proctor, baseline, results and the leaderboard generator live in the private
-  repo `AIML-SIG/pmxbench-private`.
+  Recorded results and the leaderboard build live in the private repo
+  `AIML-SIG/pmxbench-private`.
 
 The contract between them is one file: a workflow reads a `data/` packet and
 writes `workspace/submission/submission.yaml`; the benchmark scores that.
@@ -89,18 +89,17 @@ Verify, and install what's missing, before running anything:
 1. **Score-only smoke test** (no agent, proves R + scorer work):
    `cd pmxbench/template_scenario_00 && python3 score.py submission.example.yaml`
    → expect overall ≈ 0.72.
-2. **Full loop** (maintainers, from `AIML-SIG/pmxbench-private`): `tools/proctor.sh
-   scenario_00 <dir>` stages the scenario into a fresh project dir outside the
-   repo (this copy is the blinding — never run the workflow in-place against the
-   pmxbench tree), then `modus/run.sh` runs the workflow, then `score.py` grades
-   it from outside the loop.
+2. **Full loop.** Copy `pmxbench/scenario_00/*` into `<dir>/data/` with `<dir>`
+   outside the repo (this copy is the blinding; never run a workflow in place
+   inside the repo), then `modus/run.sh <dir>` or `modus/baseline.sh <dir>`, then
+   grade the submission with `score.py` from outside the loop.
 
 ## Two things not to get wrong
 
 - **Blinding.** `pmxbench/template_scenario_00/` holds the answer key, so never copy
   it into a workflow's working directory, and never run a workflow in-place inside
-  `pmxbench/`. Only `scenario_XX/*` travels. The proctor enforces this; don't
-  bypass it.
+  `pmxbench/`. Only `scenario_XX/*` travels. `baseline.sh` refuses a project
+  dir inside the repo.
 - **No leakage into the workflow.** A scenario's specific answers (which covariate
   is a decoy, which records are corrupted) must never be written into
   `modus/ai_docs/task_library.json` or anything the runtime loads. Rules stay at
