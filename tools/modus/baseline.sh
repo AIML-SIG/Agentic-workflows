@@ -117,6 +117,10 @@ log "Log file: $LOG_FILE"
 # Single shot. No iteration loop, no escalation, no verification gate -- that is
 # the point of the comparator. AGENT_CMD is word-split into argv; the prompt is a
 # single final arg, never re-parsed by a shell.
+# Start the agent in its workspace, not wherever this script was called from:
+# harnesses load AGENTS.md/CLAUDE.md from their working directory, and the
+# caller's directory may be this repo.
+cd "$WORKSPACE"
 timeout --foreground "$TASK_TIMEOUT" $AGENT_CMD "$PROMPT" >> "$LOG_FILE" 2>&1 || true
 
 echo
