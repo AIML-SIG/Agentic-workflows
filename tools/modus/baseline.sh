@@ -63,7 +63,7 @@ log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"; }
 # repo revision) for score.py --record to pick up, rather than trusting
 # the agent's own provenance block to self-report them correctly.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TOOL_SHA="$(git -C "$SCRIPT_DIR" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)"
+TOOL_SHA="${PMX_TOOL_SHA:-$(git -C "$SCRIPT_DIR" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)}"
 HARNESS="$(awk '{print $1}' <<< "$AGENT_CMD")"
 # Pull --model straight off AGENT_CMD when present -- more trustworthy than
 # the agent's own provenance.model self-report (seen in practice reporting
@@ -75,6 +75,21 @@ tool_sha: "${TOOL_SHA}"
 model: "${MODEL_OVERRIDE}"
 agent_cmd: "$(printf '%s' "$AGENT_CMD" | sed 's/"/\\"/g')"
 EOF
+
+# What the run actually had installed. Versions are recorded, not pinned.
+# container is the image id when run_container.sh launched this, else false.
+ver() { "$@" 2>/dev/null | head -1 | tr -d '"' || true; }
+R_PKGS="$(Rscript -e 'for (p in c("nlmixr2", "rxode2", "mrgsolve", "nlme"))
+    cat(p, tryCatch(as.character(packageVersion(p)), error = function(e) "none"), "\n")' 2>/dev/null || true)"
+{
+    echo "env:"
+    echo "  container: \"${PMX_CONTAINER:-false}\""
+    echo "  harness_version: \"$(ver "$HARNESS" --version)\""
+    echo "  r: \"$(ver R --version)\""
+    echo "  python: \"$(ver python3 --version)\""
+    echo "  r_packages:"
+    while read -r p v; do [ -n "$p" ] && echo "    $p: \"$v\""; done <<< "$R_PKGS"
+} >> "${WORKSPACE}/run_meta.yaml"
 
 # Barebones prompt: the contract and nothing more -- no pharmacometric guidance,
 # no task decomposition, no examples. Same read-only inputs and same one

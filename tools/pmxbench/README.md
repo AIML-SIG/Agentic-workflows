@@ -12,6 +12,8 @@ by hand or with an AI agent, and submit your answers in one YAML file.
 1. **Get the data.** Everything is in [`scenario_00/`](scenario_00/):
    `data.csv`, `sap.md` (protocol and analysis plan), and `submission.template.yaml`.
 2. **Run the analysis** that `sap.md` describes, with any software you like.
+   For a ready R environment (nlmixr2, mrgsolve), open the repo in
+   [Codespaces](https://codespaces.new/AIML-SIG/Agentic-workflows).
 3. **Submit.** Fill in the template, save it as `submission.yaml`, and paste it into a
    [submission issue](https://github.com/AIML-SIG/Agentic-workflows/issues/new?template=pmxbench-submission.yml).
    We score it and post the result to the

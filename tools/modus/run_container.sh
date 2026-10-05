@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# The official PMxbench environment: baseline.sh inside a fresh container.
+#
+# The image is built from .devcontainer/ (the same definition Codespaces uses),
+# but each run gets its own throwaway container with ONLY the project dir
+# mounted: no repo, no answer keys, no state left over from earlier runs.
+#
+# Before the agent's clock starts, the container installs the standard R
+# packages (as binaries, seconds not minutes) and the harness from npm. Nothing
+# is pinned; baseline.sh records every version into run_meta.yaml instead.
+#
+#   mkdir -p ~/pmx-runs/my-run/data
+#   cp tools/pmxbench/scenario_00/* ~/pmx-runs/my-run/data/
+#   OPENROUTER_API_KEY=... AGENT_CMD='pi -p --mode json --model openrouter/<id>' \
+#     tools/modus/run_container.sh ~/pmx-runs/my-run
+#
+# AGENT_CMD, RUN_LABEL and TASK_TIMEOUT pass through to baseline.sh. Set
+# REBUILD=1 to rebuild the image (e.g. after editing .devcontainer/).
+set -euo pipefail
+
+PROJECT_DIR="${1:-}"
+if [ -z "$PROJECT_DIR" ] || [ ! -d "$PROJECT_DIR/data" ]; then
+    echo "Usage: $0 <project-dir>   (a dir containing data/, outside this repo)"
+    exit 1
+fi
+ABS_PROJECT="$(cd "$PROJECT_DIR" && pwd)"
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+case "${ABS_PROJECT}/" in "${REPO_ROOT}/"*)
+    echo "ERROR: ${ABS_PROJECT} is inside this repo, next to answer keys. Use a dir outside it."
+    exit 1;;
+esac
+
+IMAGE="${PMX_IMAGE:-pmx-agent}"
+AGENT_CMD="${AGENT_CMD:-claude -p --verbose --output-format stream-json --dangerously-skip-permissions}"
+HARNESS="$(awk '{print $1}' <<< "$AGENT_CMD")"
+case "$HARNESS" in
+    claude) HARNESS_PKG="@anthropic-ai/claude-code" ;;
+    codex)  HARNESS_PKG="@openai/codex" ;;
+    pi)     HARNESS_PKG="@earendil-works/pi-coding-agent" ;;
+    *) echo "ERROR: no npm package known for harness '$HARNESS'. Add it to $0."; exit 1 ;;
+esac
+
+if [ -n "${REBUILD:-}" ] || ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
+    devcontainer build --workspace-folder "$REPO_ROOT" --image-name "$IMAGE"
+fi
+
+# Setup runs as root (apt-backed R binaries need it); the agent runs as the
+# image's unprivileged user, since some harnesses refuse to skip permission
+# prompts as root.
+SETUP='set -e
+Rscript -e "install.packages(c(\"nlmixr2\", \"mrgsolve\", \"yaml\"))" >/tmp/setup.log 2>&1
+npm install -g "$HARNESS_PKG" >>/tmp/setup.log 2>&1
+exec runuser -u vscode -- env HOME=/home/vscode PATH="$PATH" \
+    /opt/pmx/tools/modus/baseline.sh /work'
+
+docker run --rm \
+    -v "${ABS_PROJECT}:/work" \
+    -v "${REPO_ROOT}/tools/modus/baseline.sh:/opt/pmx/tools/modus/baseline.sh:ro" \
+    -e AGENT_CMD="$AGENT_CMD" -e HARNESS_PKG="$HARNESS_PKG" \
+    -e RUN_LABEL -e TASK_TIMEOUT -e ANTHROPIC_API_KEY -e OPENROUTER_API_KEY -e OPENAI_API_KEY \
+    -e PMX_CONTAINER="$(docker image inspect --format '{{.Id}}' "$IMAGE")" \
+    -e PMX_TOOL_SHA="$(git -C "$REPO_ROOT" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)" \
+    "$IMAGE" bash -c "$SETUP"

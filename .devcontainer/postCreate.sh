@@ -7,8 +7,10 @@ Rscript -e 'install.packages(c("mrgsolve", "yaml", "nlmixr2"))'
 echo "Verifying nlmixr2 loads..."
 Rscript -e 'library(nlmixr2)'
 
-echo "Installing Python deps (pharmbench/visualize_results.py)..."
+echo "Installing Python deps (pmxbench score.py)..."
 pip install --user pyyaml
 
-echo "Installing Claude Code CLI..."
-npm install -g @anthropic-ai/claude-code
+# Agent harnesses are not baked in: install the one you use (npm install -g
+# @anthropic-ai/claude-code, @openai/codex or @earendil-works/pi-coding-agent).
+# Official runs (tools/modus/run_container.sh) install theirs at run time and
+# record the version.
