@@ -1,7 +1,7 @@
 # The answer key. One item per submission key in sap.md section 9.
 # Every value here is read off the true model in generate.R.
 #
-# Each item names its scorer (the scorers are described at the top of score.R)
+# Each item names its scorer (the scorers are described at the top of score.py)
 # and, where it carries a trap, says so in a comment: what the trap catches and
 # where the scenario legitimately exposes the analyst to it.
 

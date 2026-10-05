@@ -28,7 +28,7 @@ template_scenario_00/        the same study, plus how it was built and scored
   submission.template.yaml
   generate.R                 simulates data.csv from a fixed seed (--plots for EDA figures)
   truth.yaml                 the answer key, with the planted traps explained
-  score.R                    the scorer: Rscript score.R submission.example.yaml
+  score.py                   the scorer: python3 score.py submission.example.yaml
   submission.example.yaml    a deliberately imperfect submission, to see scoring work
 ```
 

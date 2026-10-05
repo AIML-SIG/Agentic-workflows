@@ -87,12 +87,12 @@ Verify, and install what's missing, before running anything:
 ## Then run, in this order
 
 1. **Score-only smoke test** (no agent, proves R + scorer work):
-   `cd pmxbench/template_scenario_00 && Rscript score.R submission.example.yaml`
+   `cd pmxbench/template_scenario_00 && python3 score.py submission.example.yaml`
    → expect overall ≈ 0.72.
 2. **Full loop** (maintainers, from `AIML-SIG/pmxbench-private`): `tools/proctor.sh
    scenario_00 <dir>` stages the scenario into a fresh project dir outside the
    repo (this copy is the blinding — never run the workflow in-place against the
-   pmxbench tree), then `modus/run.sh` runs the workflow, then `score.R` grades
+   pmxbench tree), then `modus/run.sh` runs the workflow, then `score.py` grades
    it from outside the loop.
 
 ## Two things not to get wrong

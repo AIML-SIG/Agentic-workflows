@@ -8,10 +8,9 @@ name: Build and publish the site
 # that can drift out of step with the runs -- and nothing tempting a contributor
 # to regenerate it in their PR, which #18 forbids.
 #
-# Results live in the private repo AIML-SIG/pmxbench-private. It fires a
-# repository_dispatch (type pmxbench-results) here whenever a result lands, so the
-# board rebuilds without anything being committed to this repo. A push to main
-# that touches the site or the public scenarios rebuilds too.
+# Results live in the private repo AIML-SIG/pmxbench-private. After recording
+# one, run this workflow by hand (workflow_dispatch). A push to main that touches
+# the site or the public scenarios rebuilds too.
 on:
   push:
     branches: [main]
@@ -19,8 +18,6 @@ on:
       - 'docs/**'
       - 'tools/pmxbench/**'
       - '.github/workflows/site.yml'
-  repository_dispatch:
-    types: [pmxbench-results]
   workflow_dispatch:
 
 # Serialise. Several submissions can merge in the same week -- the whole point of
@@ -58,15 +55,6 @@ jobs:
           repository: AIML-SIG/pmxbench-private
           token: ${{ secrets.PMXBENCH_PRIVATE_TOKEN }}
           path: pmxbench-private
-
-      # The board stores submissions only; build_leaderboard.py rescores each
-      # one with the public score.R, so R and its yaml package are needed here.
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          use-public-rspm: true
-
-      - name: Install the R yaml package
-        run: Rscript -e 'install.packages("yaml")'
 
       # docs/leaderboard.qmd is NOT tracked in git -- it is generated here, on
       # every run, and consumed by the render step below. CI is its only author,

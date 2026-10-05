@@ -18,7 +18,7 @@ visible, results are held out**.
 
 ```sh
 cd pmxbench/template_scenario_00
-Rscript score.R submission.example.yaml
+python3 score.py submission.example.yaml
 ```
 
 Prints a scorecard for a deliberately imperfect submission (overall ≈ 0.72) so
