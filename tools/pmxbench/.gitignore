@@ -1,3 +1,4 @@
 # Written by score.py next to the submission it scores, and by generate.R --plots.
 scorecard.yaml
 */figures/
+__pycache__/
