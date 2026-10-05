@@ -1,0 +1,39 @@
+# submission.yaml: your answers for PMB-MAB-01.
+# Fill in `answers` from your analysis, then save this file as submission.yaml.
+# Report only what the analysis supports. Leave an item out (or null) if your
+# analysis did not address it; do not guess. See sap.md section 9 for each key.
+
+provenance:
+  tool: ""                     # what did the analysis: "manual", or your workflow's name
+  harness: ""                  # agent harness, if any (e.g. claude, codex, pi); "none" if manual
+  model: ""                    # model id behind the run, if any
+  run_utc: ""                  # ISO-8601 UTC timestamp, e.g. 2026-10-05T14:00:00Z
+  analysis_steps: []           # optional: the steps you performed, in your own words. Never scored.
+
+answers:
+  structural_ncmt:             # integer: number of disposition compartments
+
+  # Typical (population) values of YOUR final model's disposition parameters, as
+  # name: value pairs in the model's own parameterization, using standard
+  # parameter names so they match. Report exactly the parameters your chosen
+  # structure has, no more and no fewer. Units per sap.md Appendix A.
+  disposition_params:
+    # CL: <L/day>
+    # (volume and any distribution parameters under their usual names)
+
+  # Residual-error terms of your final model, as name: value pairs. Use standard
+  # term names so they match, and report exactly the terms you estimated.
+  error_model:
+    # prop: <proportional fraction>
+    # (include any other term your model has under its usual name)
+
+  # Covariate effects your final model supports, grouped by the disposition
+  # parameter they act on, then by covariate column name, with the estimated
+  # effect size in your model's form (e.g. a power exponent). Report exactly the
+  # relationships your analysis defends; {} if none.
+  # (Example shape only, NOT this study's answer: {CL: {<COV>: <effect>}})
+  cov_effects:
+    # <PARAM>:
+    #   <COV>: ...
+
+  outlier_records:             # list of ROWID strings (row numbers), e.g. ["418"]; [] if none

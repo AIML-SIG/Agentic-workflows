@@ -11,6 +11,8 @@ website:
     left:
       - text: "Glossary"
         href: learning/glossary/agent.qmd
+      - text: "PMxbench"
+        href: pmxbench.qmd
       - text: "Leaderboard"
         href: leaderboard.qmd
     right:

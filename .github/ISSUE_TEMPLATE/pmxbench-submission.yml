@@ -1,0 +1,41 @@
+name: PMxbench submission
+description: Submit your answers to a PMxbench scenario for scoring.
+title: "[PMxbench] scenario_00 submission"
+labels: ["pmxbench-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Paste your filled-in `submission.yaml` below. A maintainer scores it against the
+        answer key and adds the result to the leaderboard.
+  - type: dropdown
+    id: scenario
+    attributes:
+      label: Scenario
+      options:
+        - scenario_00
+    validations:
+      required: true
+  - type: dropdown
+    id: how
+    attributes:
+      label: How was the analysis done?
+      options:
+        - By hand
+        - With an AI agent
+        - Both
+    validations:
+      required: true
+  - type: textarea
+    id: submission
+    attributes:
+      label: submission.yaml
+      description: The whole file, including the provenance block.
+      render: yaml
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Optional. Anything you want us to know about the run.

@@ -2,7 +2,7 @@
 **/*.quarto_ipynb
 /_site/
 
-# Generated from tools/pharmbench/results/ by generate_leaderboard.py, and
+# Generated from tools/pmxbench/maintainer/results/ by generate_leaderboard.py, and
 # authored solely by .github/workflows/site.yml at build time. Deliberately not
 # tracked: a committed copy goes stale the moment a submission merges, and a
 # stale board invites contributors to regenerate it in their PR -- which #18

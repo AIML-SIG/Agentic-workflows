@@ -11,11 +11,11 @@
 #
 # Same contract as any workflow PMbench scores: read a data/ packet, write
 # workspace/submission/submission.yaml. So it slots straight into the loop in
-# place of step 2 (proctor -> run -> score) from pharmbench/README.md.
+# place of step 2 (proctor -> run -> score) from maintainer/README.md.
 #
 # Usage: ./baseline.sh <project-dir>      # project-dir is a proctored dir (has data/)
-#   e.g. ./proctor.sh mab-poppk-v0 /tmp/pmbench-baseline
-#        ./baseline.sh /tmp/pmbench-baseline
+#   e.g. ./proctor.sh scenario_00 /tmp/pmxbench-baseline
+#        ./baseline.sh /tmp/pmxbench-baseline
 set -euo pipefail
 
 PROJECT_DIR="${1:-}"
@@ -55,7 +55,7 @@ mkdir -p "$SUBMISSION_DIR"
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"; }
 
 # run_meta.yaml: facts this script knows authoritatively (which harness, which
-# pharmbench revision) for score.R --record to pick up, rather than trusting
+# pmxbench revision) for score.R --record to pick up, rather than trusting
 # the agent's own provenance block to self-report them correctly.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TOOL_SHA="$(git -C "$SCRIPT_DIR" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)"
@@ -75,7 +75,7 @@ EOF
 # no task decomposition, no examples. Same read-only inputs and same one
 # deliverable every scored workflow gets.
 PROMPT="You are a pharmacometrician. Read the packet in ${ABS_PROJECT}/data/
-(read-only: protocol, SAP, dataset, and submission.template.yaml). It defines the
+(read-only: sap.md, data.csv, and submission.template.yaml). It defines the
 analysis to perform and the reporting keys; nothing here in this prompt does.
 
 Carry out that analysis with any tools you like (R, Python, ...), working under
@@ -103,8 +103,8 @@ echo
 if [ -f "$SUBMISSION" ]; then
     log "Done. Submission written: $SUBMISSION"
     echo
-    echo "Next -- score it against the held-out answer key (replace <scenario-id>):"
-    echo "  Rscript score.R --truth scenarios/<scenario-id>/evals/truth.yaml \\"
+    echo "Next -- score it against the held-out answer key:"
+    echo "  Rscript score.R --truth <path/to/truth.yaml> \\"
     echo "    ${SUBMISSION}"
 else
     log "WARNING: agent finished but no submission at ${SUBMISSION}."

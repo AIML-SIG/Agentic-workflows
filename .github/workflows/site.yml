@@ -17,7 +17,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'tools/pharmbench/results/**'
+      - 'tools/pmxbench/maintainer/results/**'
       - 'docs/**'
       - '.github/workflows/site.yml'
   workflow_dispatch:
@@ -63,7 +63,7 @@ jobs:
       # that did not exist there yet and would have 404'd. They resolve now, so
       # the board carries its individual-runs table (#21).
       - name: Generate docs/leaderboard.qmd
-        working-directory: tools/pharmbench
+        working-directory: tools/pmxbench/maintainer
         run: |
           python3 generate_leaderboard.py \
             --exclude-dataset pmb-mab-pkpd-v0

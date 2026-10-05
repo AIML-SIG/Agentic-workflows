@@ -1,0 +1,186 @@
+---
+title: "PMxbench"
+subtitle: "One synthetic population PK study with a known answer. Analyze it however you like, then send back one YAML file."
+sidebar: false
+toc: false
+page-layout: article
+---
+
+```{=html}
+<style>
+/* Layout: a scenario card, then the three steps as a left-to-right flow that stacks on phones. */
+.pmx {
+  --ink: #1f2a37;
+  --muted: #5b6b7d;
+  --line: #d8e0ea;
+  --wash: #f4f7fb;
+  --accent: #2780e3;      /* the site's cosmo primary */
+  --d100: #9cc3ef;
+  --d300: #5a9ae6;
+  --d600: #1d5fae;
+  --mono: SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  color: var(--ink);
+}
+.pmx * { box-sizing: border-box; }
+.pmx .card {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 1.5rem; align-items: center;
+  background: var(--wash); border: 1px solid var(--line); border-radius: 6px;
+  padding: 1.25rem 1.5rem; margin: 0.5rem 0 2.25rem;
+}
+.pmx .eyebrow {
+  font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin: 0 0 0.25rem;
+}
+.pmx .card h2 { font-size: 1.35rem; margin: 0 0 0.75rem; border: 0; padding: 0; text-wrap: balance; }
+.pmx dl { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 1rem; margin: 0; font-size: 0.92rem; }
+.pmx dt { color: var(--muted); }
+.pmx dd { margin: 0; font-variant-numeric: tabular-nums; }
+.pmx .chart { width: 100%; max-width: 100%; height: auto; display: block; }
+.pmx .chart text { font-size: 9px; fill: var(--muted); font-family: inherit; }
+.pmx .legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+.pmx .legend span::before {
+  content: ""; display: inline-block; width: 14px; height: 3px; border-radius: 2px;
+  margin-right: 0.4rem; vertical-align: middle; background: var(--c);
+}
+
+.pmx ol.steps {
+  list-style: none; padding: 0; margin: 0 0 2.25rem;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem;
+  counter-reset: step;
+}
+.pmx .steps li {
+  counter-increment: step; position: relative;
+  border-top: 3px solid var(--accent); padding: 1rem 0.25rem 0;
+  display: flex; flex-direction: column; gap: 0.6rem; min-width: 0;
+}
+.pmx .steps .glyph { width: 56px; height: 56px; color: var(--accent); }
+.pmx .steps h3 { font-size: 1.1rem; margin: 0; }
+.pmx .steps h3::before { content: counter(step) ". "; color: var(--muted); font-weight: 400; }
+.pmx .steps p { margin: 0; font-size: 0.95rem; line-height: 1.5; }
+.pmx .files { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+.pmx .files a, .pmx code.f { font-family: var(--mono); font-size: 0.85rem; }
+.pmx .files small { color: var(--muted); }
+.pmx .btn {
+  align-self: flex-start; display: inline-block; text-decoration: none;
+  background: var(--accent); color: #fff; border-radius: 4px;
+  padding: 0.45rem 0.9rem; font-weight: 600; font-size: 0.92rem;
+}
+.pmx .btn:hover, .pmx .btn:focus-visible { background: #1d5fae; color: #fff; }
+.pmx .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+@media (max-width: 760px) {
+  .pmx .card { grid-template-columns: 1fr; }
+  .pmx ol.steps { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+</style>
+
+<div class="pmx">
+
+<section class="card" aria-label="Scenario 00">
+  <div>
+    <p class="eyebrow">Scenario 00 · open</p>
+    <h2>First-in-human study of an IgG1 monoclonal antibody</h2>
+    <dl>
+      <dt>Subjects</dt><dd>120 healthy adults, 50 to 110 kg</dd>
+      <dt>Dosing</dt><dd>Single 1-h IV infusion: 100, 300 or 600 mg</dd>
+      <dt>Sampling</dt><dd>Predose to day 150, 13 draws per subject</dd>
+      <dt>Assay</dt><dd>LLOQ 0.1 mg/L</dd>
+      <dt>Covariates</dt><dd>WT, ALB, CRCL</dd>
+    </dl>
+  </div>
+  <figure style="margin:0">
+    <svg class="chart" viewBox="0 0 320 172" role="img"
+         aria-label="Median serum concentration over 150 days for each dose, log scale, falling from about 30, 95 and 200 mg/L to under 1 mg/L">
+      <g stroke="#d8e0ea" stroke-width="1">
+        <line x1="44" x2="312" y1="150" y2="150"/>
+        <line x1="44" x2="312" y1="110.9" y2="110.9"/>
+        <line x1="44" x2="312" y1="71.8" y2="71.8"/>
+        <line x1="44" x2="312" y1="32.7" y2="32.7"/>
+      </g>
+      <g text-anchor="end">
+        <text x="39" y="153">0.1</text><text x="39" y="114">1</text>
+        <text x="39" y="75">10</text><text x="39" y="36">100</text>
+      </g>
+      <g text-anchor="middle">
+        <text x="44" y="163">0</text><text x="97.6" y="163">30</text><text x="151.2" y="163">60</text>
+        <text x="204.8" y="163">90</text><text x="258.4" y="163">120</text><text x="312" y="163">150 d</text>
+      </g>
+      <text x="44" y="9" text-anchor="start">mg/L, median of quantified samples</text>
+      <g fill="none" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
+        <polyline stroke="#9cc3ef" points="44.1,52.5 45.8,55.8 49.4,63.2 56.5,69.1 69.0,74.0 94.0,81.5 119.0,88.3 144.1,96.3 169.1,103.1 204.8,113.8 258.4,127.1 312.0,131.0"/>
+        <polyline stroke="#5a9ae6" points="44.1,33.5 45.8,37.8 49.4,43.0 56.5,49.8 69.0,55.8 94.0,62.1 119.0,71.5 144.1,76.2 169.1,81.5 204.8,92.8 258.4,106.8 312.0,119.2"/>
+        <polyline stroke="#1d5fae" points="44.1,21.1 45.8,26.4 49.4,32.3 56.5,38.8 69.0,43.5 94.0,51.0 119.0,59.7 144.1,67.0 169.1,75.6 204.8,84.2 258.4,100.0 312.0,113.9"/>
+      </g>
+    </svg>
+    <figcaption class="legend">
+      <span style="--c:#9cc3ef">100 mg</span><span style="--c:#5a9ae6">300 mg</span><span style="--c:#1d5fae">600 mg</span>
+    </figcaption>
+  </figure>
+</section>
+
+<ol class="steps">
+  <li>
+    <svg class="glyph" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="6" y="8" width="32" height="38" rx="3"/>
+      <path d="M6 18h32M6 27h32M6 36h32M17 8v38"/>
+      <path d="M46 22v24M39.5 39.5 46 46l6.5-6.5"/>
+    </svg>
+    <h3>Get the data</h3>
+    <p>Three files. Nothing else is needed.</p>
+    <ul class="files">
+      <li><a href="https://raw.githubusercontent.com/AIML-SIG/Agentic-workflows/main/tools/pmxbench/scenario_00/data.csv">data.csv</a> <small>the dataset, NONMEM-style long format</small></li>
+      <li><a href="https://github.com/AIML-SIG/Agentic-workflows/blob/main/tools/pmxbench/scenario_00/sap.md">sap.md</a> <small>protocol and analysis plan</small></li>
+      <li><a href="https://raw.githubusercontent.com/AIML-SIG/Agentic-workflows/main/tools/pmxbench/scenario_00/submission.template.yaml">submission.template.yaml</a> <small>the answers to fill in</small></li>
+    </ul>
+  </li>
+  <li>
+    <svg class="glyph" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M8 6v42h42"/>
+      <path d="M12 12c6 14 12 22 20 26s12 5 16 5.5"/>
+      <g fill="currentColor" stroke="none">
+        <circle cx="14" cy="18" r="2.4"/><circle cx="19" cy="24" r="2.4"/><circle cx="26" cy="34" r="2.4"/>
+        <circle cx="33" cy="36" r="2.4"/><circle cx="41" cy="42" r="2.4"/>
+      </g>
+    </svg>
+    <h3>Run the analysis</h3>
+    <p>Read <code class="f">sap.md</code> and do the population PK analysis it asks for. Use any software you like: NONMEM, nlmixr2, Monolix, Pumas. Doing it with an AI agent is fine.</p>
+  </li>
+  <li>
+    <svg class="glyph" viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10 6h22l10 10v34H10z"/><path d="M32 6v10h10"/>
+      <path d="M16 24h6M25 24h10M16 31h6M25 31h7M16 38h6M25 38h9"/>
+      <path d="M38 44l5 5 9-11"/>
+    </svg>
+    <h3>Submit your answers</h3>
+    <p>Fill in the template, save it as <code class="f">submission.yaml</code>, and paste it into a submission issue. We score it against the answer key and post the result to the leaderboard.</p>
+    <a class="btn" href="https://github.com/AIML-SIG/Agentic-workflows/issues/new?template=pmxbench-submission.yml">Open a submission</a>
+  </li>
+</ol>
+
+</div>
+```
+
+## What you report
+
+Five answers, each defined in section 9 of `sap.md`. Report only what your analysis supports.
+
+| Key | What it asks |
+|---|---|
+| `structural_ncmt` | How many compartments the final model has |
+| `disposition_params` | Typical CL, volumes and distribution parameters at 70 kg |
+| `error_model` | The residual error terms |
+| `cov_effects` | Which covariates act on which parameter, and how strongly |
+| `outlier_records` | The `ROWID`s of any records you flagged as data errors |
+
+## How it works
+
+Every scenario is simulated from a known model, so there is a right answer, and a few realistic
+problems are planted in the data on purpose. Scenario 00 is open: its answer key and the script
+that built it are public in
+[`template_scenario_00`](https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pmxbench/template_scenario_00),
+which shows how every scenario is put together. From scenario 01 on, only the data, the SAP and
+the template are published; the answer key stays private, so scores can't be looked up.
+
+Scores and past runs are on the [leaderboard](leaderboard.qmd). The files live in
+[`tools/pmxbench`](https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pmxbench).

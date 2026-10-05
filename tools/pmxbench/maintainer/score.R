@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
-# PMbench scorer (scenario-agnostic).
-#   Rscript score.R --truth scenarios/<id>/evals/truth.yaml path/to/submission.yaml
+# PMxbench scorer (scenario-agnostic).
+#   Rscript score.R --truth ../template_scenario_00/truth.yaml path/to/submission.yaml
 # Loads truth and the submission, scores each item in [0,1], and prints + writes
 # scorecard.yaml next to the submission.
 #
@@ -57,7 +57,8 @@ if (!file.exists(truth_path)) {
   stop(sprintf("truth file not found: %s (pass it with --truth)", truth_path))
 }
 
-# pharmbench's own git SHA -- distinguishes scorer/truth revisions under the
+# The pmxbench git SHA (key kept as pharmbench_sha so recorded results still
+# read) -- distinguishes scorer/truth revisions under the
 # same scenario_id (e.g. an alias-list or trap fix), independent of the
 # scenario's own "-vN" versioning.
 pharmbench_sha <- tryCatch({

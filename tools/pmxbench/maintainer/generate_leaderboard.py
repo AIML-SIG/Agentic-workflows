@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate the leaderboard page from tools/pharmbench/results/<run>/.
+"""Regenerate the leaderboard page from tools/pmxbench/maintainer/results/<run>/.
 
 Reads every recorded run (a `results/<slug>/scorecard.yaml`, written by
 `score.R --record`, alongside its `submission.yaml`), groups by the
@@ -48,8 +48,9 @@ try:
 except ImportError:
     sys.exit("PyYAML required: pip install pyyaml")
 
-SCRIPT_DIR = Path(__file__).resolve().parent
-REPO_ROOT = SCRIPT_DIR.parent.parent
+SCRIPT_DIR = Path(__file__).resolve().parent   # tools/pmxbench/maintainer
+PMX_DIR = SCRIPT_DIR.parent                     # tools/pmxbench
+REPO_ROOT = PMX_DIR.parent.parent
 
 
 def short(sha):
@@ -78,10 +79,14 @@ def canon_model(model):
 
 
 def truth_path_for(dataset):
-    """`pmb-<scenario-id>` -> scenarios/<scenario-id>/evals/truth.yaml."""
-    scenario_id = dataset[len("pmb-"):] if dataset.startswith("pmb-") else dataset
-    path = SCRIPT_DIR / "scenarios" / scenario_id / "evals" / "truth.yaml"
-    return path if path.exists() else None
+    """The pmxbench `*/truth.yaml` whose `meta.dataset` is `dataset`, else None.
+    Only public answer keys live there (template_scenario_*); a held-out
+    scenario's key is in the private repo, so its slide renders without one."""
+    for path in sorted(PMX_DIR.glob("*/truth.yaml")):
+        meta = (yaml.safe_load(path.read_text()) or {}).get("meta") or {}
+        if meta.get("dataset") == dataset:
+            return path
+    return None
 
 
 def load_failed(results_dir):
@@ -440,11 +445,11 @@ def render(records, results_dir, failed, excluded_datasets=(),
     lines.append("---")
     lines.append("")
     lines.append(
-        "Aggregated results from `tools/pharmbench`. Each row is one "
+        "Aggregated results from `tools/pmxbench`. Each row is one "
         "(scenario, tool, harness, model) configuration; repeated attempts "
         "of the identical configuration are grouped together, with mean/SD "
         "showing the spread across attempts rather than a single run "
-        "standing in for the whole configuration. Tool/pharmbench git "
+        "standing in for the whole configuration. Tool/pmxbench git "
         "revision is intentionally not part of the grouping -- both are "
         "whole-monorepo HEAD SHAs, so they change on any commit anywhere in "
         "the repo, not just when the tool itself changes; see the linked "
@@ -454,7 +459,7 @@ def render(records, results_dir, failed, excluded_datasets=(),
         lines.append("")
         lines.append(
             f"**Excluded from this render:** `{'`, `'.join(sorted(excluded_datasets))}`. "
-            "Still recorded in `tools/pharmbench/results/`, just left off this "
+            "Still recorded in `tools/pmxbench/maintainer/results/`, just left off this "
             "page for now -- regenerate without `--exclude-dataset` to bring "
             "it back."
         )
@@ -475,8 +480,8 @@ def render(records, results_dir, failed, excluded_datasets=(),
     lines.append(
         f"Generated from `{len(records)}` recorded run(s) across "
         f"`{len(rows)}` configuration(s). Regenerate with "
-        "`python3 tools/pharmbench/generate_leaderboard.py` after adding new "
-        "results to `tools/pharmbench/results/`."
+        "`python3 tools/pmxbench/maintainer/generate_leaderboard.py` after adding new "
+        "results to `tools/pmxbench/maintainer/results/`."
     )
     lines.append("")
 
@@ -554,8 +559,8 @@ def render(records, results_dir, failed, excluded_datasets=(),
         lines.append(
             "*The per-run drill-down table is withheld from this render for "
             "now. Every run is still recorded in "
-            "[`tools/pharmbench/results/`]"
-            "(https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pharmbench/results); "
+            "[`tools/pmxbench/maintainer/results/`]"
+            "(https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pmxbench/maintainer/results); "
             "regenerate without `--no-individual-runs` to list them.*"
         )
         return "\n".join(lines) + "\n"
@@ -564,8 +569,8 @@ def render(records, results_dir, failed, excluded_datasets=(),
     lines.append("## Individual runs")
     lines.append("")
     lines.append(
-        "Raw records live in [`tools/pharmbench/results/`]"
-        "(https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pharmbench/results) "
+        "Raw records live in [`tools/pmxbench/maintainer/results/`]"
+        "(https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pmxbench/maintainer/results) "
         "-- one folder per run (`scorecard.yaml` + `submission.yaml` written by "
         "`score.R --record`, plus a `slide.html` rendered by this script). No "
         "raw agent log is archived (see `score.R`), so a slide's score "
@@ -576,8 +581,8 @@ def render(records, results_dir, failed, excluded_datasets=(),
     run_header = ["Timestamp", "Scenario", "Tool", "Harness", "Model", "Overall", "Cost", "Duration", "Run"]
     lines.append("| " + " | ".join(run_header) + " |")
     lines.append("|" + "|".join(["---"] * len(run_header)) + "|")
-    tree_url = "https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pharmbench/results"
-    blob_url = "https://github.com/AIML-SIG/Agentic-workflows/blob/main/tools/pharmbench/results"
+    tree_url = "https://github.com/AIML-SIG/Agentic-workflows/tree/main/tools/pmxbench/maintainer/results"
+    blob_url = "https://github.com/AIML-SIG/Agentic-workflows/blob/main/tools/pmxbench/maintainer/results"
     for r in sorted(records, key=lambda x: x["run_utc"], reverse=True):
         run_link = f"[`{r['run_dir']}`]({tree_url}/{r['run_dir']})"
         if r["slide"]:
