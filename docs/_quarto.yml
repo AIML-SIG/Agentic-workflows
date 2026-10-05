@@ -1,6 +1,7 @@
 project:
   type: website
   output-dir: _site
+  resources:
     - downloads/   # scenario zips, built by site.yml
 
 website:
