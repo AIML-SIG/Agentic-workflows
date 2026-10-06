@@ -11,7 +11,7 @@ Two ways in, both take under a minute. Membership is free and open to anyone.
 
 Once you are in, the conversation happens in [Discussions](../../discussions).
 
-**New here?** Start with the [First Run milestone](../../milestone/1). Run it, tell us what happened, and you're in the biweekly evaluation subgroup. You don't need a passing score. Reporting what blocked you counts.
+**New here?** Try [PMxbench](https://aiml-sig.github.io/Agentic-workflows/): one simulated population PK study with a known answer. Analyze it by hand or with an AI agent and send back one YAML file. You don't need a good score. A submission that says what blocked you counts.
 
 ## Mission
 
@@ -29,10 +29,11 @@ How they connect: learn by doing, tools discovered and evaluated, evaluation tur
 
 ## The site
 
-The group publishes at **[aiml-sig.github.io/Agentic-workflows](https://aiml-sig.github.io/Agentic-workflows/)**. Two things worth going straight to:
+The group publishes at **[aiml-sig.github.io/Agentic-workflows](https://aiml-sig.github.io/Agentic-workflows/)**. Three things worth going straight to:
 
+- **[PMxbench](https://aiml-sig.github.io/Agentic-workflows/).** The landing page: get the data, run the analysis, submit. The files live in [`tools/pmxbench/`](tools/pmxbench/).
 - **[Glossary](https://aiml-sig.github.io/Agentic-workflows/learning/glossary/agent.html).** Plain-language definitions of the terms this field uses loosely: agent, harness, tools, MCP. Start here if the vocabulary is the barrier.
-- **[Leaderboard](https://aiml-sig.github.io/Agentic-workflows/leaderboard.html).** PMbench scores for every recorded run: which workflow, on which model and harness, at what score and cost. To add a row of your own, work through the [First Run milestone](../../milestone/1).
+- **[Leaderboard](https://aiml-sig.github.io/Agentic-workflows/leaderboard.html).** PMxbench scores for every recorded submission: which workflow, on which model and harness, at what score and cost. To add a row of your own, [submit a result](https://github.com/AIML-SIG/Agentic-workflows/issues/new?template=pmxbench-submission.yml).
 
 ## License
 
