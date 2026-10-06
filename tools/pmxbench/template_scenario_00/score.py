@@ -214,6 +214,12 @@ def main():
     truth = yaml.safe_load(Path(a.truth).read_text())
     sub = yaml.safe_load(sub_path.read_text()) or {}
     prov = dict(sub.get("provenance") or {})
+    # An unquoted run_utc reaches us as a datetime; restore the ISO form the
+    # template asks for, so the record and its file name stay consistent.
+    if isinstance(prov.get("run_utc"), datetime):
+        t = prov["run_utc"]
+        t = t.astimezone(timezone.utc) if t.tzinfo else t
+        prov["run_utc"] = t.strftime("%Y-%m-%dT%H:%M:%SZ")
     meta = _run_meta(sub_path)
     for k in ("harness", "tool_sha"):
         if meta.get(k):
