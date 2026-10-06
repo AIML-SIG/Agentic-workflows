@@ -59,22 +59,9 @@ mkdir -p "$SUBMISSION_DIR"
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"; }
 
-# run_meta.yaml: facts this script knows authoritatively (which harness, which
-# repo revision) for score.py --record to pick up, rather than trusting
-# the agent's own provenance block to self-report them correctly.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TOOL_SHA="$(git -C "$SCRIPT_DIR" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)"
-HARNESS="$(awk '{print $1}' <<< "$AGENT_CMD")"
-# Pull --model straight off AGENT_CMD when present -- more trustworthy than
-# the agent's own provenance.model self-report (seen in practice reporting
-# an estimation method, or left blank, instead of the LLM actually used).
-MODEL_OVERRIDE="$(grep -oE -- '--model[= ]+[^ ]+' <<< "$AGENT_CMD" | sed -E 's/--model[= ]+//' || true)"
-cat > "${WORKSPACE}/run_meta.yaml" <<EOF
-harness: "${HARNESS}"
-tool_sha: "${TOOL_SHA}"
-model: "${MODEL_OVERRIDE}"
-agent_cmd: "$(printf '%s' "$AGENT_CMD" | sed 's/"/\\"/g')"
-EOF
+. "${SCRIPT_DIR}/run_meta.sh"
+write_run_meta "$WORKSPACE"
 
 # Barebones prompt: the contract and nothing more -- no pharmacometric guidance,
 # no task decomposition, no examples. Same read-only inputs and same one
@@ -102,6 +89,10 @@ log "Log file: $LOG_FILE"
 # Single shot. No iteration loop, no escalation, no verification gate -- that is
 # the point of the comparator. AGENT_CMD is word-split into argv; the prompt is a
 # single final arg, never re-parsed by a shell.
+# Start the agent in its workspace, not wherever this script was called from:
+# harnesses load AGENTS.md/CLAUDE.md from their working directory, and the
+# caller's directory may be this repo.
+cd "$WORKSPACE"
 timeout --foreground "$TASK_TIMEOUT" $AGENT_CMD "$PROMPT" >> "$LOG_FILE" 2>&1 || true
 
 echo

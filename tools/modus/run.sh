@@ -22,11 +22,19 @@ if [ ! -d "$PROJECT_DIR" ]; then
     echo "ERROR: Project directory does not exist: $PROJECT_DIR"
     exit 1
 fi
+# Absolute, because it goes into the agent's prompt and the agent does not
+# start in the caller's directory.
+PROJECT_DIR="$(cd "$PROJECT_DIR" && pwd)"
 
 # =============================================================================
 # Settings (override via environment)
 # =============================================================================
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+case "${PROJECT_DIR}/" in "${REPO_ROOT}/"*)
+    echo "ERROR: ${PROJECT_DIR} is inside this repo, next to answer keys. Use a dir outside it."
+    exit 1;;
+esac
 AI_DOCS_DIR="${SCRIPT_DIR}/ai_docs"           # prompt, task library, escalation prompt
 EXAMPLES_DIR="${EXAMPLES_DIR:-${SCRIPT_DIR}/examples}"  # domain example library
 MAX_ITERATIONS="${MAX_ITERATIONS:-50}"
@@ -38,10 +46,7 @@ TASK_LIBRARY="${TASK_LIBRARY:-${AI_DOCS_DIR}/task_library.json}"
 # final argument at call time (passed directly as argv, never re-parsed by a
 # shell -- so prompts may safely contain quotes, backticks, etc.).
 # Default targets Claude Code; swap for codex, pi, etc. without touching the loop.
-#   Codex example: AGENT_CMD='codex exec'
-#   Pi (via OpenRouter) example: AGENT_CMD='pi -p --provider openrouter --model <paid-model>'
-#     Requires OPENROUTER_API_KEY. Use a paid model -- see modus/README.md for
-#     why the free tier isn't reliable here.
+#   See README.md, "Swap harnesses", for codex and pi.
 #
 # --dangerously-skip-permissions is required, not optional, for this loop: each
 # agent runs headless (claude -p) with no human to answer permission prompts, so
@@ -57,22 +62,11 @@ LOG_FILE="${PROJECT_DIR}/run_$(date +%Y%m%d_%H%M%S).log"
 RUNNING=true
 RUN_LABEL="${RUN_LABEL:-modus_run_$(date +%Y%m%d_%H%M%S)}"
 
-# run_meta.yaml: facts this script knows authoritatively (which harness, which
-# modus/repo revision) for score.R --record to pick up, rather than trusting
-# the agent's own provenance block to self-report them correctly. Lands in
-# workspace/, so it travels with everything else through archive_workspace().
-TOOL_SHA="$(git -C "$SCRIPT_DIR" rev-parse --short=12 HEAD 2>/dev/null || echo unknown)"
-HARNESS="$(awk '{print $1}' <<< "$AGENT_CMD")"
-# Pull --model straight off AGENT_CMD when present -- more trustworthy than
-# the agent's own provenance.model self-report.
-MODEL_OVERRIDE="$(grep -oE -- '--model[= ]+[^ ]+' <<< "$AGENT_CMD" | sed -E 's/--model[= ]+//' || true)"
+# run_meta.yaml lands in workspace/, so it travels with everything else
+# through archive_workspace().
 mkdir -p "${PROJECT_DIR}/workspace"
-cat > "${PROJECT_DIR}/workspace/run_meta.yaml" <<EOF
-harness: "${HARNESS}"
-tool_sha: "${TOOL_SHA}"
-model: "${MODEL_OVERRIDE}"
-agent_cmd: "$(printf '%s' "$AGENT_CMD" | sed 's/"/\\"/g')"
-EOF
+. "${SCRIPT_DIR}/run_meta.sh"
+write_run_meta "${PROJECT_DIR}/workspace"
 
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
@@ -88,7 +82,7 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
-# Archive workspace: move logs in, rename, and commit
+# Archive workspace: move logs in and rename
 archive_workspace() {
     local status="$1"  # "complete", "incomplete", or "cancelled"
     local new_name="${RUN_LABEL}_workspace"
@@ -96,7 +90,6 @@ archive_workspace() {
     log "Archiving workspace as ${new_name}"
     mv "${PROJECT_DIR}"/run_*.log "${PROJECT_DIR}/workspace/" 2>/dev/null
     mv "${PROJECT_DIR}/workspace" "${PROJECT_DIR}/${new_name}"
-    (cd "$SCRIPT_DIR" && git add -A "${PROJECT_DIR}/" && git commit -m "${new_name}: ${status}") 2>/dev/null
 }
 
 # Run the configured agent with a prompt file, substituting the project dir.
@@ -106,7 +99,10 @@ run_agent() {
     local prompt_text
     prompt_text=$(sed -e "s|{{PROJECT_DIR}}|$PROJECT_DIR|g" \
                       -e "s|{{EXAMPLES_DIR}}|$EXAMPLES_DIR|g" "$prompt_file")
-    timeout --foreground "$TASK_TIMEOUT" $AGENT_CMD "$prompt_text" >> "$LOG_FILE" 2>&1
+    # Start in the workspace, not the caller's directory: harnesses load
+    # AGENTS.md/CLAUDE.md from their working directory.
+    (cd "${PROJECT_DIR}/workspace" &&
+        timeout --foreground "$TASK_TIMEOUT" $AGENT_CMD "$prompt_text" >> "$LOG_FILE" 2>&1)
 }
 
 # Initialize the working copy from the full task library. The home library

@@ -123,6 +123,20 @@ cp ../pmxbench/scenario_00/* /tmp/pmx-baseline/data/
 ./baseline.sh /tmp/pmx-baseline
 ```
 
+**Official runs** use `run_container.sh` instead, with the same arguments. It
+builds an image from `.devcontainer/` once, then gives each run a fresh container
+with only the project directory mounted. R packages and the harness are installed
+before the agent starts, and their versions are recorded in `run_meta.yaml`, so a
+result says exactly what it ran on. R packages are the current release; the
+harness version you must name, because it changes how an agent works.
+`RUNNER=run.sh` runs the full Modus workflow the same way.
+
+```sh
+OPENROUTER_API_KEY=... HARNESS_VERSION=0.80.3 \
+  AGENT_CMD='pi -p --mode json --model openrouter/<id>' \
+  ./run_container.sh /tmp/pmx-baseline
+```
+
 ## Configuration
 
 All overridable by environment variable:
@@ -139,14 +153,34 @@ All overridable by environment variable:
 Swap harnesses without touching the loop:
 
 ```bash
-# Drive Codex instead of Claude Code
-AGENT_CMD='codex exec' ./run.sh my_project
+# Drive Codex instead of Claude Code. Its default sandbox is read-only and
+# silently blocks writing submission.yaml, hence the bypass flag; project dirs
+# aren't git repos, hence --skip-git-repo-check.
+AGENT_CMD='codex exec --json --skip-git-repo-check --dangerously-bypass-approvals-and-sandbox' \
+  ./run.sh my_project
 
 # Drive Pi (https://pi.dev) via OpenRouter -- a built-in Pi provider, no
 # custom provider config needed beyond an API key.
 export OPENROUTER_API_KEY=sk-or-...
 AGENT_CMD='pi -p --provider openrouter --model <paid-model>' ./run.sh my_project
 ```
+
+Codex through OpenRouter needs a provider in `~/.codex/config.toml`, passed as
+explicit overrides (the file's top-level `model_provider`/`model` keys were not
+picked up in testing):
+
+```toml
+[model_providers.openrouter]
+name = "OpenRouter"
+base_url = "https://openrouter.ai/api/v1"
+env_key = "OPENROUTER_API_KEY"
+wire_api = "responses"
+```
+
+then add `-c model_provider=openrouter -m <provider/model>` to the `AGENT_CMD` above.
+
+With API-key auth, add `--bare` to a `claude` `AGENT_CMD` so your own CLAUDE.md
+and memory don't leak into the run.
 
 No skip-permissions flag needed for Pi: it runs tools unrestricted by default
 and `-p` mode has no confirmation prompt to skip. Same blast radius as
