@@ -50,8 +50,15 @@ fi
 # Setup runs as root (apt-backed R binaries need it); the agent runs as the
 # image's unprivileged user, since some harnesses refuse to skip permission
 # prompts as root.
+# rxode2 compiles every model at run time and links BLAS, LAPACK and gfortran,
+# which the r2u binaries ship only as runtime libraries; the -dev packages
+# provide the link names. The compile check fails the run here, before the
+# agent's clock starts, instead of leaving the agent to discover it.
 SETUP='set -e
-Rscript -e "options(bspm.version.check = FALSE); install.packages(c(\"nlmixr2\", \"mrgsolve\", \"yaml\"))" >/tmp/setup.log 2>&1
+{ apt-get update -q && apt-get install -y -q libblas-dev liblapack-dev gfortran; } >/tmp/setup.log 2>&1
+Rscript -e "options(bspm.version.check = FALSE); install.packages(c(\"nlmixr2\", \"mrgsolve\", \"yaml\"))" >>/tmp/setup.log 2>&1
+runuser -u vscode -- Rscript -e "rxode2::rxode2(\"d/dt(x) = -x\")" >>/tmp/setup.log 2>&1 ||
+    { echo "Setup failed: rxode2 cannot compile a model. See /tmp/setup.log:"; tail -20 /tmp/setup.log; exit 1; }
 npm install -g "$HARNESS_PKG" >>/tmp/setup.log 2>&1
 exec runuser -u vscode -- env HOME=/home/vscode PATH="$PATH" \
     "/opt/pmx/tools/modus/$RUNNER" /work'
