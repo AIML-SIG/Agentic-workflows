@@ -14,7 +14,7 @@ write_run_meta() {
     # --model straight off AGENT_CMD: more trustworthy than the agent's own
     # provenance.model, seen reporting an estimation method or left blank.
     model="$(grep -oE -- '--model[= ]+[^ ]+' <<< "$AGENT_CMD" | sed -E 's/--model[= ]+//' || true)"
-    r_pkgs="$(Rscript -e 'for (p in c("nlmixr2", "rxode2", "mrgsolve", "nlme"))
+    r_pkgs="$(Rscript -e 'for (p in c("nlmixr2", "nlmixr2est", "rxode2", "lotri", "mrgsolve", "nlme"))
         cat(p, tryCatch(as.character(packageVersion(p)), error = function(e) "none"), "\n")' 2>/dev/null || true)"
     ver() { "$@" 2>/dev/null | head -1 | tr -d '"' || true; }
     {
