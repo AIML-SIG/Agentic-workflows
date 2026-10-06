@@ -5,17 +5,18 @@
 # but each run gets its own throwaway container with ONLY the project dir
 # mounted: no repo, no answer keys, no state left over from earlier runs.
 #
-# Before the agent's clock starts, the container installs the standard R
-# packages (as binaries, seconds not minutes) and the harness from npm. Nothing
-# is pinned; baseline.sh records every version into run_meta.yaml instead.
+# Before the agent's clock starts, the container installs the current R
+# packages (as binaries, seconds not minutes) and the harness from npm.
+# baseline.sh records every version into run_meta.yaml.
 #
 #   mkdir -p ~/pmx-runs/my-run/data
 #   cp tools/pmxbench/scenario_00/* ~/pmx-runs/my-run/data/
-#   OPENROUTER_API_KEY=... AGENT_CMD='pi -p --mode json --model openrouter/<id>' \
+#   OPENROUTER_API_KEY=... HARNESS_VERSION=0.80.3 \
+#     AGENT_CMD='pi -p --mode json --model openrouter/<id>' \
 #     tools/modus/run_container.sh ~/pmx-runs/my-run
 #
-# HARNESS_VERSION pins the harness (e.g. 0.80.3); default latest. Either way
-# the version used is recorded.
+# HARNESS_VERSION is required: the harness version measurably changes how an
+# agent works, so it is chosen on purpose, never picked up as "latest".
 # RUNNER=run.sh runs the Modus workflow instead of the baseline. AGENT_CMD,
 # RUN_LABEL, TASK_TIMEOUT, MAX_ITERATIONS and UNATTENDED pass through. Set
 # REBUILD=1 to rebuild the image (e.g. after editing .devcontainer/).
@@ -44,6 +45,11 @@ case "$HARNESS" in
     pi)     HARNESS_PKG="@earendil-works/pi-coding-agent" ;;
     *) echo "ERROR: no npm package known for harness '$HARNESS'. Add it to $0."; exit 1 ;;
 esac
+if [ -z "${HARNESS_VERSION:-}" ]; then
+    echo "ERROR: set HARNESS_VERSION to the $HARNESS version to run (e.g. HARNESS_VERSION=1.0.4)."
+    echo "Available: npm view $HARNESS_PKG versions"
+    exit 1
+fi
 
 if [ -n "${REBUILD:-}" ] || ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
     devcontainer build --workspace-folder "$REPO_ROOT" --image-name "$IMAGE"
@@ -70,7 +76,7 @@ docker run --rm \
     -v "${ABS_PROJECT}:/work" \
     -v "${REPO_ROOT}/tools/modus:/opt/pmx/tools/modus:ro" \
     -e AGENT_CMD="$AGENT_CMD" -e HARNESS_PKG="$HARNESS_PKG" -e RUNNER="$RUNNER" \
-    -e HARNESS_VERSION="${HARNESS_VERSION:-latest}" \
+    -e HARNESS_VERSION="$HARNESS_VERSION" \
     -e RUN_LABEL -e TASK_TIMEOUT -e MAX_ITERATIONS -e UNATTENDED \
     -e ANTHROPIC_API_KEY -e OPENROUTER_API_KEY -e OPENAI_API_KEY \
     -e PMX_CONTAINER="$(docker image inspect --format '{{.Id}}' "$IMAGE")" \

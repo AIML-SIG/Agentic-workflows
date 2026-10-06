@@ -127,11 +127,13 @@ cp ../pmxbench/scenario_00/* /tmp/pmx-baseline/data/
 builds an image from `.devcontainer/` once, then gives each run a fresh container
 with only the project directory mounted. R packages and the harness are installed
 before the agent starts, and their versions are recorded in `run_meta.yaml`, so a
-result says exactly what it ran on. `RUNNER=run.sh` runs the full Modus
-workflow the same way.
+result says exactly what it ran on. R packages are the current release; the
+harness version you must name, because it changes how an agent works.
+`RUNNER=run.sh` runs the full Modus workflow the same way.
 
 ```sh
-OPENROUTER_API_KEY=... AGENT_CMD='pi -p --mode json --model openrouter/<id>' \
+OPENROUTER_API_KEY=... HARNESS_VERSION=0.80.3 \
+  AGENT_CMD='pi -p --mode json --model openrouter/<id>' \
   ./run_container.sh /tmp/pmx-baseline
 ```
 
