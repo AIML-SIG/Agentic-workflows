@@ -14,6 +14,8 @@
 #   OPENROUTER_API_KEY=... AGENT_CMD='pi -p --mode json --model openrouter/<id>' \
 #     tools/modus/run_container.sh ~/pmx-runs/my-run
 #
+# HARNESS_VERSION pins the harness (e.g. 0.80.3); default latest. Either way
+# the version used is recorded.
 # RUNNER=run.sh runs the Modus workflow instead of the baseline. AGENT_CMD,
 # RUN_LABEL, TASK_TIMEOUT, MAX_ITERATIONS and UNATTENDED pass through. Set
 # REBUILD=1 to rebuild the image (e.g. after editing .devcontainer/).
@@ -59,7 +61,7 @@ SETUP='set -e
 Rscript -e "options(bspm.version.check = FALSE); install.packages(c(\"nlmixr2\", \"mrgsolve\", \"yaml\"))" >>/tmp/setup.log 2>&1
 runuser -u vscode -- Rscript -e "rxode2::rxode2(\"d/dt(x) = -x\")" >>/tmp/setup.log 2>&1 ||
     { echo "Setup failed: rxode2 cannot compile a model. See /tmp/setup.log:"; tail -20 /tmp/setup.log; exit 1; }
-npm install -g "$HARNESS_PKG" >>/tmp/setup.log 2>&1
+npm install -g "$HARNESS_PKG@$HARNESS_VERSION" >>/tmp/setup.log 2>&1
 exec runuser -u vscode -- env HOME=/home/vscode PATH="$PATH" \
     "/opt/pmx/tools/modus/$RUNNER" /work'
 
@@ -68,6 +70,7 @@ docker run --rm \
     -v "${ABS_PROJECT}:/work" \
     -v "${REPO_ROOT}/tools/modus:/opt/pmx/tools/modus:ro" \
     -e AGENT_CMD="$AGENT_CMD" -e HARNESS_PKG="$HARNESS_PKG" -e RUNNER="$RUNNER" \
+    -e HARNESS_VERSION="${HARNESS_VERSION:-latest}" \
     -e RUN_LABEL -e TASK_TIMEOUT -e MAX_ITERATIONS -e UNATTENDED \
     -e ANTHROPIC_API_KEY -e OPENROUTER_API_KEY -e OPENAI_API_KEY \
     -e PMX_CONTAINER="$(docker image inspect --format '{{.Id}}' "$IMAGE")" \
