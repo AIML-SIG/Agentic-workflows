@@ -251,7 +251,8 @@ def main():
             datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         slug = "__".join([_slug(sc["dataset"]), _slug(prov.get("tool")), _slug(prov.get("harness")),
                           _slug(prov.get("model")), ts, f"{random.randrange(16 ** 6):06x}"])
-        keep = ["tool", "harness", "model", "tool_sha", "run_utc", "env", "analysis_steps"]
+        keep = ["tool", "harness", "model", "harness_version", "software", "tool_sha",
+                "run_utc", "env", "analysis_steps"]
         entry = {"dataset": sc["dataset"], "provenance": {k: prov[k] for k in keep if k in prov},
                  "answers": sub.get("answers")}
         d = Path(a.record)

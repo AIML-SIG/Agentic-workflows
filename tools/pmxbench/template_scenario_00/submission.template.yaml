@@ -7,7 +7,9 @@ provenance:
   tool: ""                     # what did the analysis: "manual", or your workflow's name
   harness: ""                  # agent harness, if any (e.g. claude, codex, pi); "none" if manual
   model: ""                    # model id behind the run, if any
-  run_utc: ""                  # ISO-8601 UTC timestamp, e.g. 2026-10-05T14:00:00Z
+  harness_version: ""          # harness version, if any (e.g. pi --version)
+  software: {}                 # key software and versions, e.g. {R: 4.6.1, nlmixr2: 5.0.0}
+  run_utc: ""                # ISO-8601 UTC timestamp, e.g. 2026-10-05T14:00:00Z
   analysis_steps: []           # optional: the steps you performed, in your own words. Never scored.
 
 answers:
